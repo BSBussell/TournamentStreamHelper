@@ -1,9 +1,26 @@
 LoadEverything().then(() => {
   gsap.config({ nullTargetWarn: false, trialWarn: false });
 
-  let startingAnimation = gsap.timeline({ paused: true });
+  let startingAnimation = gsap
+    .timeline({ paused: true })
+    .from(
+      [".title"], // Drop-in from top
+      { duration: 0.4, y: "-100%", ease: "power2.inOut" },
+      0,
+    )
+    .from(
+      [".winners_container"], // Fade in
+      { duration: 0.4, opacity: "0", ease: "power2.inOut" },
+      0.4,
+    )
+    .from(
+      [".losers_container"], // Fade in
+      { duration: 0.4, opacity: "0", ease: "power2.inOut" },
+      0.4,
+    );
 
   Start = async (event) => {
+    startingAnimation.timeScale(2);
     startingAnimation.restart();
   };
 
@@ -474,6 +491,7 @@ LoadEverything().then(() => {
           });
         });
 
+        entryAnim.timeScale(1.25);
         entryAnim.play(0);
       }
 

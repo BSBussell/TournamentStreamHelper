@@ -1,6 +1,7 @@
 LoadEverything().then(() => {
   gsap.config({ nullTargetWarn: false, trialWarn: false });
 
+  let showTwitter = false; // Hide Twitter
   let p1Score = 100; // Variable to hold the P1 score before an update
   let p2Score = 100; // Variable to hold the P2 score before an update
   let newP1Score = 0; // Variable to hold the P1 score after an update
@@ -12,7 +13,8 @@ LoadEverything().then(() => {
   let newPlayer1; // P1 object after an update takes place
   let newPlayer2; // P2 object after an update takes place
   let swapDetected = false; // Variable that holds a boolean of whether a swap took place, initially set to false
-  let startingAnimation = gsap.timeline({ paused: true })
+  let startingAnimation = gsap
+    .timeline({ paused: true })
     .from(
       [".fade"],
       {
@@ -20,7 +22,7 @@ LoadEverything().then(() => {
         autoAlpha: 0,
         ease: "power2.out",
       },
-      0
+      0,
     )
     .from(
       [".p1.under_chips .fade_stagger_reverse:not(.text_empty)"],
@@ -28,12 +30,12 @@ LoadEverything().then(() => {
         autoAlpha: 0,
         stagger: {
           each: 0.05,
-          from: 'start',
+          from: "start",
           opacity: 0,
         },
         duration: 0.2,
       },
-      0
+      0,
     )
     .from(
       [".p1.chips .fade_stagger_reverse:not(.text_empty)"],
@@ -41,12 +43,12 @@ LoadEverything().then(() => {
         autoAlpha: 0,
         stagger: {
           each: 0.05,
-          from: 'start',
+          from: "start",
           opacity: 0,
         },
         duration: 0.2,
       },
-      0
+      0,
     )
     .from(
       [".p2.under_chips .fade_stagger_reverse:not(.text_empty)"],
@@ -54,12 +56,12 @@ LoadEverything().then(() => {
         autoAlpha: 0,
         stagger: {
           each: 0.05,
-          from: 'start',
+          from: "start",
           opacity: 0,
         },
         duration: 0.2,
       },
-      0
+      0,
     )
     .from(
       [".p2.chips .fade_stagger_reverse:not(.text_empty)"],
@@ -67,12 +69,12 @@ LoadEverything().then(() => {
         autoAlpha: 0,
         stagger: {
           each: 0.05,
-          from: 'start',
+          from: "start",
           opacity: 0,
         },
         duration: 0.2,
       },
-      0
+      0,
     )
     .from(
       [".fade_down"],
@@ -82,7 +84,7 @@ LoadEverything().then(() => {
         ease: "power2.out",
         autoAlpha: 0,
       },
-      0
+      0,
     )
     .from(
       [".fade_right"],
@@ -92,7 +94,7 @@ LoadEverything().then(() => {
         ease: "power2.out",
         autoAlpha: 0,
       },
-      0
+      0,
     )
     .from(
       [".fade_left"],
@@ -102,7 +104,7 @@ LoadEverything().then(() => {
         ease: "power2.out",
         autoAlpha: 0,
       },
-      0
+      0,
     )
     .from(
       [".fade_up"],
@@ -112,10 +114,11 @@ LoadEverything().then(() => {
         ease: "power2.out",
         autoAlpha: 0,
       },
-      0
+      0,
     );
 
   Start = async () => {
+    startingAnimation.timeScale(0.5);
     startingAnimation.restart();
   };
 
@@ -139,13 +142,13 @@ LoadEverything().then(() => {
             ) {
               SetInnerHtml(
                 $(`.p${t + 1}.container .placeholder_container`),
-                `<div class='placeholder'></div>`
+                `<div class='placeholder'></div>`,
               );
             } else {
               SetInnerHtml($(`.p${t + 1} .placeholder`), "");
               SetInnerHtml(
                 $(`.p${t + 1}.container .placeholder_container`),
-                ""
+                "",
               );
             }
 
@@ -153,7 +156,7 @@ LoadEverything().then(() => {
               $(`.p${t + 1}.container .sponsor_icon`),
               player.sponsor_logo
                 ? `<div style='background-image: url(../../${player.sponsor_logo})'></div>`
-                : ""
+                : "",
             );
 
             SetInnerHtml(
@@ -166,14 +169,14 @@ LoadEverything().then(() => {
               ${player.name ? await Transcript(player.name) : ""}
               ${team.losers ? "(L)" : ""}
             </span>
-            `
+            `,
             );
 
             SetInnerHtml(
               $(`.p${t + 1} .flagcountry`),
               player.country.asset
                 ? `<div class='flag' style='background-image: url(../../${player.country.asset.toLowerCase()})'></div>`
-                : ""
+                : "",
             );
 
             let score = [
@@ -185,12 +188,12 @@ LoadEverything().then(() => {
 
             SetInnerHtml(
               $(`.p${t + 1} .seed`),
-              player.seed ? `SEED ${player.seed}` : ""
+              player.seed ? `SEED ${player.seed}` : "",
             );
 
             SetInnerHtml(
               $(`.p${t + 1} .pronoun`),
-              player.pronoun ? player.pronoun : ""
+              player.pronoun ? player.pronoun : "",
             );
 
             document
@@ -218,7 +221,7 @@ LoadEverything().then(() => {
                   duration: 0.4,
                 },
               },
-              event
+              event,
             );
             UpdateColor(player, t);
           }
@@ -233,14 +236,14 @@ LoadEverything().then(() => {
         $(".match"),
         data.score[window.scoreboardNumber].match
           ? data.score[window.scoreboardNumber].match
-          : ""
+          : "",
       );
 
       SetInnerHtml(
         $(".phase"),
         data.score[window.scoreboardNumber].phase
           ? data.score[window.scoreboardNumber].phase
-          : ""
+          : "",
       );
       document.querySelector(".tournament_logo").classList.add("unhidden");
       checkSwap(); // Check to see if a swap took place. If it did, then the colors of the boxes are flipped and swapDetected is set to true.
@@ -264,7 +267,7 @@ LoadEverything().then(() => {
           ${teamName}
           ${team.losers ? "(L)" : ""}
         </span>
-        `
+        `,
         );
         for (const [p, player] of [team.player["1"]].entries()) {
           document
@@ -294,13 +297,13 @@ LoadEverything().then(() => {
         $(".match"),
         data.score[window.scoreboardNumber].match
           ? data.score[window.scoreboardNumber].match
-          : ""
+          : "",
       );
       SetInnerHtml(
         $(".phase"),
         data.score[window.scoreboardNumber].phase
           ? data.score[window.scoreboardNumber].phase
-          : ""
+          : "",
       );
       document.querySelector(".tournament_logo").classList.remove("unhidden");
       checkSwapForTeam(); // Check to see if a swap took place. If it did, then the colors of the boxes are flipped and swapDetected is set to true.
@@ -317,7 +320,7 @@ LoadEverything().then(() => {
           newP1Score,
           newP2Score,
           p1Score,
-          p2Score
+          p2Score,
         ));
     }
     swapDetected = false; // Set swapDetected back to false if it was set to true inside the checkSwap function.
@@ -481,7 +484,7 @@ function updateGameArray(
   newP1Score,
   newP2Score,
   p1Score,
-  p2Score
+  p2Score,
 ) {
   let gameNum = 0; // Variable to store which game we are at
   let gameArray = savedGameArray; // Array to hold game winner data
@@ -714,7 +717,7 @@ async function firstFunction(player, t) {
     $(`.p${t + 1} .flagstate`),
     player.state.name
       ? `<div class="location_logo symbol"></div>${String(player.state.name)}`
-      : ""
+      : "",
   );
 }
 
@@ -723,12 +726,20 @@ async function firstAlternateFunction(player, t) {
 }
 
 async function secondFunction(player, t) {
+  // SetInnerHtml($(`.p${t + 1} .twitter`), "");
+
+  /*
+  // Uncomment this if you want to show the Twitter handle
   SetInnerHtml(
     $(`.p${t + 1} .twitter`),
     player.twitter
       ? `<div class="twitter_logo symbol"></div>${String(player.twitter)}`
-      : ""
+      : "",
   );
+  */
+
+  // Comment this out if you want to show the Twitter handle
+  SetInnerHtml($(`.p${t + 1} .twitter`), "");
 }
 
 async function secondAlternateFunction(player, t) {
@@ -818,42 +829,42 @@ async function thirdFunction(t) {
         stylesheet,
         `.p${t + 1} .twitter_logo`,
         "background-image",
-        "url(./X_twitter_black.png)"
+        "url(./X_twitter_black.png)",
       );
 
       changeStylesheetRule(
         stylesheet,
         `.p${t + 1} .location_logo`,
         "background-image",
-        "url(./map_pin_black.png)"
+        "url(./map_pin_black.png)",
       );
 
       changeStylesheetRule(
         stylesheet,
         `.p${t + 1} .chip .text:not(.text_empty)`,
         "text-shadow",
-        "none"
+        "none",
       );
 
       changeStylesheetRule(
         stylesheet,
         `.p${t + 1} .score`,
         "text-shadow",
-        "none"
+        "none",
       );
 
       changeStylesheetRule(
         stylesheet,
         `.p${t + 1}.container`,
         "filter",
-        "none"
+        "none",
       );
 
       changeStylesheetRule(
         stylesheet,
         `.p${t + 1}.under_chips`,
         "filter",
-        "none"
+        "none",
       );
 
       camera_border_light.classList.remove("unhidden");
@@ -873,42 +884,42 @@ async function thirdFunction(t) {
         stylesheet,
         `.p${t + 1} .twitter_logo`,
         "background-image",
-        "url(./X_twitter_white.png)"
+        "url(./X_twitter_white.png)",
       );
 
       changeStylesheetRule(
         stylesheet,
         `.p${t + 1} .location_logo`,
         "background-image",
-        "url(./map_pin_white.png)"
+        "url(./map_pin_white.png)",
       );
 
       changeStylesheetRule(
         stylesheet,
         `.p${t + 1} .chip .text:not(.text_empty)`,
         "text-shadow",
-        "0em 0em 0.2em #000"
+        "0em 0em 0.2em #000",
       );
 
       changeStylesheetRule(
         stylesheet,
         `.p${t + 1} .score`,
         "text-shadow",
-        "0em 0em 0.2em #000"
+        "0em 0em 0.2em #000",
       );
 
       changeStylesheetRule(
         stylesheet,
         `.p${t + 1}.container`,
         "filter",
-        "none"
+        "none",
       );
 
       changeStylesheetRule(
         stylesheet,
         `.p${t + 1}.under_chips`,
         "filter",
-        "none"
+        "none",
       );
 
       camera_border_light.classList.remove("unhidden");
@@ -926,42 +937,42 @@ async function thirdFunction(t) {
         stylesheet,
         `.p${t + 1} .twitter_logo`,
         "background-image",
-        "url(./X_twitter_white.png)"
+        "url(./X_twitter_white.png)",
       );
 
       changeStylesheetRule(
         stylesheet,
         `.p${t + 1} .location_logo`,
         "background-image",
-        "url(./map_pin_white.png)"
+        "url(./map_pin_white.png)",
       );
 
       changeStylesheetRule(
         stylesheet,
         `.p${t + 1} .chip .text:not(.text_empty)`,
         "text-shadow",
-        "0em 0em 0.2em #000"
+        "0em 0em 0.2em #000",
       );
 
       changeStylesheetRule(
         stylesheet,
         `.p${t + 1} .score`,
         "text-shadow",
-        "0em 0em 0.2em #000"
+        "0em 0em 0.2em #000",
       );
 
       changeStylesheetRule(
         stylesheet,
         `.p${t + 1}.container`,
         "filter",
-        "drop-shadow(0 0px 2px rgba(255, 255, 255, 0.85))"
+        "drop-shadow(0 0px 2px rgba(255, 255, 255, 0.85))",
       );
 
       changeStylesheetRule(
         stylesheet,
         `.p${t + 1}.under_chips`,
         "filter",
-        "drop-shadow(0 0px 2px rgba(255, 255, 255, 0.85))"
+        "drop-shadow(0 0px 2px rgba(255, 255, 255, 0.85))",
       );
 
       camera_border_light.classList.add("unhidden");
@@ -1041,42 +1052,42 @@ async function thirdAlternateFunction(t) {
         stylesheet,
         `.p${t + 1} .twitter_logo`,
         "background-image",
-        "url(./X_twitter_black.png)"
+        "url(./X_twitter_black.png)",
       );
 
       changeStylesheetRule(
         stylesheet,
         `.p${t + 1} .location_logo`,
         "background-image",
-        "url(./map_pin_black.png)"
+        "url(./map_pin_black.png)",
       );
 
       changeStylesheetRule(
         stylesheet,
         `.p${t + 1} .chip .text:not(.text_empty)`,
         "text-shadow",
-        "none"
+        "none",
       );
 
       changeStylesheetRule(
         stylesheet,
         `.p${t + 1} .score`,
         "text-shadow",
-        "none"
+        "none",
       );
 
       changeStylesheetRule(
         stylesheet,
         `.p${t + 1}.container`,
         "filter",
-        "none"
+        "none",
       );
 
       changeStylesheetRule(
         stylesheet,
         `.p${t + 1}.under_chips`,
         "filter",
-        "none"
+        "none",
       );
 
       for (key in chip_elements) {
@@ -1094,42 +1105,42 @@ async function thirdAlternateFunction(t) {
         stylesheet,
         `.p${t + 1} .twitter_logo`,
         "background-image",
-        "url(./X_twitter_white.png)"
+        "url(./X_twitter_white.png)",
       );
 
       changeStylesheetRule(
         stylesheet,
         `.p${t + 1} .location_logo`,
         "background-image",
-        "url(./map_pin_white.png)"
+        "url(./map_pin_white.png)",
       );
 
       changeStylesheetRule(
         stylesheet,
         `.p${t + 1} .chip .text:not(.text_empty)`,
         "text-shadow",
-        "0em 0em 0.2em #000"
+        "0em 0em 0.2em #000",
       );
 
       changeStylesheetRule(
         stylesheet,
         `.p${t + 1} .score`,
         "text-shadow",
-        "0em 0em 0.2em #000"
+        "0em 0em 0.2em #000",
       );
 
       changeStylesheetRule(
         stylesheet,
         `.p${t + 1}.container`,
         "filter",
-        "none"
+        "none",
       );
 
       changeStylesheetRule(
         stylesheet,
         `.p${t + 1}.under_chips`,
         "filter",
-        "none"
+        "none",
       );
 
       camera_border_light.classList.remove("unhidden");
@@ -1149,42 +1160,42 @@ async function thirdAlternateFunction(t) {
         stylesheet,
         `.p${t + 1} .twitter_logo`,
         "background-image",
-        "url(./X_twitter_white.png)"
+        "url(./X_twitter_white.png)",
       );
 
       changeStylesheetRule(
         stylesheet,
         `.p${t + 1} .location_logo`,
         "background-image",
-        "url(./map_pin_white.png)"
+        "url(./map_pin_white.png)",
       );
 
       changeStylesheetRule(
         stylesheet,
         `.p${t + 1} .chip .text:not(.text_empty)`,
         "text-shadow",
-        "0em 0em 0.2em #000"
+        "0em 0em 0.2em #000",
       );
 
       changeStylesheetRule(
         stylesheet,
         `.p${t + 1} .score`,
         "text-shadow",
-        "0em 0em 0.2em #000"
+        "0em 0em 0.2em #000",
       );
 
       changeStylesheetRule(
         stylesheet,
         `.p${t + 1}.container`,
         "filter",
-        "drop-shadow(0 0px 2px rgba(255, 255, 255, 0.85))"
+        "drop-shadow(0 0px 2px rgba(255, 255, 255, 0.85))",
       );
 
       changeStylesheetRule(
         stylesheet,
         `.p${t + 1}.under_chips`,
         "filter",
-        "drop-shadow(0 0px 2px rgba(255, 255, 255, 0.85))"
+        "drop-shadow(0 0px 2px rgba(255, 255, 255, 0.85))",
       );
 
       for (key in chip_elements) {
