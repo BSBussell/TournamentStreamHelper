@@ -632,6 +632,9 @@ div.info {
     justify-content: center;
     flex-wrap: wrap;
     gap: 16px;
+
+    display: flex;
+    justify-content: flex-start;
 }
 
 .p1.results {
@@ -822,7 +825,7 @@ div.info {
 }
 
 .result_tag {
-    /* background-color: #ff3837; */
+    background-color: #ff3837;
 
     display: flex;
     flex-direction: column;

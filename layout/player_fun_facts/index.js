@@ -275,27 +275,25 @@ LoadEverything().then(() => {
         let results_html = `<div class ="info title">${config.display_titles ? "Fun Facts" : " "}</div>`;
         let className = `.results`;
         let tl = gsap.timeline();
-        console.log("Bee look here!!");
+
         var playerName = data.score[1].team[window.PLAYER].player[1].name;
-        console.log(window.PLAYER);
         fetch("data/facts.json")
           .then((response) => response.json())
           .then((facts) => {
-            console.log("Facts");
-            console.log(facts);
             let playerName = data.score[1].team[window.PLAYER].player[1].name;
             let playerFacts = facts[playerName];
-            if (!playerFacts) {
-              playerFacts = facts["default"];
 
-              // Shuffle the facts, then take the first 3
-              // This way, we can have a random set of facts for each player
+            // If there are no facts for the player, use the default
+            if (!playerFacts) playerFacts = facts["default"];
+
+            // If there are more than 3 facts grab 3 randomly
+            if (playerFacts.length > 3) {
+              let seed = new Date().getDate();
               playerFacts = playerFacts
                 .sort(() => Math.random() - 0.5)
                 .slice(0, 3);
             }
-            console.log(playerName);
-            console.log(playerFacts);
+
             playerFacts.forEach((fact) => {
               results_html += `
                 <div class="tournament_container">
@@ -309,68 +307,6 @@ LoadEverything().then(() => {
             $(className).html(results_html);
           });
 
-        // Object.values(
-        //   data.score[window.scoreboardNumber].history_sets[window.PLAYER],
-        // )
-        //   .slice(0, TOURNAMENTS)
-        //   .forEach((sets, s) => {
-        //     results_html += `
-        //     <div class="tournament${s + 1} tournament_container">
-        //       <div class="tournament_container_inner">
-        //         <div class="tournament_info">
-        //           <div class="tournament_name"></div>
-        //         </div>
-        //       </div>
-        //     </div>`;
-        //   });
-        // $(className).html(results_html);
-
-        /*
-        for (const [s, tournament] of Object.values(
-          data.score[window.scoreboardNumber].history_sets[window.PLAYER],
-        )
-          .slice(0, TOURNAMENTS)
-          .entries()) {
-          SetInnerHtml(
-            $(
-              `${className} .tournament${
-                s + 1
-              } .tournament_container_inner .tournament_info .tournament_name`,
-            ),
-            tournament.tournament_name,
-          );
-          SetInnerHtml(
-            $(
-              `${className} .tournament${
-                s + 1
-              } .tournament_container_inner .tournament_info .event_name`,
-            ),
-            tournament.event_name,
-          );
-          SetInnerHtml(
-            $(
-              `${className} .tournament${s + 1} .tournament_container_inner .tournament_logo`,
-            ),
-            `
-                <span class="logo" style="background-image: url('${tournament.tournament_picture}')"></span>
-              `,
-          );
-          SetInnerHtml(
-            $(
-              `${className} .tournament${s + 1} .tournament_container_inner .placement`,
-            ),
-            tournament.placement +
-              `<span class="ordinal">${getNumberOrdinal(
-                tournament.placement,
-              )}</span><span class="num_entrants">/${tournament.entrants}</span>`,
-          );
-          tl.from(
-            $(`.tournament${s + 1}`),
-            { x: window.PLAYER == 1 ? 100 : -100, autoAlpha: 0, duration: 0.3 },
-            0.2 + 0.2 * s,
-          );
-        }
-        */
         tl.resume();
       }
       //------ BRACKET RUN --------

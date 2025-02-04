@@ -1,31 +1,48 @@
 {
+  "Player Tag": [
+    "Place fun facts about the player here",
+    "For multiple facts, separate them with commas",
+    "If you have more than 3 facts, the program will randomly select 3 to display"
+  ],
+
   "Lem0nade": [
     "Is okay with changing our team name to <i>The Tennessee Gorilla</i>"
   ],
   "Hidalgo": [
-    "Beat a nationally ranked Mexican cloud player"],
+    "Beat a nationally ranked Mexican cloud player",
+    ""
+  ],
   "Hutchzilla": [
     "Caused a sonic to rage quit in a collegiate wifi crew battle"
   ],
   "ChillMonkey": [
-    "Witnessed miracle multiple times"],
+    "Witnessed miracle multiple times",
+    "Spent $9 on milk in one dinner"
+  ],
+  "BumbleB": [
+    "ChillMonkey's Worst Nightmare"
+  ],
   "Viridian": [
     "Is the reason PR players aren’t allowed to show up just to enter redemption at Knoxville locals"
   ],
   "ShlumpedShoto": [
-    "Asked if Ed Sheeran Planking is legal"],
+    "Asked if Ed Sheeran Planking is legal"
+  ],
   "SmokedSam": [
     "Invented a Nasty Criminal technique called 'the felonious ghoul swipe.'"
   ],
   "storm": [
-    "Honestly better at lethal company"],
+    "Honestly better at lethal company",
+    ""
+  ],
   "Soup": [
-    "Hasn’t beat Lem0nade since removing the 12 from his tag."],
+    "Hasn’t beat Lem0nade since removing the 12 from his tag."
+  ],
   "Big Mama": [
-
+    "Ask him about Brawl Ganondorf"
   ],
   "default": [
-    "",
+    "Default Fact 1",
     "Secretly has a sick pocket Wii Fit Trainer",
     "Default Fact 3",
     "Default Fact 4"
