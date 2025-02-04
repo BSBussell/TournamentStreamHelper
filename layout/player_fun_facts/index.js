@@ -272,7 +272,7 @@ LoadEverything().then(() => {
       let history =
         data.score[window.scoreboardNumber].history_sets[window.PLAYER];
       if (history) {
-        let results_html = `<div class ="info title">${config.display_titles ? "Recent Results" : " "}</div>`;
+        let results_html = `<div class ="info title">${config.display_titles ? "Fun Facts" : " "}</div>`;
         let className = `.results`;
         let tl = gsap.timeline();
         Object.values(
@@ -283,8 +283,6 @@ LoadEverything().then(() => {
             results_html += `
             <div class="tournament${s + 1} tournament_container">
               <div class="tournament_container_inner">
-                <div class="tournament_logo"></div>
-                <div class="placement"></div>
                 <div class="tournament_info">
                   <div class="tournament_name"></div>
                   <div class="event_name"></div>
