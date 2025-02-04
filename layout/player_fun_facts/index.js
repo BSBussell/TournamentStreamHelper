@@ -275,23 +275,57 @@ LoadEverything().then(() => {
         let results_html = `<div class ="info title">${config.display_titles ? "Fun Facts" : " "}</div>`;
         let className = `.results`;
         let tl = gsap.timeline();
-        Object.values(
-          data.score[window.scoreboardNumber].history_sets[window.PLAYER],
-        )
-          .slice(0, TOURNAMENTS)
-          .forEach((sets, s) => {
-            results_html += `
-            <div class="tournament${s + 1} tournament_container">
-              <div class="tournament_container_inner">
-                <div class="tournament_info">
-                  <div class="tournament_name"></div>
-                  <div class="event_name"></div>
-                </div>
-              </div>
-            </div>`;
-          });
-        $(className).html(results_html);
+        console.log("Bee look here!!");
+        var playerName = data.score[1].team[window.PLAYER].player[1].name;
+        console.log(window.PLAYER);
+        fetch("data/facts.json")
+          .then((response) => response.json())
+          .then((facts) => {
+            console.log("Facts");
+            console.log(facts);
+            let playerName = data.score[1].team[window.PLAYER].player[1].name;
+            let playerFacts = facts[playerName];
+            if (!playerFacts) {
+              playerFacts = facts["default"];
 
+              // Shuffle the facts, then take the first 3
+              // This way, we can have a random set of facts for each player
+              playerFacts = playerFacts
+                .sort(() => Math.random() - 0.5)
+                .slice(0, 3);
+            }
+            console.log(playerName);
+            console.log(playerFacts);
+            playerFacts.forEach((fact) => {
+              results_html += `
+                <div class="tournament_container">
+                  <div class="tournament_container_inner">
+                    <div class="tournament_info">
+                      <div class="tournament_name">${fact}</div>
+                    </div>
+                  </div>
+                </div>`;
+            });
+            $(className).html(results_html);
+          });
+
+        // Object.values(
+        //   data.score[window.scoreboardNumber].history_sets[window.PLAYER],
+        // )
+        //   .slice(0, TOURNAMENTS)
+        //   .forEach((sets, s) => {
+        //     results_html += `
+        //     <div class="tournament${s + 1} tournament_container">
+        //       <div class="tournament_container_inner">
+        //         <div class="tournament_info">
+        //           <div class="tournament_name"></div>
+        //         </div>
+        //       </div>
+        //     </div>`;
+        //   });
+        // $(className).html(results_html);
+
+        /*
         for (const [s, tournament] of Object.values(
           data.score[window.scoreboardNumber].history_sets[window.PLAYER],
         )
@@ -336,6 +370,7 @@ LoadEverything().then(() => {
             0.2 + 0.2 * s,
           );
         }
+        */
         tl.resume();
       }
       //------ BRACKET RUN --------

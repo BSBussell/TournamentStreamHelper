@@ -711,6 +711,7 @@ div.info {
 
 .tournament_name {
     font-size: 32px;
+    padding-left: 32px;
     letter-spacing: normal;
     width: 100%;
 }
