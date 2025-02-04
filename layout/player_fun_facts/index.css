@@ -874,7 +874,7 @@ div.info {
 }
 
 /* Align the VS text to hug score  */
-.p1 .set_container_inner .versus {
+.p1 .set_container_inner .name .text {
     place-content: start;
 }
 /* Align player tag to hug vs */
