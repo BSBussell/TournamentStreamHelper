@@ -19,10 +19,35 @@ body {
     display: flex;
     box-sizing: border-box;
     border-radius: var(--border-radius);
-    background-color: var(--p1-sponsor-color);
+    background-color: #4b4b4bdd;
+
     align-items: center;
     justify-content: center;
     place-content: center;
+}
+
+.title .container {
+    display: flex;
+    flex-direction: row;
+    place-content: start;
+    justify-content: space-between;
+
+    margin: 30px;
+    background-color: var(--bg-color);
+}
+
+.title .tournament_name {
+    font-size: 48px;
+}
+
+.title .details {
+    margin-right: 16px;
+    text-align: right;
+}
+
+.title .details .text {
+    font-size: 24px;
+    place-content: end;
 }
 
 .players_container {
@@ -132,18 +157,14 @@ body {
 }
 
 .logo {
-    position: absolute;
-    top: 40px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 74px;
-    height: 74px;
+    width: 120px;
+    height: 120px;
     background-image: url("../logo.png");
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
     border-radius: var(--border-radius);
-    z-index: 9;
+    margin-left: 16px;
 }
 
 .icon {
@@ -272,7 +293,7 @@ body {
 }
 
 .score {
-    font-size: 60px;
+    font-size: 48px;
     flex-grow: 0;
     flex-shrink: 0;
     overflow: hidden;
@@ -374,4 +395,12 @@ body {
 .scaling .name_twitter {
     margin-bottom: -8px;
     height: 100px;
+}
+
+.link {
+    display: flex;
+    position: absolute;
+    top: 93%;
+    left: 87%;
+    font-size: 32px;
 }

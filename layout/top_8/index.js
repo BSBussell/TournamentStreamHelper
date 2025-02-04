@@ -17,6 +17,28 @@ LoadEverything().then(() => {
       !oldData.player_list ||
       JSON.stringify(data.player_list) != JSON.stringify(oldData.player_list)
     ) {
+      // Populate title header
+
+      // Get Tournament Info
+      let tourney_info = data.tournamentInfo;
+      let tourney_name = tourney_info.tournamentName
+        ? tourney_info.tournamentName
+        : "The Rat Hole: 43";
+      let tourney_event = tourney_info.eventName
+        ? tourney_info.eventName
+        : "Event Name";
+      let tourney_participants = tourney_info.numEntrants
+        ? tourney_info.numEntrants
+        : ">9000";
+
+      // let tourney_link = tourney_info.shortLink ? tourney_info.shortLink : "";
+
+      // Set the tournament name text for the tournament_name element
+      SetInnerHtml($(".tournament_name"), tourney_name);
+      SetInnerHtml($(".event_name"), tourney_event);
+      SetInnerHtml($(".entrants_count"), tourney_participants + " Entrants");
+
+      // Building Player List
       let htmls = [];
 
       Object.values(data.player_list.slot).forEach((slot, i) => {
@@ -76,38 +98,40 @@ LoadEverything().then(() => {
       let isTeams = Object.keys(data.player_list.slot["1"].player).length > 1;
 
       for (const [t, team] of Object.entries(data.player_list.slot)) {
-        if(!isTeams){
-
+        if (!isTeams) {
           for (const [p, player] of Object.entries(team.player)) {
             if (player) {
               SetInnerHtml(
                 $(`.slot${parseInt(t)} .p${parseInt(p)}.container .name`),
                 `
               <span>
+                <!-- Sorry friends, only one sponsor per player for now -->
                 <span class="sponsor">
-                  ${player.team ? player.team : ""}
+                  ${player.team ? player.team.split("|")[0] : ""}
                 </span>
                 ${await Transcript(player.name)}
               </span>
               `,
                 undefined,
-                0
+                0,
               );
-  
+
               SetInnerHtml(
-                $(`.slot${parseInt(t)} .p${parseInt(p)}.container .flagcountry`),
+                $(
+                  `.slot${parseInt(t)} .p${parseInt(p)}.container .flagcountry`,
+                ),
                 player.country.asset
                   ? `
                     <div class='flagname'>${player.country.code}</div>
                     <div class='flag' style='background-image: url(../../${String(
-                      player.country.asset
+                      player.country.asset,
                     ).toLowerCase()})'></div>
-                  ` 
+                  `
                   : "",
                 undefined,
-                0
+                0,
               );
-  
+
               SetInnerHtml(
                 $(`.slot${parseInt(t)} .p${parseInt(p)}.container .flagstate`),
                 player.state.asset
@@ -117,82 +141,84 @@ LoadEverything().then(() => {
                   `
                   : "",
                 undefined,
-                0
+                0,
               );
-  
+
               let load_settings_path = "top_1";
-  
+
               if (t == 1) load_settings_path = "top_1";
               else if (t <= 4) load_settings_path = "top_4";
               else if (t <= 8) load_settings_path = "top_8";
-  
+
               if (window.SAME_SIZE) load_settings_path = "same_size";
-  
+
               await CharacterDisplay(
                 $(
                   `.slot${parseInt(t)} .p${parseInt(
-                    p
-                  )}.container .character_container`
+                    p,
+                  )}.container .character_container`,
                 ),
                 {
                   source: `player_list.slot.${parseInt(t)}`,
                   load_settings_path: load_settings_path,
                 },
-                event
+                event,
               );
-  
+
               SetInnerHtml(
-                $(`.slot${parseInt(t)} .p${parseInt(p)}.container .sponsor_icon`),
+                $(
+                  `.slot${parseInt(t)} .p${parseInt(p)}.container .sponsor_icon`,
+                ),
                 player.sponsor_logo
                   ? `<div style='background-image: url(../../${player.sponsor_logo})'></div>`
                   : "<div></div>",
                 undefined,
-                0
+                0,
               );
-  
+
               SetInnerHtml(
                 $(`.slot${parseInt(t)} .p${parseInt(p)}.container .avatar`),
                 player.avatar
                   ? `<div style="background-image: url('../../${player.avatar}')"></div>`
                   : "",
                 undefined,
-                0
+                0,
               );
-  
+
               SetInnerHtml(
                 $(
-                  `.slot${parseInt(t)} .p${parseInt(p)}.container .online_avatar`
+                  `.slot${parseInt(t)} .p${parseInt(p)}.container .online_avatar`,
                 ),
                 player.online_avatar
                   ? `<div style="background-image: url('${player.online_avatar}')"></div>`
                   : "",
                 undefined,
-                0
+                0,
               );
-  
+
               SetInnerHtml(
                 $(`.slot${parseInt(t)} .p${parseInt(p)}.container .twitter`),
                 player.twitter
                   ? `<span class="twitter_logo"></span>${String(player.twitter)}`
                   : "",
                 undefined,
-                0
+                0,
               );
-  
+
               SetInnerHtml(
                 $(
                   `.slot${parseInt(t)} .p${parseInt(
-                    p
-                  )}.container .sponsor-container`
+                    p,
+                  )}.container .sponsor-container`,
                 ),
                 `<div class='sponsor-logo' style='background-image: url(../../${player.sponsor_logo})'></div>`,
                 undefined,
-                0
+                0,
               );
             }
           }
         } else {
-          let hasTeamName = team.name != null && team.name != ""
+          let hasTeamName = team.name != null && team.name != "";
 
           let names = [];
           for (const [p, player] of Object.values(team.player).entries()) {
@@ -202,31 +228,30 @@ LoadEverything().then(() => {
           }
           let playerNames = names.join(" / ");
 
-          if(hasTeamName){
+          if (hasTeamName) {
             SetInnerHtml(
               $(`.slot${parseInt(t)} .p1.container .name`),
               `
                 ${team.name}
-              `
+              `,
             );
             SetInnerHtml(
               $(`.slot${parseInt(t)} .p1.container .team_members`),
               `
                 ${playerNames}
-              `
+              `,
             );
           } else {
             SetInnerHtml(
               $(`.slot${parseInt(t)} .p1.container .name`),
               `
                 ${playerNames}
-              `
+              `,
             );
           }
 
-
           let load_settings_path = "top_1";
-  
+
           if (t == 1) load_settings_path = "top_1";
           else if (t <= 4) load_settings_path = "top_4";
           else if (t <= 8) load_settings_path = "top_8";
@@ -236,15 +261,15 @@ LoadEverything().then(() => {
           await CharacterDisplay(
             $(
               `.slot${parseInt(t)} .p${parseInt(
-                1
-              )}.container .character_container`
+                1,
+              )}.container .character_container`,
             ),
             {
               source: `player_list.slot.${parseInt(t)}`,
               load_settings_path: load_settings_path,
               slice_character: [0, 1],
             },
-            event
+            event,
           );
         }
       }
