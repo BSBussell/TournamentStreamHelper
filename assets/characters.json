@@ -112302,6 +112302,45 @@
         ],
         "characterId": null,
         "expand": []
+      },
+      {
+        "id": 2616,
+        "name": "Mai",
+        "isCommon": null,
+        "videogameId": 43868,
+        "externalIdMap": null,
+        "images": [
+          {
+            "id": 7848446,
+            "width": 512,
+            "height": 512,
+            "ratio": 1,
+            "type": "icon",
+            "url": "https://images.start.gg/images/character/2616/image-8fef07b72e971175957fd02993f03f60.png?ehk=RXB%2FDFcRKlzaWOMfrXpdWzSJ3EHf2y30bCBj3AnCyPA%3D&ehkOptimized=txh%2FFw%2BIFVO6Tt5hrc7IyxgB44wHv4mtB7bMFMuHSyA%3D",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          },
+          {
+            "id": 7848447,
+            "width": 512,
+            "height": 512,
+            "ratio": 1,
+            "type": "stockIcon",
+            "url": "https://images.start.gg/images/character/2616/image-9327fd4d9fcf5f876386341f2962f8f0.png?ehk=jZfis%2BKSVRtAKXge5qvzgrSioMvaiUNi%2FAz5ZPpMhGs%3D&ehkOptimized=SvPsGiU%2BXlb7x%2B%2F9rWNVIBWSbzsgf1aciTJ5bvrcnkA%3D",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          }
+        ],
+        "characterId": null,
+        "expand": []
       }
     ]
   },
@@ -114678,7 +114717,8 @@
     2612,
     2613,
     2614,
-    2615
+    2615,
+    2616
   ],
   "resultEntity": "character",
   "actionRecords": []
