@@ -191,7 +191,7 @@ class TSHScoreboardWidget(QWidget):
         col.layout().addWidget(self.thumbnailBtn, Qt.AlignmentFlag.AlignRight)
         # self.thumbnailBtn.setPopupMode(QToolButton.InstantPopup)
         self.thumbnailBtn.clicked.connect(self.GenerateThumbnail)
-        
+
         self.bskyBtn = QPushButton(
             QApplication.translate("app", "Post to Bluesky") + " ")
         self.bskyBtn.setIcon(QIcon('assets/icons/bsky.svg'))
@@ -337,7 +337,7 @@ class TSHScoreboardWidget(QWidget):
         self.team1column.findChild(QLabel, "teamLabel").setText(
             QApplication.translate("app", "TEAM {0}").format(1))
 
-        DEFAULT_TEAM1_COLOR = 'rgb(254, 54, 54)'
+        DEFAULT_TEAM1_COLOR = 'rgb(255, 149, 00)'
 
         self.colorButton1 = TSHColorButton(color=DEFAULT_TEAM1_COLOR)
         # self.colorButton1.setText(QApplication.translate("app", "COLOR"))
@@ -377,7 +377,7 @@ class TSHScoreboardWidget(QWidget):
         self.team2column.findChild(QLabel, "teamLabel").setText(
             QApplication.translate("app", "TEAM {0}").format(2))
 
-        DEFAULT_TEAM2_COLOR = 'rgb(46, 137, 255)'
+        DEFAULT_TEAM2_COLOR = 'rgb(93, 93, 93)'
 
         self.colorButton2 = TSHColorButton(color=DEFAULT_TEAM2_COLOR)
         self.colorButton2.colorChanged.connect(
@@ -558,7 +558,7 @@ class TSHScoreboardWidget(QWidget):
             msgBox.setInformativeText(str(e))
             msgBox.setIcon(QMessageBox.Warning)
             msgBox.exec()
-    
+
     def PostToBsky(self):
         thumbnailPath = self.GenerateThumbnail(quiet_mode=True)
         if thumbnailPath:
@@ -581,7 +581,7 @@ class TSHScoreboardWidget(QWidget):
             for rm_path in [thumbnailPath, thumbnailPath.replace(".png", ".jpg"), thumbnailPath.replace(".png", "_desc.txt"), thumbnailPath.replace(".png", "_title.txt")]:
                 if os.path.exists(rm_path):
                     os.remove(rm_path)
-    
+
     def ToggleElements(self, action: QAction, elements):
         for pw in self.playerWidgets:
             for element in elements:
