@@ -595,26 +595,25 @@ LoadEverything().then(() => {
             let className = `.results`;
             let tl = gsap.timeline();
 
+            // Populate player names with each player on the team
             var playerNames = [];
-            console.log(data.score[1].team[window.PLAYER]);
-            Object.values(data.score[1].team[window.PLAYER].player).forEach(
-                (player) => {
-                    console.log(player);
-                    playerNames.push(player.name);
-                },
-            );
-            console.log(playerNames);
+            Object.values(
+                data.score[window.scoreboardNumber].team[window.PLAYER].player,
+            ).forEach((player) => {
+                console.log(player);
+                playerNames.push(player.name);
+            });
+
+            // Get facts
             fetch("data/facts.json")
                 .then((response) => response.json())
                 .then((facts) => {
+                    // Populate player facts with each player's facts
                     let playerFacts = [];
                     playerNames.forEach((name) => {
                         // get each player's facts
                         let playerFact = facts[name];
-                        if (!playerFact) {
-                            // if no facts for the player, use the default
-                            playerFact = facts["default"];
-                        }
+
                         // add the player's facts to the list
                         playerFacts = playerFacts.concat(playerFact);
                     });
@@ -622,19 +621,21 @@ LoadEverything().then(() => {
                     // If there are no facts for the player, use the default
                     if (!playerFacts) playerFacts = facts["default"];
 
-                    // If there are more than 3 facts grab 3 randomly
+                    // If there are more than 4 facts grab 4 randomly
                     if (playerFacts.length > 4) {
                         let seed = new Date().getDate();
                         playerFacts = playerFacts
                             .sort(() => Math.random() - 0.5)
                             .slice(0, 4);
+
+                        // Otherwise just shuffle the facts
                     } else {
                         playerFacts = playerFacts.sort(
                             () => Math.random() - 0.5,
                         );
                     }
-                    console.log(playerFacts);
 
+                    // Build the html for each fact
                     playerFacts.forEach((fact) => {
                         results_html += `
                             <div class="tournament_container">
@@ -652,20 +653,35 @@ LoadEverything().then(() => {
         }
 
         // Display commentator info instead of bracket run
-        let commentators = data.score[window.scoreboardNumber].commentators;
-        if (commentators) {
+        let commentators = data.commentary;
+        console.log(data.commentary);
+        if (commentators && false) {
             let sets_html = `<div class ="info title">${config.display_titles ? "Commentators" : " "}</div>`;
+
             Object.values(commentators).forEach((commentator, c) => {
                 sets_html += `
 
                     <div class ="set${c + 1} set_container">
                         <div class = "set_container_inner">
-                            <div class = "result_tag">${commentator.name}</div>
+                            <div class = "mic_icon"></div>
+                            <div class = "sponsor">${commentator.team}</div>
+
+                            <div class = "name">${commentator.name}</div>
+                            <div class = "pronoun">${commentator.pronoun ? commentator.pronoun : ""} </div>
+
+
+                            <div class = "twitter">
+                                <div class = "twitter_logo"></div>
+                                <div class = "name">${commentator.twitter}</div>
+                            </div>
+
+
 
                         </div>
                     </div>
                 `;
             });
+
             $(".sets").html(sets_html);
         }
 

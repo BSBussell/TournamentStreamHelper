@@ -956,3 +956,24 @@ div.info {
     font-family: var(--font);
     font-weight: bold;
 }
+
+/* Commentary */
+.mic_icon {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    -webkit-mask-image: url(./icon_mic.svg);
+    -webkit-mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    background: var(--text-color);
+}
+
+.set_container_inner .twitter {
+    display: flex;
+    flex-grow: 2;
+}
+
+.set_container_inner .twitter_logo {
+    padding-top: 16px;
+}
