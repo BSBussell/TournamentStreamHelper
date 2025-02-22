@@ -624,7 +624,7 @@ div.info {
     position: absolute;
     top: 50px;
     width: var(--infos-wdith);
-    height: 55vh;
+    /* height: 55vh; */
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
@@ -705,7 +705,7 @@ div.info {
 }
 
 .p1 .tournament_info {
-    padding-left: 32px;
+    padding-right: 32px;
 }
 
 .p2 .tournament_info {

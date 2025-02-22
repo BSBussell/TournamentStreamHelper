@@ -587,6 +587,88 @@ LoadEverything().then(() => {
             }
         }
 
+        // Display Fun Facts about both players
+        let history =
+            data.score[window.scoreboardNumber].history_sets[window.PLAYER];
+        if (history) {
+            let results_html = `<div class ="info title">${config.display_titles ? "Fun Facts" : " "}</div>`;
+            let className = `.results`;
+            let tl = gsap.timeline();
+
+            var playerNames = [];
+            console.log(data.score[1].team[window.PLAYER]);
+            Object.values(data.score[1].team[window.PLAYER].player).forEach(
+                (player) => {
+                    console.log(player);
+                    playerNames.push(player.name);
+                },
+            );
+            console.log(playerNames);
+            fetch("data/facts.json")
+                .then((response) => response.json())
+                .then((facts) => {
+                    let playerFacts = [];
+                    playerNames.forEach((name) => {
+                        // get each player's facts
+                        let playerFact = facts[name];
+                        if (!playerFact) {
+                            // if no facts for the player, use the default
+                            playerFact = facts["default"];
+                        }
+                        // add the player's facts to the list
+                        playerFacts = playerFacts.concat(playerFact);
+                    });
+
+                    // If there are no facts for the player, use the default
+                    if (!playerFacts) playerFacts = facts["default"];
+
+                    // If there are more than 3 facts grab 3 randomly
+                    if (playerFacts.length > 4) {
+                        let seed = new Date().getDate();
+                        playerFacts = playerFacts
+                            .sort(() => Math.random() - 0.5)
+                            .slice(0, 4);
+                    } else {
+                        playerFacts = playerFacts.sort(
+                            () => Math.random() - 0.5,
+                        );
+                    }
+                    console.log(playerFacts);
+
+                    playerFacts.forEach((fact) => {
+                        results_html += `
+                            <div class="tournament_container">
+                            <div class="tournament_container_inner">
+                                <div class="tournament_info">
+                                <div class="tournament_name">${fact}</div>
+                                </div>
+                            </div>
+                            </div>`;
+                    });
+                    $(className).html(results_html);
+                });
+
+            tl.resume();
+        }
+
+        // Display commentator info instead of bracket run
+        let commentators = data.score[window.scoreboardNumber].commentators;
+        if (commentators) {
+            let sets_html = `<div class ="info title">${config.display_titles ? "Commentators" : " "}</div>`;
+            Object.values(commentators).forEach((commentator, c) => {
+                sets_html += `
+
+                    <div class ="set${c + 1} set_container">
+                        <div class = "set_container_inner">
+                            <div class = "result_tag">${commentator.name}</div>
+
+                        </div>
+                    </div>
+                `;
+            });
+            $(".sets").html(sets_html);
+        }
+
         SetInnerHtml(
             $(`.p1 .score`),
             String(data.score[window.scoreboardNumber].team["1"].score),
