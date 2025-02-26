@@ -83,10 +83,8 @@ body {
     background-color: var(--bg-color);
     align-items: center;
     padding: 20px 40px;
-    filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.12))
-        drop-shadow(0 3px 1px rgba(0, 0, 0, 0.14))
-        drop-shadow(0 1px 5px rgba(0, 0, 0, 0.12))
-        drop-shadow(0 -1px 2px rgba(0, 0, 0, 0.1));
+    filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.25))
+        drop-shadow(0 6px 8px rgba(0, 0, 0, 0.1));
 }
 
 .container.p1 {
@@ -339,6 +337,9 @@ div.info {
     width: 60%; /* Makes the div 80% of its parent's width */
     max-width: 600px; /* Ensures it doesn't get too wide */
     margin: 16px auto; /* Centers the div itself horizontally */
+
+    filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.25))
+        drop-shadow(0 6px 8px rgba(0, 0, 0, 0.1));
 }
 
 /*
@@ -650,6 +651,8 @@ div.info {
     color: var(--text-color);
     overflow: hidden;
     border-radius: 10px;
+    filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.25))
+        drop-shadow(0 6px 8px rgba(0, 0, 0, 0.1));
 }
 
 .tournament_container_inner {
@@ -796,6 +799,8 @@ div.info {
 
     display: flex;
     flex-direction: row;
+    filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.25))
+        drop-shadow(0 6px 8px rgba(0, 0, 0, 0.1));
 }
 
 .set_container_inner {
