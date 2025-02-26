@@ -6,12 +6,15 @@ import sys
 
 from stitch_videos import stitch_videos
 
+# Global Hotkeys
+# Clear Hotkey
+clear_hotkey_id = None
+# Build Compilation Hotkey
+build_comp_hotkey_id = None
+
+
 """Sets the media source in OBS with the given file path."""
 def set_media(source_name, path):
-    if not path:
-        obs.script_log(obs.LOG_WARNING, "SetMedia: Path is None or empty.")
-        return False
-
     source = obs.obs_get_source_by_name(source_name)
     if source is None:
         obs.script_log(obs.LOG_WARNING, f"SetMedia: Source '{source_name}' not found.")
@@ -58,6 +61,7 @@ class ReplayCompilation:
         self.folder_path = ""
         self.attempts = 0
         self.last_replay = ""
+        self.build_on_save = False
 
     def try_play(self):
         """Attempts to play the latest replay."""
@@ -98,6 +102,11 @@ class ReplayCompilation:
         else:
             self.last_replay = path
             set_media(self.source_name, path)
+
+            if self.build_on_save:
+                self.stitch_replays(True)
+
+
             obs.remove_current_callback()
 
     def save_replay(self, pressed):
@@ -124,6 +133,8 @@ class ReplayCompilation:
             obs.proc_handler_call(ph, "save", cd)
             obs.calldata_destroy(cd)
 
+
+
             if obs.obs_output_active(replay_buffer):
 
                 self.attempts = 0
@@ -139,7 +150,32 @@ class ReplayCompilation:
             return
 
         obs.script_log(obs.LOG_INFO, "Stitching replays together.")
-        comp = stitch_videos(self.folder_path, self.folder_path)
+
+
+        # Custom sorting lambda:
+        # - "replay_" files sorted oldest to newest
+        # - Other files sorted newest to oldest
+        def custom_sort(file):
+            path = os.path.join(self.folder_path, file)
+            timestamp = os.path.getmtime(path)
+
+            # Check if file is a replay file
+            is_replay = file.lower().startswith("replay")
+
+            # Sorting logic:
+            # - Replay files (0) → sorted by timestamp (oldest first)
+            # - Other files (1) → sorted by timestamp (newest first)
+            return (0 if is_replay else 1, timestamp if is_replay else -timestamp)
+
+
+        # Add time to the file name to prevent overwriting
+        # Get current time in a safe format for filenames
+        time_str = time.strftime("%Y-%m-%d_%H-%M-%S")
+
+        # Define the file path
+        dest_file = os.path.join(self.folder_path, f"{self.name}_comp_{time_str}.mkv")
+
+        comp = stitch_videos(self.folder_path, dest_file,  sort_lambda=custom_sort)
 
         if comp:
 
@@ -155,15 +191,63 @@ class ReplayCompilation:
 
             obs.script_log(obs.LOG_INFO, f"Deleted old replays.")
 
+    def clear_replays(self, pressed):
+        """Handles the clearing hotkey press."""
+        if not pressed:
+            return
+
+        obs.script_log(obs.LOG_INFO, "Clearing all replays.")
+        video_files = [f for f in sorted(os.listdir(self.folder_path)) if f.endswith(".mkv")]
+
+        for video in video_files:
+            obs.script_log(obs.LOG_INFO, f"Deleting old replay: {video}")
+            os.remove(os.path.join(self.folder_path, video))
+
+
+        # Stop media source playback
+        source = obs.obs_get_source_by_name(self.source_name)
+        if source:
+            obs.obs_source_media_stop(source)
+            obs.obs_source_release(source)
+
+        # Clear the media source of its path
+        set_media(self.source_name, "")
+
+        obs.script_log(obs.LOG_INFO, f"Deleted all replays.")
+
     def update(self, settings):
 
         self.source_name = obs.obs_data_get_string(settings, self.name + "_source")
         self.folder_path = obs.obs_data_get_string(settings, self.name + "_folder")
+        self.build_on_save = obs.obs_data_get_bool(settings, self.name + "_build_on_save")
 
         if not self.folder_path:
             obs.script_log(obs.LOG_WARNING, "No folder set for saving replays.")
         else:
             obs.script_log(obs.LOG_INFO, f"Replay folder set to: {self.folder_path}")
+
+
+    def create_group(self):
+        group = obs.obs_properties_create()
+        p = obs.obs_properties_add_list(group, self.name + "_source", "Media Source", obs.OBS_COMBO_TYPE_EDITABLE, obs.OBS_COMBO_FORMAT_STRING)
+        sources = obs.obs_enum_sources()
+        if sources:
+            for source in sources:
+                source_id = obs.obs_source_get_id(source)
+                if source_id in ["ffmpeg_source", "vlc_source"]:
+                    name = obs.obs_source_get_name(source)
+                    obs.obs_property_list_add_string(p, name, name)
+        obs.source_list_release(sources)
+
+        obs.obs_properties_add_path(group, self.name + "_folder", "Replay Save Folder", obs.OBS_PATH_DIRECTORY, None, None)
+
+        # bool set to false titled "Build on save" with a default value of false
+        obs.obs_properties_add_bool(group, self.name + "_build_on_save", "Build on Save")
+
+        # Button for deleting compilation here
+
+        return group
+
 
     def load_hotkey(self, settings):
         def load_hotkey(self, settings):
@@ -234,35 +318,51 @@ def script_properties():
     props = obs.obs_properties_create()
 
     for replay_comp in replay_comps:
-        group = obs.obs_properties_create()
-
-        p = obs.obs_properties_add_list(group, replay_comp.name + "_source", "Media Source", obs.OBS_COMBO_TYPE_EDITABLE, obs.OBS_COMBO_FORMAT_STRING)
-        sources = obs.obs_enum_sources()
-        if sources:
-            for source in sources:
-                source_id = obs.obs_source_get_id(source)
-                if source_id in ["ffmpeg_source", "vlc_source"]:
-                    name = obs.obs_source_get_name(source)
-                    obs.obs_property_list_add_string(p, name, name)
-        obs.source_list_release(sources)
-
-
-        obs.obs_properties_add_path(group, replay_comp.name + "_folder", "Replay Save Folder", obs.OBS_PATH_DIRECTORY, None, None)
-
-        # Button for deleting compilation here
-
+        group = replay_comp.create_group()
         obs.obs_properties_add_group(props, replay_comp.name, replay_comp.name, obs.OBS_GROUP_NORMAL, group)
 
     # Section for adding new compilations here
 
     return props
 
+def clear_replays(pressed):
+    for each in replay_comps:
+        each.clear_replays(pressed)
+
+def build_all(pressed):
+    for each in replay_comps:
+        each.stitch_replays(pressed)
 
 def script_load(settings):
 
     if settings is None:
         obs.script_log(obs.LOG_WARNING, "Settings not loaded! Hotkeys may fail.")
         return
+
+
+    # Global hotkey for clearing all replays
+    global clear_hotkey_id
+    clear_hotkey_id = obs.obs_hotkey_register_frontend("clear_replays.trigger", "Clear All Replays", clear_replays)
+    obs.script_log(obs.LOG_INFO, f"Registered hotkey for Clear All Replays with ID {clear_hotkey_id}")
+
+    # Load saved hotkeys
+    hotkey_data = obs.obs_data_get_array(settings, "clear_replays.trigger")
+    if hotkey_data:
+        obs.obs_hotkey_load(clear_hotkey_id, hotkey_data)
+        obs.obs_data_array_release(hotkey_data)
+
+    # Global hotkey for building compilation
+    global build_comp_hotkey_id
+    build_comp_hotkey_id = obs.obs_hotkey_register_frontend("build_comp.trigger", "Build Compilation", build_all)
+    obs.script_log(obs.LOG_INFO, f"Registered hotkey for Build Compilation with ID {build_comp_hotkey_id}")
+
+    # Load saved hotkeys
+    hotkey_data = obs.obs_data_get_array(settings, "build_comp.trigger")
+    if hotkey_data:
+        obs.obs_hotkey_load(build_comp_hotkey_id, hotkey_data)
+        obs.obs_data_array_release(hotkey_data)
+
+    # Load Individual Replay Comp Hotkeys
 
     # Evil Spells
     def make_replay_callback(instance):
@@ -296,6 +396,15 @@ def script_load(settings):
 
 
 def script_save(settings):
+
+    # Save Global Hotkeys
+    if clear_hotkey_id is not None:
+        obs.obs_data_set_array(settings, "clear_replays.trigger", obs.obs_hotkey_save(clear_hotkey_id))
+
+    if build_comp_hotkey_id is not None:
+        obs.obs_data_set_array(settings, "build_comp.trigger", obs.obs_hotkey_save(build_comp_hotkey_id))
+
+    # Save Individual Hotkeys
     for each in replay_comps:
         if each.hotkey_id is not None:
             replay_name = each.name + "_save.trigger"

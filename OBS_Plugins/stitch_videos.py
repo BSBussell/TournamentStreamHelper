@@ -8,20 +8,32 @@ import sys
 import subprocess
 import obspython as obs
 
-def stitch_videos(folder_path, output_path):
-    """Stitches all video files in a folder into one using FFmpeg."""
+def stitch_videos(folder_path, output_path, sort_lambda=None):
+    """Stitches all video files in a folder into one using FFmpeg with customizable sorting."""
     obs.script_log(obs.LOG_INFO, f"Stitching videos in folder: {folder_path}")
 
     if not os.path.exists(folder_path) or not os.path.isdir(folder_path):
         obs.script_log(obs.LOG_WARNING, f"Invalid folder path: {folder_path}")
         return None
 
-    # Collect all .mkv files in the folder (or change extension if needed)
-    video_files = [f for f in sorted(os.listdir(folder_path)) if f.endswith(".mkv")]
+    # Collect all .mkv files in the folder
+    video_files = [f for f in os.listdir(folder_path) if f.endswith(".mkv")]
 
     if not video_files:
         obs.script_log(obs.LOG_WARNING, "No video files found to stitch.")
         return None
+
+    # Default sorting (newest to oldest) if no custom function is provided
+    if sort_lambda is None:
+        sort_lambda = lambda f: os.path.getmtime(os.path.join(folder_path, f))
+
+    # Apply sorting
+    video_files = sorted(video_files, key=sort_lambda, reverse=False)
+
+    # Logging file order
+    obs.script_log(obs.LOG_INFO, "Sorted video file order:")
+    for video in video_files:
+        obs.script_log(obs.LOG_INFO, f"- {video}")
 
     # Create a temporary file list for FFmpeg
     list_file_path = os.path.join(folder_path, "file_list.txt")
@@ -30,7 +42,7 @@ def stitch_videos(folder_path, output_path):
             f.write(f"file '{os.path.join(folder_path, video)}'\n")
 
     # Define the output stitched video path
-    output_video = os.path.join(output_path, "stitched_replay.mkv")
+    output_video = output_path
 
     # FFmpeg command to concatenate videos
     ffmpeg_cmd = [
