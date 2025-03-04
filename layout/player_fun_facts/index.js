@@ -302,11 +302,11 @@ LoadEverything().then(() => {
                         if (!playerFacts) playerFacts = facts["default"];
 
                         // If there are more than 3 facts grab 3 randomly
-                        if (playerFacts.length > 3) {
+                        if (playerFacts.length > TOURNAMENTS) {
                             let seed = new Date().getDate();
                             playerFacts = playerFacts
                                 .sort(() => Math.random() - 0.5)
-                                .slice(0, 3);
+                                .slice(0, TOURNAMENTS);
                         }
 
                         playerFacts.forEach((fact) => {
@@ -622,11 +622,11 @@ LoadEverything().then(() => {
                     if (!playerFacts) playerFacts = facts["default"];
 
                     // If there are more than 4 facts grab 4 randomly
-                    if (playerFacts.length > 4) {
+                    if (playerFacts.length > TOURNAMENTS) {
                         let seed = new Date().getDate();
                         playerFacts = playerFacts
                             .sort(() => Math.random() - 0.5)
-                            .slice(0, 4);
+                            .slice(0, TOURNAMENTS);
 
                         // Otherwise just shuffle the facts
                     } else {
