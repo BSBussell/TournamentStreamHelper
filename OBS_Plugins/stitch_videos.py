@@ -17,7 +17,7 @@ def stitch_videos(folder_path, output_path, sort_lambda=None):
         return None
 
     # Collect all .mkv files in the folder
-    video_files = [f for f in os.listdir(folder_path) if f.endswith(".mkv")]
+    video_files = [f for f in os.listdir(folder_path) if f.endswith(".mp4")]
 
     if not video_files:
         obs.script_log(obs.LOG_WARNING, "No video files found to stitch.")

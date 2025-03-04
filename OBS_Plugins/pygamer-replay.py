@@ -1,14 +1,15 @@
-import obspython as obs
-import os
-import subprocess
-import time
-import sys
-import random
+# Bee Bussell
+# February 26, 2025
+# Script for dynamically building and managing replay compilations in OBS
 
-from stitch_videos import stitch_videos
+import obspython as obs     # Because this is an OBS script
+import os                   # For file operations
+import time                 # For timestamping
+import random               # Shuffle mode
+import json                 # For loading config.json
+import shutil               # For moving files
 
-NUM_COMPONENTS = 2
-NAME = "P{NUM}_Compilation"
+from stitch_videos import stitch_videos # Import the stitch_videos function from the other script
 
 
 # Global Hotkeys
@@ -55,9 +56,9 @@ def set_media(source_name, path):
     return True
 
 
-replay_comps = []
 
 
+# A Class that manages a single replay compilation
 class ReplayCompilation:
     def __init__(self, name):
         self.name = name
@@ -68,10 +69,12 @@ class ReplayCompilation:
         self.attempts = 0
         self.last_replay = ""
         self.shuffle_mode = False
+        self.ignore_all = False
 
     def try_play(self):
         """Attempts to play the latest replay."""
         # global last_replay, attempts
+        obs.script_log(obs.LOG_INFO, "Trying to play the latest replay.")
 
         replay_buffer = obs.obs_frontend_get_replay_buffer_output()
         if replay_buffer is None:
@@ -92,7 +95,7 @@ class ReplayCompilation:
             os.makedirs(self.folder_path, exist_ok=True)
 
             try:
-                os.rename(path, dest_path)
+                shutil.copy(path, dest_path)
                 path = dest_path
                 obs.script_log(obs.LOG_INFO, f"Replay moved to: {dest_path}")
             except Exception as e:
@@ -124,7 +127,7 @@ class ReplayCompilation:
                 obs.script_log(obs.LOG_WARNING, self.name + "'s Replay folder not set.")
                 return
 
-            replay_filename = time.strftime("replay_%Y-%m-%d_%H-%M-%S.mkv")
+            replay_filename = time.strftime("replay_%Y-%m-%d_%H-%M-%S.mp4")
             full_path = os.path.join(self.folder_path, replay_filename)
 
             obs.script_log(obs.LOG_INFO, f"Saving replay to: {full_path}")
@@ -178,7 +181,7 @@ class ReplayCompilation:
         time_str = time.strftime("%Y-%m-%d_%H-%M-%S")
 
         # Define the file path
-        dest_file = os.path.join(self.folder_path, f"{self.name}_comp_{time_str}.mkv")
+        dest_file = os.path.join(self.folder_path, f"{self.name}_comp_{time_str}.mp4")
 
         # Call the stitch_videos function
         if self.shuffle_mode:
@@ -202,8 +205,8 @@ class ReplayCompilation:
             # Delete the old replays if we're not in shuffle mode
             if not self.shuffle_mode:
                 # Delete the old replays
-                # Collect all .mkv files in the folder that are not named comp
-                video_files = [f for f in sorted(os.listdir(self.folder_path)) if f.endswith(".mkv") and f != os.path.basename(comp)]
+                # Collect all .mp4 files in the folder that are not named comp
+                video_files = [f for f in sorted(os.listdir(self.folder_path)) if f.endswith(".mp4") and f != os.path.basename(comp)]
 
                 for video in video_files:
                     obs.script_log(obs.LOG_INFO, f"Deleting old replay: {video}")
@@ -217,7 +220,7 @@ class ReplayCompilation:
             return
 
         obs.script_log(obs.LOG_INFO, "Clearing all replays.")
-        video_files = [f for f in sorted(os.listdir(self.folder_path)) if f.endswith(".mkv")]
+        video_files = [f for f in sorted(os.listdir(self.folder_path)) if f.endswith(".mp4")]
 
         for video in video_files:
             obs.script_log(obs.LOG_INFO, f"Deleting old replay: {video}")
@@ -240,6 +243,7 @@ class ReplayCompilation:
         self.source_name = obs.obs_data_get_string(settings, self.name + "_source")
         self.folder_path = obs.obs_data_get_string(settings, self.name + "_folder")
         self.shuffle_mode = obs.obs_data_get_bool(settings, self.name + "_shuffle_mode")
+        self.ignore_all = obs.obs_data_get_bool(settings, self.name + "_ignore_all")
 
         if not self.folder_path:
             obs.script_log(obs.LOG_WARNING, "No folder set for saving replays.")
@@ -264,6 +268,8 @@ class ReplayCompilation:
         # bool set to false titled "Shuffle Mode" with a default value of false
         obs.obs_properties_add_bool(group, self.name + "_shuffle_mode", "Shuffle Mode")
 
+        # bool set to false titled "Ignore All" with a default value of false
+        obs.obs_properties_add_bool(group, self.name + "_ignore_all", "Ignore Clear All")
 
         return group
 
@@ -310,12 +316,6 @@ class ReplayCompilation:
 
 
 
-for i in range(1, NUM_COMPONENTS + 1):
-    replay_comps.append(ReplayCompilation(NAME.format(NUM=i)))
-
-
-#  Create a global replay comp
-replay_comps.append(ReplayCompilation("Global"))
 
 # OBS Settings UI
 def script_update(settings):
@@ -342,7 +342,8 @@ def script_properties():
 
 def clear_replays(pressed):
     for each in replay_comps:
-        each.clear_replays(pressed)
+        if not each.ignore_all:
+            each.clear_replays(pressed)
 
 def build_all(pressed):
     for each in replay_comps:
@@ -428,3 +429,16 @@ def script_save(settings):
         if each.stitch_hotkey_id is not None:
             stitch_name = each.name + "_stitch.trigger"
             obs.obs_data_set_array(settings, stitch_name, obs.obs_hotkey_save(each.stitch_hotkey_id))
+
+
+replay_comps = []
+
+# Load replay compilations from config.json
+config_path = os.path.join(os.path.dirname(__file__), "config.json")
+if os.path.exists(config_path):
+    with open(config_path, "r") as config_file:
+        config = json.load(config_file)
+        for comp_name in config.get("Compilations", []):
+            replay_comps.append(ReplayCompilation(comp_name))
+else:
+    obs.script_log(obs.LOG_WARNING, "config.json not found. No replay compilations loaded.")
