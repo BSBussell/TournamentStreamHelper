@@ -191,7 +191,7 @@ class TSHScoreboardWidget(QWidget):
         col.layout().addWidget(self.thumbnailBtn, Qt.AlignmentFlag.AlignRight)
         # self.thumbnailBtn.setPopupMode(QToolButton.InstantPopup)
         self.thumbnailBtn.clicked.connect(self.GenerateThumbnail)
-        
+
         self.bskyBtn = QPushButton(
             QApplication.translate("app", "Post to Bluesky") + " ")
         self.bskyBtn.setIcon(QIcon('assets/icons/bsky.svg'))
@@ -340,7 +340,7 @@ class TSHScoreboardWidget(QWidget):
         self.team1column.findChild(QLabel, "teamLabel").setText(
             QApplication.translate("app", "TEAM {0}").format(1))
 
-        DEFAULT_TEAM1_COLOR = 'rgb(254, 54, 54)'
+        DEFAULT_TEAM1_COLOR = 'rgb(255, 149, 00)'
 
         self.colorButton1 = TSHColorButton(color=DEFAULT_TEAM1_COLOR)
         # self.colorButton1.setText(QApplication.translate("app", "COLOR"))
@@ -380,7 +380,7 @@ class TSHScoreboardWidget(QWidget):
         self.team2column.findChild(QLabel, "teamLabel").setText(
             QApplication.translate("app", "TEAM {0}").format(2))
 
-        DEFAULT_TEAM2_COLOR = 'rgb(46, 137, 255)'
+        DEFAULT_TEAM2_COLOR = 'rgb(93, 93, 93)'
 
         self.colorButton2 = TSHColorButton(color=DEFAULT_TEAM2_COLOR)
         self.colorButton2.colorChanged.connect(
@@ -565,7 +565,7 @@ class TSHScoreboardWidget(QWidget):
             msgBox.setInformativeText(str(e))
             msgBox.setIcon(QMessageBox.Warning)
             msgBox.exec()
-    
+
     def PostToBsky(self):
         thumbnailPath = self.GenerateThumbnail(quiet_mode=True)
         if thumbnailPath:
@@ -588,7 +588,7 @@ class TSHScoreboardWidget(QWidget):
             for rm_path in [thumbnailPath, thumbnailPath.replace(".png", ".jpg"), thumbnailPath.replace(".png", "_desc.txt"), thumbnailPath.replace(".png", "_title.txt")]:
                 if os.path.exists(rm_path):
                     os.remove(rm_path)
-    
+
     def ToggleElements(self, action: QAction, elements):
         for pw in self.playerWidgets:
             for element in elements:
@@ -994,6 +994,13 @@ class TSHScoreboardWidget(QWidget):
                         # Include "Bracket - XYZ" similar to if it's Pools
                         if len(original_str) > 1:
                             tournament_phase = f"{original_str[0]} - {tournament_phase}"
+
+                    # In Knoxville, if you're in grands it says best of instead of double elimination
+                    else:
+                        # IDKY but, the bestOf field is always 'None' so I have to hardcode a best of value.
+                        # I'm going to try merging with main and pulling from the root repo and see if that fixes
+                        tournament_phase = f"{TSHLocaleHelper.phaseNames.get('best_of', 'Best of {0}').format(5)}"
+
 
                 self.scoreColumn.findChild(
                     QComboBox, "phase").setCurrentText(tournament_phase)

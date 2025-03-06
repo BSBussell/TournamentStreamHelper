@@ -1,0 +1,757 @@
+const TOURNAMENTS = 3;
+const SETS = 4;
+
+let config = {
+    display_titles: true,
+};
+
+function getNumberOrdinal(n) {
+    var s = ["th", "st", "nd", "rd"],
+        v = n % 100;
+    return s[(v - 20) % 10] || s[v] || s[0];
+}
+
+LoadEverything().then(() => {
+    let window_config = window.config || {};
+    function isDefault(value) {
+        return (
+            value === "" ||
+            value === -1 ||
+            value === undefined ||
+            value === null
+        );
+    }
+    function assignDefault(target, source) {
+        for (k in target) {
+            let value = source[k];
+            if (typeof value === "object" && value !== null) {
+                let matchingObject = target[k];
+                if (typeof matchingObject != "object") {
+                    matchingObject = value;
+                } else {
+                    assignDefault(matchingObject, value);
+                }
+            }
+            if (!isDefault(value)) {
+                target[k] = value;
+            }
+        }
+    }
+
+    assignDefault(config, tsh_settings);
+    assignDefault(config, window_config);
+
+    if (!window.PLAYER) {
+        window.PLAYER = 1;
+    }
+
+    let startingAnimation = gsap
+        .timeline({ paused: true })
+        .to([".logo"], { duration: 0.8, top: 160 }, 0)
+        .to([".logo"], { duration: 0.8, scale: 0.4 }, 0)
+        .from(
+            [".tournament"],
+            { duration: 0.6, opacity: "0", ease: "power2.inOut" },
+            0.2,
+        )
+        .from(
+            [".match"],
+            { duration: 0.6, opacity: "0", ease: "power2.inOut" },
+            0.4,
+        )
+        /*.from(
+      [".phase_best_of"],
+      { duration: 0.6, opacity: "0", ease: "power2.inOut" },
+      0.6
+    )*/
+        .from(
+            [".score_container"],
+            { duration: 0.8, opacity: "0", ease: "power2.inOut" },
+            0,
+        )
+        .from(
+            [".best_of.container"],
+            { duration: 0.8, opacity: "0", ease: "power2.inOut" },
+            0,
+        )
+        .from(
+            [".vs1"],
+            { duration: 0.1, opacity: "0", scale: 10, ease: "in" },
+            1.2,
+        )
+        .from([".vs2"], { duration: 0.01, opacity: "0" }, 1.3)
+        .to([".vs2"], { opacity: 0, scale: 2, ease: "power2.out" }, 1.31)
+        .from([".p1.container"], { duration: 1, x: "-200px", ease: "out" }, 0)
+        .from([".p2.container"], { duration: 1, x: "200px", ease: "out" }, 0);
+
+    Start = async (event) => {
+        startingAnimation.restart();
+    };
+
+    Update = async (event) => {
+        let data = event.data;
+        let oldData = event.oldData;
+
+        console.log("UPDATE -------------------");
+
+        let isTeams =
+            Object.keys(data.score[window.scoreboardNumber].team["1"].player)
+                .length > 1;
+
+        if (!isTeams) {
+            console.log("HEY LOOK HERE ---------------");
+            const teams = Object.values(
+                data.score[window.scoreboardNumber].team,
+            );
+            for (const [t, team] of teams.entries()) {
+                const players = Object.values(team.player);
+                for (const [p, player] of players.entries()) {
+                    SetInnerHtml(
+                        $(`.p${t + 1} .name`),
+                        `
+              <span>
+                  <div>
+                    <span class='sponsor'>
+                        ${player.team ? player.team : ""}
+                    </span>
+                    ${await Transcript(player.name)}
+                  </div>
+              </span>
+            `,
+                    );
+
+                    /*
+          gsap.to($(`.p${t + 1} .losers_badge`), {
+            autoAlpha: team.losers ? 1 : 0,
+            overwrite: true,
+            duration: 0.8,
+          })
+            */ SetInnerHtml($(`.p${t + 1} .pronoun`), player.pronoun);
+
+                    SetInnerHtml(
+                        $(`.p${t + 1} > .sponsor_logo`),
+                        player.sponsor_logo
+                            ? `
+                <div class='sponsor_logo' style='background-image: url(../../${player.sponsor_logo})'></div>
+                `
+                            : "",
+                    );
+
+                    SetInnerHtml($(`.p${t + 1} .real_name`), player.real_name);
+
+                    SetInnerHtml(
+                        $(`.p${t + 1} .seed`),
+                        player.seed ? `Seed ${player.seed}` : "",
+                    );
+
+                    let characterNames = [];
+
+                    if (!window.ONLINE_AVATAR && !window.PLAYER_AVATAR) {
+                        for (const [p, player] of Object.values(
+                            team.player,
+                        ).entries()) {
+                            let characters = _.get(player, "character");
+                            for (const c of Object.values(characters)) {
+                                if (c.name) characterNames.push(c.name);
+                            }
+                        }
+                    }
+
+                    SetInnerHtml(
+                        $(`.p${t + 1} .character_name`),
+                        `
+                ${characterNames.join(" / ")}
+            `,
+                    );
+
+                    SetInnerHtml(
+                        $(`.p${t + 1} .twitter`),
+                        `
+              ${
+                  player.twitter
+                      ? `
+                  <div class="twitter_logo"></div>
+                  ${player.twitter}
+                  `
+                      : ""
+              }
+          `,
+                    );
+
+                    SetInnerHtml(
+                        $(`.p${t + 1} .flagcountry`),
+                        player.country.asset
+                            ? `
+              <div>
+                  <div class='flag' style='background-image: url(../../${player.country.asset});'>
+                      <div class="flagname">${player.country.code}</div>
+                  </div>
+              </div>`
+                            : "",
+                    );
+
+                    SetInnerHtml(
+                        $(`.p${t + 1} .flagstate`),
+                        player.state.asset
+                            ? `
+              <div>
+                  <div class='flag' style='background-image: url(../../${player.state.asset});'>
+                      <div class="flagname">${player.state.code}</div>
+                  </div>
+              </div>`
+                            : "",
+                    );
+
+                    let zIndexMultiplyier = 1;
+                    if (t == 1) zIndexMultiplyier = -1;
+
+                    if (!window.ONLINE_AVATAR && !window.PLAYER_AVATAR) {
+                        await CharacterDisplay(
+                            $(`.p${t + 1}.character`),
+                            {
+                                source: `score.${window.scoreboardNumber}.team.${t + 1}`,
+                                scale_based_on_parent: true,
+                                anim_out: {
+                                    x: -zIndexMultiplyier * 100 + "%",
+                                    stagger: 0.1,
+                                },
+                                anim_in: {
+                                    x: 0,
+                                    duration: 1,
+                                    ease: "expo.out",
+                                    autoAlpha: 1,
+                                    stagger: 0.2,
+                                },
+                            },
+                            event,
+                        );
+                    } else if (window.ONLINE_AVATAR) {
+                        SetInnerHtml(
+                            $(`.p${t + 1}.character`),
+                            `
+                <div class="player_avatar">
+                  <div style="background-image: url('${
+                      player.online_avatar
+                          ? player.online_avatar
+                          : "./person.svg"
+                  }');">
+                  </div>
+                </div>
+              `,
+                            {
+                                anim_out: {
+                                    x: -zIndexMultiplyier * 100 + "%",
+                                    stagger: 0.1,
+                                },
+                                anim_in: {
+                                    x: 0,
+                                    duration: 1,
+                                    ease: "expo.out",
+                                    autoAlpha: 1,
+                                    stagger: 0.2,
+                                },
+                            },
+                        );
+                    } else {
+                        SetInnerHtml(
+                            $(`.p${t + 1}.character`),
+                            `
+                <div class="player_avatar">
+                  <div style="background-image: url('${
+                      player.avatar ? "../../" + player.avatar : "./person.svg"
+                  }');">
+                  </div>
+                </div>
+              `,
+                            {
+                                anim_out: {
+                                    x: -zIndexMultiplyier * 100 + "%",
+                                    stagger: 0.1,
+                                },
+                                anim_in: {
+                                    x: 0,
+                                    duration: 1,
+                                    ease: "expo.out",
+                                    autoAlpha: 1,
+                                    stagger: 0.2,
+                                },
+                            },
+                        );
+                    }
+                }
+            }
+
+            // ------- LAST RESULTS -------------
+            let history =
+                data.score[window.scoreboardNumber].history_sets[window.PLAYER];
+            if (history) {
+                let results_html = `<div class ="info title">${config.display_titles ? "Fun Facts" : " "}</div>`;
+                let className = `.results`;
+                let tl = gsap.timeline();
+
+                var playerName =
+                    data.score[1].team[window.PLAYER].player[1].name;
+                fetch("data/facts.json")
+                    .then((response) => response.json())
+                    .then((facts) => {
+                        let playerName =
+                            data.score[1].team[window.PLAYER].player[1].name;
+                        let playerFacts = facts[playerName];
+
+                        // If there are no facts for the player, use the default
+                        if (!playerFacts) playerFacts = facts["default"];
+
+                        // If there are more than 3 facts grab 3 randomly
+                        if (playerFacts.length > TOURNAMENTS) {
+                            let seed = new Date().getDate();
+                            playerFacts = playerFacts
+                                .sort(() => Math.random() - 0.5)
+                                .slice(0, TOURNAMENTS);
+                        }
+
+                        playerFacts.forEach((fact) => {
+                            results_html += `
+                <div class="tournament_container">
+                  <div class="tournament_container_inner">
+                    <div class="tournament_info">
+                      <div class="tournament_name">${fact}</div>
+                    </div>
+                  </div>
+                </div>`;
+                        });
+                        $(className).html(results_html);
+                    });
+
+                tl.resume();
+            }
+            //------ BRACKET RUN --------
+
+            let last_sets =
+                data.score[window.scoreboardNumber].last_sets[window.PLAYER];
+            console.log("SETS", last_sets);
+
+            // Modified to only show current run when there are sets to show
+            if (last_sets && Object.keys(last_sets).length > 0) {
+                let sets_html = `<div class ="info title">${config.display_titles ? "Current Run" : " "}</div>`;
+                Object.values(last_sets)
+                    .slice(0, SETS)
+                    .reverse()
+                    .forEach((set, s) => {
+                        let winner = set.player_score > set.oponent_score;
+
+                        // Enable DQ support
+                        let result = winner ? "W" : "L";
+                        if (set.player_score == -1) result = "DQ";
+
+                        sets_html += `
+              <div class ="set${s + 1} set_container">
+                <div class = "set_container_inner">
+                  <div class = "result_tag ${winner ? "winner" : ""}">${result}</div>
+                  <div class = "phase_match"></div>
+
+                  <div class = "set_score"></div>
+                  <div class = "name"></div>
+                </div>
+
+              </div>
+            `;
+                    });
+                $(".sets").html(sets_html);
+
+                let tl = gsap.timeline();
+                for (const [s, set] of Object.values(last_sets)
+                    .slice(0, SETS)
+                    .reverse()
+                    .entries()) {
+                    console.log(set);
+                    let phaseTexts = [];
+
+                    // Remove unecessary flavor text ("Double Elimination!)
+                    // if (set.phase_name) phaseTexts.push(set.phase_name);
+                    if (set.phase_id) phaseTexts.push(set.phase_id);
+                    /*
+                    SetInnerHtml(
+            $(`.sets .set${s + 1} .phase`),
+            phaseTexts.join(" ")
+          );
+          console.log(set.round_name, `.sets .set${s + 1} .match`);
+          SetInnerHtml(
+            $(`.sets .set${s + 1} .match`),
+            set.round_name
+          );
+           */
+                    SetInnerHtml(
+                        $(`.sets .set${s + 1} .phase_match`),
+                        set.round_name,
+                    );
+                    SetInnerHtml(
+                        $(`.sets .set${s + 1} .name`),
+                        `
+              <div class = "versus">VS</div>
+
+              ${await Transcript(set.oponent_name)}
+              ${set.oponent_team ? `<span class="sponsor">${set.oponent_team}</span>` : ""}
+            `,
+                    );
+                    let score_text =
+                        "" +
+                        set.player_score +
+                        " - " +
+                        (set.oponent_score >= 0 ? set.oponent_score : "DQ");
+                    SetInnerHtml(
+                        $(`.sets .set${s + 1} .set_score`),
+                        score_text,
+                    );
+                    tl.from(
+                        $(`.set${s + 1}`),
+                        {
+                            x: window.PLAYER == 1 ? 100 : -100,
+                            autoAlpha: 0,
+                            duration: 0.4,
+                        },
+                        0.2 + 0.2 * s,
+                    );
+                }
+                tl.resume();
+            }
+        } else {
+            const teams = Object.values(
+                data.score[window.scoreboardNumber].team,
+            );
+            for (const [t, team] of teams.entries()) {
+                let teamName = team.teamName;
+
+                let names = [];
+                for (const [p, player] of Object.values(
+                    team.player,
+                ).entries()) {
+                    if (player && player.name) {
+                        names.push(await Transcript(player.name));
+                    }
+                }
+                let playerNames = names.join(" / ");
+
+                if (!team.teamName || team.teamName == "") {
+                    teamName = playerNames;
+                }
+
+                SetInnerHtml(
+                    $(`.p${t + 1} .name`),
+                    `
+            <span>
+                <div>
+                  ${teamName}
+                </div>
+            </span>
+          `,
+                );
+                if (teamName != playerNames) {
+                    SetInnerHtml($(`.p${t + 1} .real_name`), playerNames);
+                } else {
+                    SetInnerHtml($(`.p${t + 1} .real_name`), "");
+                }
+
+                gsap.to($(`.p${t + 1} .losers_badge`), {
+                    autoAlpha: team.losers ? 1 : 0,
+                    overwrite: true,
+                    duration: 0.8,
+                });
+
+                SetInnerHtml($(`.p${t + 1} > .sponsor_logo`), "");
+
+                SetInnerHtml($(`.p${t + 1} .twitter`), ``);
+
+                SetInnerHtml($(`.p${t + 1} .flagcountry`), "");
+
+                SetInnerHtml($(`.p${t + 1} .flagstate`), "");
+
+                SetInnerHtml($(`.p${t + 1} .pronoun`), "");
+
+                SetInnerHtml(
+                    $(`.p${t + 1} .seed`),
+                    _.get(team, "player.1.seed")
+                        ? `Seed ${_.get(team, "player.1.seed")}`
+                        : "",
+                );
+
+                let characterNames = [];
+
+                if (!window.ONLINE_AVATAR && !window.PLAYER_AVATAR) {
+                    for (const [p, player] of Object.values(
+                        team.player,
+                    ).entries()) {
+                        let characters = _.get(player, "character");
+                        for (const c of Object.values(characters)) {
+                            if (c.name) characterNames.push(c.name);
+                        }
+                    }
+                }
+
+                SetInnerHtml(
+                    $(`.p${t + 1} .character_name`),
+                    `
+              ${characterNames.join(" / ")}
+          `,
+                );
+
+                let zIndexMultiplyier = 1;
+                if (t == 1) zIndexMultiplyier = -1;
+
+                if (!window.ONLINE_AVATAR && !window.PLAYER_AVATAR) {
+                    await CharacterDisplay(
+                        $(`.p${t + 1}.character`),
+                        {
+                            source: `score.${window.scoreboardNumber}.team.${t + 1}`,
+                            scale_based_on_parent: true,
+                            anim_out: {
+                                x: -zIndexMultiplyier * 100 + "%",
+                                stagger: 0.1,
+                            },
+                            anim_in: {
+                                x: 0,
+                                duration: 1,
+                                ease: "expo.out",
+                                autoAlpha: 1,
+                                stagger: 0.2,
+                            },
+                        },
+                        event,
+                    );
+                } else if (window.ONLINE_AVATAR) {
+                    let avatars_html = "";
+                    for (const [p, player] of Object.values(
+                        team.player,
+                    ).entries()) {
+                        if (player)
+                            avatars_html += `<div style="background-image: url('${
+                                player.online_avatar
+                                    ? player.online_avatar
+                                    : "./person.svg"
+                            }');"></div>`;
+                    }
+                    SetInnerHtml(
+                        $(`.p${t + 1}.character`),
+                        `
+              <div class="player_avatar">
+                ${avatars_html}
+              </div>
+            `,
+                        {
+                            anim_out: {
+                                x: -zIndexMultiplyier * 100 + "%",
+                                stagger: 0.1,
+                            },
+                            anim_in: {
+                                x: 0,
+                                duration: 1,
+                                ease: "expo.out",
+                                autoAlpha: 1,
+                                stagger: 0.2,
+                            },
+                        },
+                    );
+                } else {
+                    let avatars_html = "";
+                    for (const [p, player] of Object.values(
+                        team.player,
+                    ).entries()) {
+                        if (player)
+                            avatars_html += `<div style="background-image: url('${
+                                player.avatar
+                                    ? "../../" + player.avatar
+                                    : "./person.svg"
+                            }');"></div>`;
+                    }
+                    SetInnerHtml(
+                        $(`.p${t + 1}.character`),
+                        `
+              <div class="player_avatar">
+                ${avatars_html}
+              </div>
+            `,
+                        {
+                            anim_out: {
+                                x: -zIndexMultiplyier * 100 + "%",
+                                stagger: 0.1,
+                            },
+                            anim_in: {
+                                x: 0,
+                                duration: 1,
+                                ease: "expo.out",
+                                autoAlpha: 1,
+                                stagger: 0.2,
+                            },
+                        },
+                    );
+                }
+            }
+        }
+
+        // Display Fun Facts about both players
+        let history =
+            data.score[window.scoreboardNumber].history_sets[window.PLAYER];
+        if (history) {
+            let results_html = `<div class ="info title">${config.display_titles ? "Fun Facts" : " "}</div>`;
+            let className = `.results`;
+            let tl = gsap.timeline();
+
+            // Populate player names with each player on the team
+            var playerNames = [];
+            Object.values(
+                data.score[window.scoreboardNumber].team[window.PLAYER].player,
+            ).forEach((player) => {
+                console.log(player);
+                playerNames.push(player.name);
+            });
+
+            // Get facts
+            fetch("data/facts.json")
+                .then((response) => response.json())
+                .then((facts) => {
+                    // Populate player facts with each player's facts
+                    let playerFacts = [];
+                    playerNames.forEach((name) => {
+                        // get each player's facts
+                        let playerFact = facts[name];
+
+                        // add the player's facts to the list
+                        playerFacts = playerFacts.concat(playerFact);
+                    });
+
+                    // If there are no facts for the player, use the default
+                    if (!playerFacts) playerFacts = facts["default"];
+
+                    // If there are more than 4 facts grab 4 randomly
+                    if (playerFacts.length > TOURNAMENTS) {
+                        let seed = new Date().getDate();
+                        playerFacts = playerFacts
+                            .sort(() => Math.random() - 0.5)
+                            .slice(0, TOURNAMENTS);
+
+                        // Otherwise just shuffle the facts
+                    } else {
+                        playerFacts = playerFacts.sort(
+                            () => Math.random() - 0.5,
+                        );
+                    }
+
+                    // Build the html for each fact
+                    playerFacts.forEach((fact) => {
+                        results_html += `
+                            <div class="tournament_container">
+                            <div class="tournament_container_inner">
+                                <div class="tournament_info">
+                                <div class="tournament_name">${fact}</div>
+                                </div>
+                            </div>
+                            </div>`;
+                    });
+                    $(className).html(results_html);
+                });
+
+            tl.resume();
+        }
+
+        // Display commentator info instead of bracket run
+        let commentators = data.commentary;
+        console.log(data.commentary);
+        if (commentators && false) {
+            let sets_html = `<div class ="info title">${config.display_titles ? "Commentators" : " "}</div>`;
+
+            Object.values(commentators).forEach((commentator, c) => {
+                sets_html += `
+
+                    <div class ="set${c + 1} set_container">
+                        <div class = "set_container_inner">
+                            <div class = "mic_icon"></div>
+                            <div class = "sponsor">${commentator.team}</div>
+
+                            <div class = "name">${commentator.name}</div>
+                            <div class = "pronoun">${commentator.pronoun ? commentator.pronoun : ""} </div>
+
+
+                            <div class = "twitter">
+                                <div class = "twitter_logo"></div>
+                                <div class = "name">${commentator.twitter}</div>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+                `;
+            });
+
+            $(".sets").html(sets_html);
+        }
+
+        SetInnerHtml(
+            $(`.p1 .score`),
+            String(data.score[window.scoreboardNumber].team["1"].score),
+        );
+        SetInnerHtml(
+            $(`.p2 .score`),
+            String(data.score[window.scoreboardNumber].team["2"].score),
+        );
+
+        //SetInnerHtml($(".tournament"), data.tournamentInfo.tournamentName);
+        //SetInnerHtml($(".match"), data.score[window.scoreboardNumber].match);
+
+        let stage = null;
+
+        if (
+            _.get(
+                data,
+                `score.${window.scoreboardNumber}.stage_strike.selectedStage`,
+            )
+        ) {
+            let stageId = _.get(
+                data,
+                `score.${window.scoreboardNumber}.stage_strike.selectedStage`,
+            );
+
+            let allStages = _.get(
+                data,
+                "score.ruleset.neutralStages",
+                [],
+            ).concat(_.get(data, "score.ruleset.counterpickStages", []));
+
+            stage = allStages.find((s) => s.codename == stageId);
+        }
+
+        if (
+            stage &&
+            _.get(
+                data,
+                `score.${window.scoreboardNumber}.stage_strike.selectedStage`,
+            ) !=
+                _.get(
+                    oldData,
+                    `score.${window.scoreboardNumber}.stage_strike.selectedStage`,
+                )
+        ) {
+            gsap.fromTo(
+                $(`.stage`),
+                { scale: 2 },
+                { scale: 1.2, duration: 0.8, ease: "power2.out" },
+            );
+        }
+
+        SetInnerHtml(
+            $(`.stage`),
+            stage
+                ? `
+        <div>
+            <div class='' style='background-image: url(../../${stage.path});'>
+            </div>
+        </div>`
+                : "",
+        );
+
+        /*SetInnerHtml(
+      $(".phase_best_of"),
+      data.score[window.scoreboardNumber].phase +
+        (data.score[window.scoreboardNumber].best_of_text ? ` | ${data.score[window.scoreboardNumber].best_of_text}` : "")
+    );*/
+    };
+});

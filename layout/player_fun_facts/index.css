@@ -83,10 +83,8 @@ body {
     background-color: var(--bg-color);
     align-items: center;
     padding: 20px 40px;
-    filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.12))
-        drop-shadow(0 3px 1px rgba(0, 0, 0, 0.14))
-        drop-shadow(0 1px 5px rgba(0, 0, 0, 0.12))
-        drop-shadow(0 -1px 2px rgba(0, 0, 0, 0.1));
+    filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.25))
+        drop-shadow(0 6px 8px rgba(0, 0, 0, 0.1));
 }
 
 .container.p1 {
@@ -339,6 +337,9 @@ div.info {
     width: 60%; /* Makes the div 80% of its parent's width */
     max-width: 600px; /* Ensures it doesn't get too wide */
     margin: 16px auto; /* Centers the div itself horizontally */
+
+    filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.25))
+        drop-shadow(0 6px 8px rgba(0, 0, 0, 0.1));
 }
 
 /*
@@ -624,7 +625,7 @@ div.info {
     position: absolute;
     top: 50px;
     width: var(--infos-wdith);
-    height: 55vh;
+    /* height: 55vh; */
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
@@ -632,6 +633,9 @@ div.info {
     justify-content: center;
     flex-wrap: wrap;
     gap: 16px;
+
+    display: flex;
+    justify-content: flex-start;
 }
 
 .p1.results {
@@ -647,6 +651,8 @@ div.info {
     color: var(--text-color);
     overflow: hidden;
     border-radius: 10px;
+    filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.25))
+        drop-shadow(0 6px 8px rgba(0, 0, 0, 0.1));
 }
 
 .tournament_container_inner {
@@ -702,7 +708,7 @@ div.info {
 }
 
 .p1 .tournament_info {
-    padding-left: 32px;
+    padding-right: 32px;
 }
 
 .p2 .tournament_info {
@@ -711,6 +717,7 @@ div.info {
 
 .tournament_name {
     font-size: 32px;
+    padding-left: 32px;
     letter-spacing: normal;
     width: 100%;
 }
@@ -792,6 +799,8 @@ div.info {
 
     display: flex;
     flex-direction: row;
+    filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.25))
+        drop-shadow(0 6px 8px rgba(0, 0, 0, 0.1));
 }
 
 .set_container_inner {
@@ -821,7 +830,7 @@ div.info {
 }
 
 .result_tag {
-    /* background-color: #ff3837; */
+    background-color: #ff3837;
 
     display: flex;
     flex-direction: column;
@@ -870,7 +879,7 @@ div.info {
 }
 
 /* Align the VS text to hug score  */
-.p1 .set_container_inner .versus {
+.p1 .set_container_inner .name .text {
     place-content: start;
 }
 /* Align player tag to hug vs */
@@ -951,4 +960,25 @@ div.info {
 .info.title {
     font-family: var(--font);
     font-weight: bold;
+}
+
+/* Commentary */
+.mic_icon {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    -webkit-mask-image: url(./icon_mic.svg);
+    -webkit-mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    background: var(--text-color);
+}
+
+.set_container_inner .twitter {
+    display: flex;
+    flex-grow: 2;
+}
+
+.set_container_inner .twitter_logo {
+    padding-top: 16px;
 }
