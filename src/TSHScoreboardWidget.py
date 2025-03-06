@@ -988,6 +988,13 @@ class TSHScoreboardWidget(QWidget):
                         if len(original_str) > 1:
                             tournament_phase = f"{original_str[0]} - {tournament_phase}"
 
+                    # In Knoxville, if you're in grands it says best of instead of double elimination
+                    else:
+                        # IDKY but, the bestOf field is always 'None' so I have to hardcode a best of value.
+                        # I'm going to try merging with main and pulling from the root repo and see if that fixes
+                        tournament_phase = f"{TSHLocaleHelper.phaseNames.get('best_of', 'Best of {0}').format(5)}"
+
+
                 self.scoreColumn.findChild(
                     QComboBox, "phase").setCurrentText(tournament_phase)
                 self.scoreColumn.findChild(
