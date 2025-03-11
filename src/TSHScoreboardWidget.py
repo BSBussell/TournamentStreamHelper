@@ -997,9 +997,16 @@ class TSHScoreboardWidget(QWidget):
 
                     # In Knoxville, if you're in grands it says best of instead of double elimination
                     else:
-                        # IDKY but, the bestOf field is always 'None' so I have to hardcode a best of value.
-                        # I'm going to try merging with main and pulling from the root repo and see if that fixes
-                        tournament_phase = f"{TSHLocaleHelper.phaseNames.get('best_of', 'Best of {0}').format(5)}"
+
+                        bo = data.get("bestOf")
+                        if bo:
+
+
+                            # IDKY but, the bestOf field is always 'None' so I have to hardcode a best of value.
+                            # I'm going to try merging with main and pulling from the root repo and see if that fixes
+                            tournament_phase = f"{TSHLocaleHelper.phaseNames.get('best_of', 'Best of {0}').format(bo)}"
+                        else:
+                            tournament_phase = f"{TSHLocaleHelper.phaseNames.get('best_of', 'Best of {0}').format(3)}"
 
 
                 self.scoreColumn.findChild(
