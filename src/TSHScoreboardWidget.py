@@ -1006,7 +1006,7 @@ class TSHScoreboardWidget(QWidget):
                             # I'm going to try merging with main and pulling from the root repo and see if that fixes
                             tournament_phase = f"{TSHLocaleHelper.phaseNames.get('best_of', 'Best of {0}').format(bo)}"
                         else:
-                            tournament_phase = f"{TSHLocaleHelper.phaseNames.get('best_of', 'Best of {0}').format(3)}"
+                            tournament_phase = f"{TSHLocaleHelper.phaseNames.get('best_of', 'Best of {0}').format(5)}"
 
 
                 self.scoreColumn.findChild(
