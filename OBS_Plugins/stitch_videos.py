@@ -7,8 +7,10 @@ import os
 import sys
 import subprocess
 import obspython as obs
+import threading # Used so we aren't blocking the main thread
 
 def stitch_videos(folder_path, output_path, sort_lambda=None):
+
     """Stitches all video files in a folder into one using FFmpeg with customizable sorting."""
     obs.script_log(obs.LOG_INFO, f"Stitching videos in folder: {folder_path}")
 
@@ -55,15 +57,20 @@ def stitch_videos(folder_path, output_path, sort_lambda=None):
     ]
 
     # Run FFmpeg
-    try:
-        result = subprocess.run(ffmpeg_cmd, capture_output=True, text=True, check=True)
-        obs.script_log(obs.LOG_INFO, f"FFmpeg output: {result.stdout}")
-        obs.script_log(obs.LOG_INFO, f"Successfully stitched videos into {output_video}")
-    except subprocess.CalledProcessError as e:
-        obs.script_log(obs.LOG_ERROR, f"FFmpeg error: {e.stderr}")
-        return None
-    finally:
-        os.remove(list_file_path)  # Clean up temp file
+    def run_ffmpeg():
+        try:
+            result = subprocess.run(ffmpeg_cmd, capture_output=True, text=True, check=True)
+            obs.script_log(obs.LOG_INFO, f"FFmpeg output: {result.stdout}")
+            obs.script_log(obs.LOG_INFO, f"Successfully stitched videos into {output_video}")
+        except subprocess.CalledProcessError as e:
+            obs.script_log(obs.LOG_ERROR, f"FFmpeg error: {e.stderr}")
+            return None
+        finally:
+            os.remove(list_file_path)  # Clean up temp file
+
+    ffmpeg_thread = threading.Thread(target=run_ffmpeg)
+    ffmpeg_thread.start()
+
 
     return output_video
 

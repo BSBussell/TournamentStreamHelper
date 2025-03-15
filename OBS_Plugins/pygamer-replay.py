@@ -148,6 +148,7 @@ class ReplayCompilation:
 
             obs.obs_output_release(replay_buffer)
 
+    # TODO: Implement this in a way that doesn't block the main thread
     def stitch_replays(self, pressed):
         """Handles the stitching hotkey press."""
         if not pressed:
@@ -193,6 +194,7 @@ class ReplayCompilation:
             for video in video_files:
                 obs.script_log(obs.LOG_INFO, f"Deleting old compilation: {video}")
                 os.remove(os.path.join(self.folder_path, video))
+
 
             comp = stitch_videos(self.folder_path, dest_file, sort_lambda=bogo_sort)
         else:

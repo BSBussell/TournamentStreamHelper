@@ -1,3 +1,5 @@
+/* Beatrice the Spider Queen */
+
 body {
   font-family: var(--font);
   letter-spacing: 1.2px;
@@ -232,6 +234,19 @@ body {
   flex-shrink: 0;
 }
 
+.set_tie {
+  
+  font-size: 42px;
+  width: 64px;
+  height: 64px;
+  text-align: center;
+  line-height: 64px;
+  border-radius: 100%;
+  background: var(--accent-color);
+  color: var(--text-color);
+  flex-shrink: 0;
+}
+
 .set_loser {
   font-size: 42px;
   width: 64px;
@@ -247,11 +262,24 @@ body {
 .lds-ring {
   display: inline-block;
   width: 100%;
-  height: 100%;
+  height: 240px;
   display: flex;
   justify-content: center;
+
+  /* Grey golira */
+  background-color: var(--accent-color);
+  background-image: url('./Tennessee\ Gorilla\ Spin.gif');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  /* Rounded container */
+  border-radius: 12px;
+  margin: 0px 12px 24px 12px;
+  padding-bottom: 10px;
+  box-sizing: border-box;
 }
-.lds-ring div {
+/* .lds-ring div {
   box-sizing: border-box;
   display: block;
   position: absolute;
@@ -280,7 +308,7 @@ body {
   100% {
     transform: rotate(360deg);
   }
-}
+} */
 
 .lifetime {
   width: 100%;
@@ -293,6 +321,7 @@ body {
 
   border-radius: var(--border-radius);
   background-color: var(--text-color);
+  /* height: 102.5px; */
 }
 
 .lifetime_title {
