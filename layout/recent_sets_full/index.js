@@ -2,16 +2,16 @@ const NUM_SETS = 3;
 
 LoadEverything().then(() => {
   
-  // TODO: Keep working on animations
+  // TODO: Keep working
   let startingAnimation = gsap
     .timeline({ paused: true })
-    .from($(".recent_sets"), { autoAlpha: 0, scaleY: 0.1, transformOrigin: "top", duration: 0.15, ease: "back.out(1.5)" });
+    .from($(".recent_sets"), { autoAlpha: 0, scaleY: 0.1, transformOrigin: "top", duration: 0.3, ease: "back.out(1.5)" });
 
   let transitionAnimation = gsap
     .timeline({ paused: true })
-    .to($(".recent_sets"), { scaleY: 0.1, transformOrigin: "top", duration: 0.075, ease: "power2.in" }) // Smooth shrink
+    .to($(".recent_sets"), { scaleY: 0.1, transformOrigin: "top", duration: 0.25, ease: "power2.in" }) // Smooth shrink
     .add(() => updateRecentSetsContent()) // Change content at smallest size
-    .to($(".recent_sets"), { scaleY: 1, transformOrigin: "top", duration: 0.125, ease: "power2.out" }); // Smooth expand
+    .to($(".recent_sets"), { scaleY: 1, transformOrigin: "top", duration: 0.25, ease: "power2.out" }); // Smooth expand
 
   var playersRecentSets = null;
   var players = [];
@@ -28,7 +28,6 @@ LoadEverything().then(() => {
   // Function to set inner HTML with recent sets html
   function updateRecentSetsContent() {
     $(`.recent_sets_content`).html(recentSetsHtml);
-    recentSetsHtml = "";
   }
 
 
@@ -48,22 +47,20 @@ LoadEverything().then(() => {
       console.log(playersRecentSets);
 
       players = [];
+      recentSetsHtml = ""
       
 
       // If resent sets is empty say no sets found
-      if (playersRecentSets == null || 
+      if (playersRecentSets != null &&
         (playersRecentSets.state == "done" && playersRecentSets.sets.length == 0)
       ) {
 
 
         // Display no sets found
-        recentSetsHtml += `NEVER PLAYED`;
+        recentSetsHtml += `<div class="recent_sets_title">NEVER PLAYED</div>`;
         players = [];
         // $(`.recent_sets_content`).html(recentSetsHtml);
 
-        // Hide lifetime by setting display to none
-        $(`.lifetime`).css('display', 'none');
-        // $(`.recent_sets`).css('display', 'none');
         
         // If played before, show transition animation
         if (animationPlayed) {
@@ -73,18 +70,20 @@ LoadEverything().then(() => {
         }
         animationPlayed = true;
 
-      // Otherwise if we're waiting on recent sets
-      } else if (playersRecentSets.state != "done") {
+
+      // Otherwise if we're waiting on recent sets to be constructed
+      } else if (true|| playersRecentSets == null || playersRecentSets.state != "done") {
         
 
         // startingAnimation.restart();
-        recentSetsHtml += `<div class="lds-ring"><div></div><div></div><div></div><div></div></div>`;
+        recentSetsHtml += `
+          <div class="tn-golira"></div>
+          <div class="loading_text">LOADING<div class="loader"></div></div>
+        `;
         players = [];
 
         // Hide and show the relevant elements, then fill in the content
         $(`.recent_sets`).css('display', 'flex');
-        $(`.lifetime`).css('display', 'none');
-        // $(`.recent_sets_content`).html(recentSetsHtml);
 
         // If played before, show transition animation
         if (animationPlayed) {
@@ -102,7 +101,6 @@ LoadEverything().then(() => {
         ) {
 
           // Ensure lifetime is displayed
-          $(`.lifetime`).css('display', 'flex');
           $(`.recent_sets`).css('display', 'flex');
 
           
@@ -282,16 +280,18 @@ LoadEverything().then(() => {
         }
 
         let lifetimeHtml = `
-          <div class="set_container">
-            <div class=${p1_class}>${player1Sets}</div>
-            <div class="lifetime_title">Active Record</div>
-            <div class=${p2_class}>${player2Sets}</div>
+          <div class="lifetime">
+            <div class="set_container">
+              <div class=${p1_class}>${player1Sets}</div>
+              <div class="lifetime_title">Active Record</div>
+              <div class=${p2_class}>${player2Sets}</div>
+            </div>
           </div>
         `;
-        //Set the inner HTML of the lifetime container
-        $(`.lifetime`).html(lifetimeHtml);
 
+        recentSetsHtml += lifetimeHtml;
 
+        
         // If played before, show transition animation
         if (animationPlayed) {
          
@@ -300,6 +300,9 @@ LoadEverything().then(() => {
         } else {
           updateRecentSetsContent();
         }
+
+        //Set the inner HTML of the lifetime container
+        // $(`.lifetime`).html(lifetimeHtml);
         animationPlayed = true;
       }
 
