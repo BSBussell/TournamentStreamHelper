@@ -164,7 +164,7 @@ LoadEverything().then(() => {
             }
 
             // cut tourney name to only 19 characters
-            let char_limit = 20;
+            let char_limit = 15;
             if (setTourneyName.length > char_limit) {
               // Set the last three characters to ...
               setTourneyName = setTourneyName.substring(0, char_limit-3) + "...";
