@@ -57,7 +57,7 @@ LoadEverything().then(() => {
 
 
         // Display no sets found
-        recentSetsHtml += `<div class="recent_sets_title">NEVER PLAYED</div>`;
+        recentSetsHtml += `<div class="never-played">NEVER PLAYED</div>`;
         players = [];
         // $(`.recent_sets_content`).html(recentSetsHtml);
 
@@ -72,7 +72,7 @@ LoadEverything().then(() => {
 
 
       // Otherwise if we're waiting on recent sets to be constructed
-      } else if (true|| playersRecentSets == null || playersRecentSets.state != "done") {
+      } else if (playersRecentSets == null || playersRecentSets.state != "done") {
         
 
         // startingAnimation.restart();
