@@ -343,11 +343,19 @@ body {
 
 .top4_container {
     flex-grow: 5;
+      
 }
 
 .top8_container {
     flex-grow: 4;
+    
 }
+
+.top4_container .character_container,
+.top8_container .character_container {
+    transform: scaleX(-1);
+}
+
 
 .same_size .top8_container {
     flex-wrap: wrap;

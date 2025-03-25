@@ -310,6 +310,18 @@ LoadEverything().then(() => {
                             playerFacts = playerFacts
                                 .sort(() => Math.random() - 0.5)
                                 .slice(0, TOURNAMENTS);
+                        
+                        // Otherwise if we have less than 3 facts, add random default facts so we have 3
+                        } else if (playerFacts.length < TOURNAMENTS) {
+                            let seed = new Date().getDate();
+                            let defaultFacts = facts["default"];
+                            while (playerFacts.length < TOURNAMENTS) {
+                                playerFacts.push(defaultFacts[Math.floor(Math.random() * defaultFacts.length)]);
+                            }
+
+                            // Now shuffle the facts
+                            playerFacts = playerFacts.sort(() => Math.random() - 0.5);
+                            
                         }
 
                         console.log(playerFacts);
@@ -638,10 +650,23 @@ LoadEverything().then(() => {
                             .sort(() => Math.random() - 0.5)
                             .slice(0, TOURNAMENTS);
 
-                        // Otherwise just shuffle the facts
+                        
+                    // Otherwise if we have less than 3 facts, add random default facts so we have 3
+                    } else if (playerFacts.length < TOURNAMENTS) {
+                       
+                        let seed = new Date().getDate();
+                        let defaultFacts = facts["default"];
+                        while (playerFacts.length < TOURNAMENTS) {
+                            playerFacts.push(defaultFacts[Math.floor(Math.random() * defaultFacts.length)]);
+                        }
+
+                        // Now shuffle the facts
+                        playerFacts = playerFacts.sort(() => Math.random() - 0.5);
+                     
+                    // Otherwise just shuffle the facts
                     } else {
                         
-
+                        let seed = new Date().getDate();
                         playerFacts = playerFacts.sort(
                             () => Math.random() - 0.5,
                         );
