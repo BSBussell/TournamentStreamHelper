@@ -71,22 +71,14 @@ def stitch_videos(folder_path, output_path, sort_lambda=None):
 
     try:
  
-
         result = subprocess.run(ffmpeg_cmd, capture_output=True, text=True, check=True)
- 
-
         obs.script_log(obs.LOG_INFO, f"FFmpeg output: {result.stdout}")
- 
-
         obs.script_log(obs.LOG_INFO, f"Successfully stitched videos into {output_video}")
- 
 
     except subprocess.CalledProcessError as e:
  
-
         obs.script_log(obs.LOG_ERROR, f"FFmpeg error: {e.stderr}")
  
-
         return None
 
 

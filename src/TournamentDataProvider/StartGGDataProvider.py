@@ -72,6 +72,14 @@ class StartGGDataProvider(TournamentDataProvider):
                 requestCode = data.status_code
                 retries += 1
             data = orjson.loads(data.text)
+
+            # Check for errors and log them
+            if "errors" in data:
+                for error in data["errors"]:
+                    logger.error(f"Error: {error.get('message')}")
+                    if "extensions" in error:
+                        logger.error(f"Extensions: {error['extensions']}")
+
             return data
         except Exception as e:
             logger.error(traceback.format_exc())
@@ -1435,6 +1443,7 @@ class StartGGDataProvider(TournamentDataProvider):
         except Exception as e:
             callback.emit({"playerNumber": playerNumber, "history_sets": []})
 
+    # e62c84314c4bcda4dfc1cf6c6ef69c69
     def GetRecentSets(self, id1, id2, videogame, callback, requestTime, progress_callback, cancel_event):
         try:
             id1 = [str(id1[0]), str(id1[1])]
@@ -1448,21 +1457,24 @@ class StartGGDataProvider(TournamentDataProvider):
 
             logger.info("Get recent sets start")
 
+            # Explicit callback to handle the result
+            def handle_result(result):
+                if result:
+                    recentSets.extend(result)
+
             for _id1, _id2, inverted in [[id1, id2, False], [id2, id1, True]]:
-                for i in range(5):
+                for i in range(20):
                     worker = Worker(self.GetRecentSetsWorker, **{
                         "id1": _id1,
                         "id2": _id2,
-                        "page": (i+1),
+                        "page": ((i+1)),
                         "inverted": inverted,
-                        "videogame": videogame
+                        "videogame": videogame,
                     })
-                    worker.signals.result.connect(lambda result: [
-                        recentSets.extend(result)
-                    ])
+                    worker.signals.result.connect(handle_result)
                     pool.start(worker)
 
-            pool.waitForDone(20000)
+            pool.waitForDone(30000)
             QCoreApplication.processEvents()
             byId = {_set.get("id"): _set for _set in recentSets}
             recentSets = list(byId.values())
@@ -1505,6 +1517,7 @@ class StartGGDataProvider(TournamentDataProvider):
                 sets = deep_get(event, "sets.nodes")
 
                 for _set in sets:
+
                     phaseName = ""
                     phaseIdentifier = ""
 
@@ -1515,10 +1528,12 @@ class StartGGDataProvider(TournamentDataProvider):
                             _set, "phaseGroup.displayIdentifier")
                     phaseName = deep_get(_set, "phaseGroup.phase.name")
 
+                
                     p1id = _set.get("slots", [{}, {}])[0].get("entrant", {}).get(
                         "participants", [{}])[0].get("player", {}).get("id")
                     p2id = _set.get("slots", [{}, {}])[1].get("entrant", {}).get(
                         "participants", [{}])[0].get("player", {}).get("id")
+                   
 
                     p1id = str(p1id)
                     p2id = str(p2id)
