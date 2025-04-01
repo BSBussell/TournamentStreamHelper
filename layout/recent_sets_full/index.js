@@ -1,5 +1,11 @@
 const NUM_SETS = 3;
 
+// Timestamp for the start of the season
+const AFTER = 1735774588;
+
+// Title for the set history
+const SEASON_TITLE = "Spring '25 PR";
+
 LoadEverything().then(() => {
   
   // TODO: Keep working
@@ -108,6 +114,15 @@ LoadEverything().then(() => {
           // Create a deep copy of the recent sets to avoid modifying the original data
           playersRecentSets = JSON.parse(JSON.stringify(data.score[window.scoreboardNumber].recent_sets));
 
+            playersRecentSets.sets = playersRecentSets.sets.filter((set) => {
+            return (
+              !set.event.toLowerCase().includes("doubles") &&
+              !set.event.toLowerCase().includes("squad strike") &&
+              set.timestamp > AFTER
+            );
+            });
+            console.log(playersRecentSets.sets);
+
           // Traverse recent sets, search for sets in the same tournament with the same players
           // If found, add the scores of the sets and remove one of the sets
 
@@ -164,7 +179,7 @@ LoadEverything().then(() => {
             }
 
             // cut tourney name to only 19 characters
-            let char_limit = 15;
+            let char_limit = 20;
             if (setTourneyName.length > char_limit) {
               // Set the last three characters to ...
               setTourneyName = setTourneyName.substring(0, char_limit-3) + "...";
@@ -237,9 +252,22 @@ LoadEverything().then(() => {
         });
         */
 
+     
         // Don't care about duplicates anymore:
         playersRecentSets = data.score[window.scoreboardNumber].recent_sets;
         console.log(data.score[window.scoreboardNumber].recent_sets);
+
+        // Remove all sets that have doubles in the event name
+        playersRecentSets.sets = playersRecentSets.sets.filter((set) => {
+          return (
+            !set.event.toLowerCase().includes("doubles") &&
+            !set.event.toLowerCase().includes("squad strike") &&
+            set.timestamp > AFTER
+          );
+        });
+        console.log(playersRecentSets.sets);
+
+        
 
         // Display Lifetime set record
         
@@ -252,7 +280,7 @@ LoadEverything().then(() => {
           let set = playersRecentSets.sets[i];
 
           // If player 1 won the set
-          if (set.score[0] > set.score[1]) {
+          if (set.winner == 0) {
             player1Sets++;
           } else {
             player2Sets++;
@@ -283,7 +311,7 @@ LoadEverything().then(() => {
           <div class="lifetime">
             <div class="set_container">
               <div class=${p1_class}>${player1Sets}</div>
-              <div class="lifetime_title">Active Record</div>
+              <div class="lifetime_title">Spring '25 PR</div>
               <div class=${p2_class}>${player2Sets}</div>
             </div>
           </div>
