@@ -117,8 +117,7 @@ LoadEverything().then(() => {
             playersRecentSets.sets = playersRecentSets.sets.filter((set) => {
             return (
               !set.event.toLowerCase().includes("doubles") &&
-              !set.event.toLowerCase().includes("squad strike") &&
-              set.timestamp > AFTER
+              !set.event.toLowerCase().includes("squad strike")
             );
             });
             console.log(playersRecentSets.sets);
