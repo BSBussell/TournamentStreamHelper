@@ -340,6 +340,8 @@ LoadEverything().then(() => {
                     // Check if the tournament is not the current tournament
                     let not_current = tournament.tournament_name != data.tournamentInfo.tournamentName;
 
+                    // Ensure it isn't a wifi tournament
+
                     // Check if the tournament has more than 25 entrants
                     return major && not_current;
                 }
@@ -510,10 +512,10 @@ LoadEverything().then(() => {
                     const cycleContent = (showFactsFirst) => {
                         if (showFactsFirst) {
                             switchToTournamentResults();
-                            setTimeout(() => cycleContent(true), FACTS_TRANSITION_DELAY * 1000);
+                            setTimeout(() => cycleContent(false), FACTS_TRANSITION_DELAY * 1000);
                         } else {
                             switchToFunFacts();
-                            setTimeout(() => cycleContent(false), FACTS_TRANSITION_DELAY * 1000);
+                            setTimeout(() => cycleContent(true), FACTS_TRANSITION_DELAY * 1000);
                             
                         }
                     };
