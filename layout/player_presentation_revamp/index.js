@@ -340,16 +340,29 @@ LoadEverything().then(() => {
                     // Check if the tournament is not the current tournament
                     let not_current = tournament.tournament_name != data.tournamentInfo.tournamentName;
 
-                    // Ensure it isn't a wifi tournament
+                    // Ensure it isn't a wifi tournament by removing wifi from the name
+                    let not_wifi = !tournament.tournament_name.toLowerCase().includes("wifi") 
+                    && !tournament.tournament_name.toLowerCase().includes("lan")
+                    && !tournament.tournament_name.toLowerCase().includes("sundown")
+                    && !tournament.event_name.toLowerCase().includes("online");
 
                     // Check if the tournament has more than 25 entrants
-                    return major && not_current;
+                    return major && not_current && not_wifi;
                 }
 
                 function not_current(tournament) {
+                    
                     // Check if the tournament is not the current tournament
                     let not_current = tournament.tournament_name != data.tournamentInfo.tournamentName;
-                    return not_current;
+
+                    // Ensure it isn't a wifi tournament by removing wifi from the name
+                    let not_wifi = !tournament.tournament_name.toLowerCase().includes("wifi") 
+                    && !tournament.tournament_name.toLowerCase().includes("lan")
+                    && !tournament.tournament_name.toLowerCase().includes("sundown")
+                    && !tournament.tournament_name.toLowerCase().includes("howling at the moon")
+                    && !tournament.event_name.toLowerCase().includes("online");
+
+                    return not_current && not_wifi;
                 }
 
 
@@ -357,14 +370,44 @@ LoadEverything().then(() => {
                     data.score[window.scoreboardNumber].history_sets[window.PLAYER],
                 ).filter(major_filter);
 
-                // If tournaments are less than 3, then grab the next tournament to fill the gap
-                if (tournaments.length < TOURNAMENTS) {
-                    
+                let remainingTournaments = Object.values(
+                    data.score[window.scoreboardNumber].history_sets[window.PLAYER],
+                )
+                .filter(not_current)
+                .sort((a, b) => b.entrants - a.entrants); // Sort by largest entrants first
 
-                    tournaments = Object.values(
-                        data.score[window.scoreboardNumber].history_sets[window.PLAYER],
-                    ).filter(not_current);
+
+                // If tournaments are less than 3, then grab the next tournament to fill the gap
+                while (tournaments.length < TOURNAMENTS) {
+                    
+                    console.log("Not enough tournaments, grabbing more");
+                    console.log(tournaments);
+
+                    // Find the largest tournament not already in the array
+                    let largestTournament = remainingTournaments.find(
+                        (tournament) =>
+                            !tournaments.some(
+                                (existing) =>
+                                    existing.tournament_name === tournament.tournament_name,
+                            ),
+                    );
+
+                    // Add the largest tournament to the array if it exists
+                    if (largestTournament) {
+                        tournaments.push(largestTournament);
+                    }
                 }
+
+                // Sort tournaments by date:
+                tournaments.sort((a, b) => {
+                    let aDate = new Date(
+                        `${a.event_date_month} ${a.event_date_day}, ${a.event_date_year}`,
+                    );
+                    let bDate = new Date(
+                        `${b.event_date_month} ${b.event_date_day}, ${b.event_date_year}`,
+                    );
+                    return bDate - aDate;
+                });
 
                 tournaments.slice(0, TOURNAMENTS)
                 .forEach((sets, s) => {
