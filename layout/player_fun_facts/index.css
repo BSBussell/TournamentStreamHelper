@@ -638,6 +638,23 @@ div.info {
     justify-content: flex-start;
 }
 
+.facts {
+    position: absolute;
+    top: 50px;
+    width: var(--infos-wdith);
+    /* height: 55vh; */
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 16px;
+
+    display: flex;
+    justify-content: flex-start;
+}
+
 .p1.results {
     right: 50px;
 }
@@ -698,6 +715,23 @@ div.info {
     font-size: 30px;
 }
 
+.fact_info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-grow: 1;
+    overflow: hidden;
+    display: border-box;
+}
+
+.p1 .fact_info {
+    padding-right: 32px;
+}
+
+.p2 .fact_info {
+    padding-right: 32px;
+}
+
 .tournament_info {
     display: flex;
     flex-direction: column;
@@ -708,16 +742,27 @@ div.info {
 }
 
 .p1 .tournament_info {
-    padding-right: 32px;
+    padding-left: 32px;
 }
 
 .p2 .tournament_info {
     padding-right: 32px;
 }
 
-.tournament_name {
+.fun_fact {
     font-size: 32px;
     padding-left: 32px;
+    letter-spacing: normal;
+    width: 100%;
+}
+
+.fun_fact .text {
+    justify-content: left;
+}
+
+
+.tournament_name {
+    font-size: 32px;
     letter-spacing: normal;
     width: 100%;
 }

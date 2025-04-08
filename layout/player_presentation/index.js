@@ -274,7 +274,7 @@ LoadEverything().then(() => {
         data.score[window.scoreboardNumber].history_sets[window.PLAYER];
       if (history) {
 
-        let results_html = `<div class ="info title">${config.display_titles ? "Fun Facts" : " "}</div>`;
+        let results_html = `<div class ="info title">${config.display_titles ? "Recent Results" : " "}</div>`;
 
         let className = `.results`;
         let tl = gsap.timeline();

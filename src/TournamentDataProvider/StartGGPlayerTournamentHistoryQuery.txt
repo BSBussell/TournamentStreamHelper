@@ -1,6 +1,6 @@
 query TournamentHistoryDataQuery($playerID: ID!, $gameID: ID!) {
   player(id: $playerID) {
-    recentStandings(videogameId: $gameID, limit: 10) {
+    recentStandings(videogameId: $gameID, limit: 20) {
       placement
       entrant {
         event {

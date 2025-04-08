@@ -638,11 +638,45 @@ div.info {
     justify-content: flex-start;
 }
 
+#fun-facts {
+    opacity: 0;
+}
+
+#tournament-results {
+    opacity: 0;
+}
+
+.facts {
+    position: absolute;
+    top: 50px;
+    width: var(--infos-wdith);
+    /* height: 55vh; */
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 16px;
+
+
+    display: flex;
+    justify-content: flex-start;
+}
+
 .p1.results {
     right: 50px;
 }
 
 .p2.results {
+    left: 50px;
+}
+
+.p1.facts {
+    right: 50px;
+}
+
+.p2.facts {
     left: 50px;
 }
 

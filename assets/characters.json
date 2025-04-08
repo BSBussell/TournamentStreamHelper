@@ -112419,6 +112419,84 @@
         ],
         "characterId": null,
         "expand": []
+      },
+      {
+        "id": 2619,
+        "name": "Olympia",
+        "isCommon": null,
+        "videogameId": 53945,
+        "externalIdMap": null,
+        "images": [
+          {
+            "id": 8069385,
+            "width": 236,
+            "height": 236,
+            "ratio": 1,
+            "type": "icon",
+            "url": "https://images.start.gg/images/character/2619/image-032b07d7e798aaf9cd74be69be5a7970.png",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          },
+          {
+            "id": 8069386,
+            "width": 236,
+            "height": 236,
+            "ratio": 1,
+            "type": "stockIcon",
+            "url": "https://images.start.gg/images/character/2619/image-9cdf40f6f2f2209e5ab101a563b28390.png",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          }
+        ],
+        "characterId": null,
+        "expand": []
+      },
+      {
+        "id": 2620,
+        "name": "Anna",
+        "isCommon": null,
+        "videogameId": 49783,
+        "externalIdMap": null,
+        "images": [
+          {
+            "id": 8083181,
+            "width": 512,
+            "height": 512,
+            "ratio": 1,
+            "type": "icon",
+            "url": "https://images.start.gg/images/character/2620/image-1c0a72a9824a8838d5156fe1f96fd121.png",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          },
+          {
+            "id": 8083182,
+            "width": 512,
+            "height": 512,
+            "ratio": 1,
+            "type": "stockIcon",
+            "url": "https://images.start.gg/images/character/2620/image-02429782cf4a96bbe7adfd2cc40489fa.png",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          }
+        ],
+        "characterId": null,
+        "expand": []
       }
     ]
   },
@@ -114798,7 +114876,9 @@
     2615,
     2616,
     2617,
-    2618
+    2618,
+    2619,
+    2620
   ],
   "resultEntity": "character",
   "actionRecords": []
