@@ -573,7 +573,7 @@ LoadEverything().then(() => {
             console.log("SETS", last_sets);
             
             if (JSON.stringify(last_sets) != JSON.stringify(oldLastSets)){
-                let sets_html = `<div class ="info title">${config.display_titles ? "Current Run" : " "}</div>` ;
+                let sets_html = `` ;
                 Object.values(last_sets)
                     .slice(0, SETS)
                     .reverse()
@@ -595,6 +595,11 @@ LoadEverything().then(() => {
                         </div>
                     `;
                 });
+
+                
+                if (sets_html != "") {
+                    sets_html = '<div class ="info title">${config.display_titles ? "Current Run" : " "}</div>' + sets_html;
+                }
                 $(".sets").html(sets_html);
 
                 let tl = gsap.timeline();
