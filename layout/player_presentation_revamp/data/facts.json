@@ -12,7 +12,7 @@
     "Blank_58": [
         "Waxed light in poker",
         "Claims to be the worst player in Knoxville in a best of 1."
-    ],    
+    ],
     "Hidalgo": [
         "Beat a nationally ranked Mexican cloud player",
         "His mentality is \"I am Pikachu\"",
@@ -31,7 +31,7 @@
         "His name is actually Douglas Kong",
         "Was the head Smash 4 Knox TO"
     ],
-        "Meow": [
+    "Meow": [
         "#1 in Rivals 2 in Chattanooga"
     ],
     "EggHead": [
@@ -54,7 +54,10 @@
         "Won doubles at VOLAN24 with KornDog",
         "Also known as 'The Benadryllionaire'"
     ],
-    "Zappa": ["Hidden Boss", "Former Knoxville PR"],
+    "Zappa": [
+        "Hidden Boss",
+        "Former Knoxville PR"
+    ],
     "renko!": [
         "Yoshi",
         "TO'd Knox for like 3 years everyone say thank you Alice",
@@ -90,10 +93,10 @@
         "Biggest character pool in TN",
         "#65 Speedrunner of Run 2 Any%"
     ],
-        "BuyingLake": [
+    "BuyingLake": [
         "Specializes in beating Mario players"
     ],
-        "So-Ren": [
+    "So-Ren": [
         "Allegedly has lots of hidden knowledge"
     ],
     "ShlumpedShoto": [
@@ -117,8 +120,12 @@
         "1/2 of the soup brothers.",
         "7th most locked in player in Knoxville"
     ],
-    "MayerMayhem": ["Fundies be damned I'm gonna neutral B."],
-    "Amish Carpool": ["\"I am the prophet in a region full of campers\"."],
+    "MayerMayhem": [
+        "Fundies be damned I'm gonna neutral B."
+    ],
+    "Amish Carpool": [
+        "\"I am the prophet in a region full of campers\"."
+    ],
     "Big Mama": [
         "Ask him about Brawl Ganondorf",
         "\"Playing snake makes me have to burp\"",
@@ -148,9 +155,15 @@
         "True to the name, which no one knows how to pronounce.",
         "The most locked in player in Knoxville."
     ],
-    "MaYo": ["Plays the forbidden game"],
-    "Benimaru": ["GOATed on the sticks (this game)"],
-    "Abs0lute_un1t_": ["Has a win on John Wilkes Gooch"],
+    "MaYo": [
+        "Plays the forbidden game"
+    ],
+    "Benimaru": [
+        "GOATed on the sticks (this game)"
+    ],
+    "Abs0lute_un1t_": [
+        "Has a win on John Wilkes Gooch"
+    ],
     "Quetzal": [
         "\"I'll just give you 15 dollars because I feel sorry for your broke [arse]\""
     ],
@@ -163,7 +176,9 @@
         "Once had his tag repeatedly mispronounced as “Span Man” by a collegiate commentator.",
         "Got his tag from his father's college gaming days."
     ],
-    "Rogny": ["\"Has renegade raider in fortnite.\""],
+    "Rogny": [
+        "\"Has renegade raider in fortnite.\""
+    ],
     "D.E.M.": [
         "Doesn't respect women enough.",
         "Used to main mewtwo.",
@@ -188,7 +203,10 @@
         "Nick's friend",
         "Was drafted by Sam in the Knoxville fantasy league"
     ],
-    "FoxboxRay": ["TO of Smash the Cave", "Excellent Artist"],
+    "FoxboxRay": [
+        "TO of Smash the Cave",
+        "Excellent Artist"
+    ],
     "E Man": [
         "Notorious for excellent counters",
         "TO of ETSUcon (sign up, y'all!)",
@@ -199,7 +217,10 @@
         "Once said \"The two minutes I spend brushing my teeth could be used to practice Steve combos\"",
         "Only Tricot player to make Knox PR besides BuyingLake"
     ],
-    "groceries!!": ["Violet's brother", "Mains Fox"],
+    "groceries!!": [
+        "Violet's brother",
+        "Mains Fox"
+    ],
     "Orex": [
         "Better at Brawlstars than smash",
         "Won his first Knox Local",
@@ -207,7 +228,10 @@
         "Loves piggies",
         "Shared fries with 1/2 of Tennessee Gorilla"
     ],
-    "Dany": ["The governor", "#1 In Tennessee probably"],
+    "Dany": [
+        "The governor",
+        "#1 In Tennessee probably"
+    ],
     "THE KINGPIN": [
         "Traveling gamer (<b>Does</b> live here)",
         "He's a math teacher.",
@@ -218,7 +242,7 @@
         "Collegiate crew battles",
         "8th most locked in player in Knoxville"
     ],
-        "CookedCanard": [
+    "CookedCanard": [
         "Hosts invitationals",
         "Most locked in player in Tricot"
     ],
@@ -227,8 +251,14 @@
         "Collegiate crew battles",
         "8th most locked in player in Knoxville"
     ],
-    "Mascara": ["Bowser Jr."],
-    "Devta": ["Plays Byleth", "Will juggle you.", "Has a sick sweater"],
+    "Mascara": [
+        "Bowser Jr."
+    ],
+    "Devta": [
+        "Plays Byleth",
+        "Will juggle you.",
+        "Has a sick sweater"
+    ],
     "Riddul": [
         "Plays Diddy Kong",
         "Top 5 in East TN",
@@ -238,13 +268,12 @@
         "Secretly has a sick pocket Wii Fit Trainer",
         "Has never lost a set to MKLeo"
     ],
-    "default" : [
+    "default": [
         "Has a unique taste in food",
         "Has definitely played more than 30 hours of Super Smash Bros. Ultimate",
         "Watched the Pokemon anime once",
         "Plays the game in a way that reflects their individuality",
         "Has a main and maybe even a secondary",
-
         "Is fond of music and owns many different songs",
         "Helped someone lift a heavy object",
         "Likes films and owns a machine that can play them",
@@ -254,14 +283,12 @@
         "Likes the sound of radar",
         "Has brightened people's days by merely smiling",
         "Excels at star gazing",
-
         "Has a unique sense of humor",
         "Enjoys the company of friends",
         "Enjoys participating in their local community",
         "Is a fan of at least some form of competition",
         "Knows the true meaning of neutral",
         "Has a strong distaste for mashing mechanics",
-
         "Has not taken a bo5 set off a knox pr player with mii gunner",
         "Has played at least two Nintendo games",
         "Was once mesmerized by a creature",
