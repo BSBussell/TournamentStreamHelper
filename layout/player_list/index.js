@@ -19,17 +19,15 @@ LoadEverything().then(() => {
     ) {
       let html = "";
 
-      Object.values(data.player_list.slot).forEach((slot, i) => {
+      const teams = Object.values(data.player_list.slot).sort(() => Math.random() - 0.5);
+      teams
+      .forEach((slot, i) => {
         html += `<div class="slot slot${i + 1}">`;
-        html += `<div class="container title"></div>`;
+        html += `<div class="container heading_title">Fun Facts can go here?</div>`;
         Object.values(slot.player).forEach((player, p) => {
           html += `
             <div class="p${p + 1} player container">
-              <div class="icon avatar"></div>
-              <div class="icon online_avatar"></div>
-              <div class="flagcountry"></div>
-              <div class="flagstate"></div>
-              <div class="sponsor_icon"></div>
+             
               <div class="name_twitter">
                 <div class="name"></div>
                 <div class="twitter"></div>
@@ -44,7 +42,7 @@ LoadEverything().then(() => {
 
       $(".players_container").html(html);
 
-      const teams = Object.values(data.player_list.slot);
+      
       for (const [t, slot] of teams.entries()) {
         SetInnerHtml($(`.slot${t + 1} .title`), slot.name);
         const players = Object.values(slot.player);
@@ -143,5 +141,39 @@ LoadEverything().then(() => {
     $(".container div:not(:has(>.text:empty))").css("margin-right", "");
     $(".container div:has(>.text:empty)").css("margin-left", "0");
     $(".container div:not(:has(>.text:empty))").css("margin-left", "");
+
+    autoScrollPlayers();
   };
+
+  function autoScrollPlayers() {
+    const container = document.querySelector('.players_container');
+    if (!container) return;
+  
+    // Clone the children to create a seamless scrolling effect
+    // This duplicates the content so that when we wrap, the same visuals continue
+    const children = Array.from(container.children);
+    children.forEach(child => {
+      const clone = child.cloneNode(true);
+      container.appendChild(clone);
+    });
+  
+    // Calculate the height of the original content
+    const originalHeight = container.scrollHeight / 2;
+  
+    // Animate the container's scrollTop property continuously.
+    // The modifiers plugin ensures the value resets seamlessly.
+    gsap.to(container, {
+      duration: 30,
+      ease: "none",
+      // Animate an increment of the original height
+      scrollTop: "+=" + originalHeight,
+      repeat: -1,
+      modifiers: {
+        scrollTop: function(value) {
+          // Use the modulus operator to wrap the scroll position
+          return parseFloat(value) % originalHeight;
+        }
+      }
+    });
+  }
 });

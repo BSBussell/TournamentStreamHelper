@@ -471,7 +471,7 @@ LoadEverything().then(() => {
                 
                 // ------- FUN FACTS -------------
                 let facts_html = `<div class ="info title">${config.display_titles ? "Fun Facts" : " "}</div>`;
-                fetch("data/facts.json")
+                fetch("../DATA/facts.json")
                     .then((response) => response.json())
                     .then((facts) => {
                         // Populate player names with each player on the team
@@ -573,7 +573,7 @@ LoadEverything().then(() => {
             console.log("SETS", last_sets);
             
             if (JSON.stringify(last_sets) != JSON.stringify(oldLastSets)){
-                let sets_html = `` ;
+                let sets_html = `<div class ="info title">${config.display_titles ? "Current Run" : " "}</div>` ;
                 Object.values(last_sets)
                     .slice(0, SETS)
                     .reverse()
@@ -595,11 +595,6 @@ LoadEverything().then(() => {
                         </div>
                     `;
                 });
-
-                
-                if (sets_html != "") {
-                    sets_html = '<div class ="info title">${config.display_titles ? "Current Run" : " "}</div>' + sets_html;
-                }
                 $(".sets").html(sets_html);
 
                 let tl = gsap.timeline();

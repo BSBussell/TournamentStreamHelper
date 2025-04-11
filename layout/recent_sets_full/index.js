@@ -1,10 +1,10 @@
 const NUM_SETS = 3;
 
 // Timestamp for the start of the season
-const AFTER = 1735774588;
+const AFTER = 0;
 
 // Title for the set history
-const SEASON_TITLE = "Spring '25 PR";
+const SEASON_TITLE = "Lifetime";
 
 LoadEverything().then(() => {
   
@@ -310,7 +310,7 @@ LoadEverything().then(() => {
           <div class="lifetime">
             <div class="set_container">
               <div class=${p1_class}>${player1Sets}</div>
-              <div class="lifetime_title">Spring '25 PR</div>
+              <div class="lifetime_title">${SEASON_TITLE}</div>
               <div class=${p2_class}>${player2Sets}</div>
             </div>
           </div>

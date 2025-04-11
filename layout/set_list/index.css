@@ -11,6 +11,10 @@ body {
     drop-shadow(0 1px 5px rgba(0, 0, 0, 0.12))
     drop-shadow(0 -1px 2px rgba(0, 0, 0, 0.1));
   letter-spacing: 1;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
 }
 
 .container {
@@ -27,14 +31,14 @@ body {
 
 .players_container {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   height: 100%;
-  gap: 32px;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-content: flex-start;
+  width: 80%;
+  padding: 16px;
+  box-sizing: border-box;
+  overflow-y: auto; /* updated */
 
-  overflow-y: auto;
+  /* will-change: transform; */
 }
 
 .slot {
@@ -193,12 +197,32 @@ body {
 
 .character_container {
   display: flex;
+  position: absolute;
   overflow: hidden;
-  height: 100%;
-  flex-shrink: 0;
-  width: 140px;
-  background-color: #3f3f46;
-  border-radius: var(--border-radius);
+  /* height: 100%; */
+  /* flex-shrink: 0; */
+  /* width: 140px; */
+  height: 151px;
+  width: 350px;
+  z-index: 0;
+  opacity: 0.27;
+
+  /* background-color: #3f3f46; */
+  /* border-radius: var(--border-radius); */
+}
+
+.character_container.character1 {
+  left: 10px;
+}
+
+.character_container.character2 {
+  right: 10px;
+}
+
+.character_container .tsh_character {
+
+  /* Make transparent */
+  background-color: transparent;
 }
 
 .score {
@@ -215,4 +239,97 @@ body {
 
 .sponsor {
   opacity: 0.6;
+}
+
+/* Styling for the players_container and set_container */
+.set_container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--bg-color);
+  border-radius: var(--border-radius);
+  padding: 8px 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 720px;
+
+  margin-bottom: 64px;
+
+  flex-shrink: 0;
+
+  position: relative;
+  overflow: hidden;
+}
+
+.p1.score, .p2.score {
+  font-size: 40px;
+  width: 64px;
+  height: 64px;
+  text-align: center;
+  line-height: 64px;
+  border-radius: 100%;
+  color: var(--text-color);
+  flex-shrink: 0;;
+
+  z-index: 10;
+}
+
+.score.winner{
+  
+  background: #29b548;
+}
+.score.loser{
+  
+  background: #d9534f;
+}
+
+.score.draw{
+  
+  background: var(--accent-color);
+}
+
+.name {
+  margin-left: 5px;
+  margin-right: 5px;
+  font-size: 38px;
+  font-weight: bold;
+  color: var(--text-color);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  flex: 1;
+  width: 220px;
+
+
+  z-index: 10;
+
+  gap: 10px;
+}
+
+.name .sponsor {
+  font-size: 20px;
+  opacity: 0.7;
+  padding-top: 7.5px;
+}
+
+.vs {
+  font-size: 64px;
+  font-weight: bold;
+  color: var(--text-color);
+  text-transform: uppercase;
+
+  z-index: 10;
+}
+
+.text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tsh-fit-content {
+  display: inline-block;
+  transform-origin: left center;
 }
