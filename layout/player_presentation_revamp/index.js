@@ -378,7 +378,7 @@ LoadEverything().then(() => {
 
 
                 // If tournaments are less than 3, then grab the next tournament to fill the gap
-                while (tournaments.length < TOURNAMENTS) {
+                while (tournaments.length < TOURNAMENTS && remainingTournaments.length > 0) {
                     
                     console.log("Not enough tournaments, grabbing more");
                     console.log(tournaments);
@@ -408,6 +408,13 @@ LoadEverything().then(() => {
                     );
                     return bDate - aDate;
                 });
+
+                // if there are no tournaments.
+                if (tournaments.length == 0) {
+                    window.START_WITH_FACTS = true;
+                    window.ROTATE = false;
+                    contentSwitchTimerSet = true;
+                }
 
                 tournaments.slice(0, TOURNAMENTS)
                 .forEach((sets, s) => {
@@ -595,7 +602,12 @@ LoadEverything().then(() => {
                         </div>
                     `;
                 });
-                $(".sets").html(sets_html);
+
+
+                if (Object.values(last_sets).length > 0) {
+
+                    $(".sets").html(sets_html);
+                }
 
                 let tl = gsap.timeline();
                 for (const [s, set] of Object.values(last_sets)

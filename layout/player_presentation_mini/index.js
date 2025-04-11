@@ -378,7 +378,7 @@ LoadEverything().then(() => {
 
 
                 // If tournaments are less than 3, then grab the next tournament to fill the gap
-                while (tournaments.length < TOURNAMENTS) {
+                while (tournaments.length < TOURNAMENTS && remainingTournaments.length > 0) {
                     
                     console.log("Not enough tournaments, grabbing more");
                     console.log(tournaments);

@@ -211,6 +211,10 @@ LoadEverything().then(() => {
         let html = ""
         let resolver = new ContentResolver();
 
+        // title
+        html += `<div class="title">Up Next!</div>`;
+
+
         let queue = data.streamQueue[streamName];
         if (queue)  {
             if (config.display.stream_name == true){

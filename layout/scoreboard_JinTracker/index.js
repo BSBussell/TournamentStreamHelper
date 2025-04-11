@@ -1,5 +1,5 @@
 const showTwitter = false; // Show/Hide Twitter
-const showLocation = false; // Show/Hide Location
+let showLocation = false; // Show/Hide Location
 const showSeed = false; // Show/Hide Seed
 
 LoadEverything().then(() => {
@@ -166,17 +166,19 @@ LoadEverything().then(() => {
                                 : "",
                         );
 
+                        let bothInLosers = data.score[window.scoreboardNumber].team["1"].losers && data.score[window.scoreboardNumber].team["2"].losers;
+
                         SetInnerHtml(
                             $(`.p${t + 1}.container .name`),
                             `
-            <span>
-              <span class="sponsor">
-                ${player.team ? player.team : ""}
-              </span>
-              ${player.name ? await Transcript(player.name) : ""}
-              ${team.losers ? "(L)" : ""}
-            </span>
-            `,
+                            <span>
+                              <span class="sponsor">
+                                ${player.team ? player.team : ""}
+                              </span>
+                              ${player.name ? await Transcript(player.name) : ""}
+                              ${!bothInLosers && team.losers ? "(L)" : ""}
+                            </span>
+                            `,
                         );
 
                         SetInnerHtml(
@@ -767,7 +769,7 @@ function compareObjectsForTeam(obj1, obj2) {
 async function firstFunction(player, t) {
     SetInnerHtml(
         $(`.p${t + 1} .flagstate`),
-        player.state.name && showLocation
+        player.state.name && (showLocation || player.state.name != "Tennessee")
             ? `<div class="location_logo symbol"></div>${String(player.state.name)}`
             : "",
     );
