@@ -295,9 +295,20 @@ body {
   /* border-radius: 12px; */
 
   position: relative;
-  bottom: 12px;
+  /* bottom: 12px; */
   
   box-sizing: border-box;
+}
+
+.tn-golira::before {
+  content: '';
+  z-index: 0;
+  position: absolute;
+  top: -27px;
+  display: block;
+  height: 27px;
+  width: 576px;
+  background-color: var(--accent-color)
 }
 
 .loading_text {
@@ -328,7 +339,7 @@ body {
   content: '';
   z-index: 0;
   position: absolute;
-  top: 236px;
+  top: 239px;
   display:block;
   height: 27px;
   width: 576px;

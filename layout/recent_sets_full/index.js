@@ -33,6 +33,8 @@ LoadEverything().then(() => {
 
   // Function to set inner HTML with recent sets html
   function updateRecentSetsContent() {
+
+    // SetInnerHtml($(`.recent_sets_content`), recentSetsHtml);
     $(`.recent_sets_content`).html(recentSetsHtml);
   }
 
@@ -192,8 +194,10 @@ LoadEverything().then(() => {
                   </div>
                   <div class="set_info">
                     <div class="set_col col_1">
-                        <div class="set_text">${setTourneyName}</div>
-                        <div class="set_subtext">${setTourneyDate}</div>
+                        
+                          <div class="set_text text">${setTourneyName}</div>
+                          <div class="set_subtext">${setTourneyDate}</div>
+                        
                     </div>
                   </div>
                   <div class="${_set.winner == 1 ? "set_winner" : "set_loser"}">
