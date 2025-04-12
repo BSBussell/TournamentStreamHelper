@@ -38,6 +38,7 @@ body {
 
 .title .tournament_name {
     font-size: 48px;
+    padding-left: 160px;
 }
 
 .title .details {
@@ -159,10 +160,8 @@ body {
 .logo {
     width: 120px;
     height: 120px;
-    background-image: url("../logo.png");
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
+    object-fit: contain;
+    image-rendering: auto; /* Try also crisp-edges or pixelated for pixel art */
     border-radius: var(--border-radius);
     margin-left: 16px;
 }

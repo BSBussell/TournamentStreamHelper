@@ -141,7 +141,7 @@ LoadEverything().then(() => {
               setContainer.find(".character1"),
               {
                 source: `player_list.slot.${player1 ? player1.slotIndex : set.P1}`,
-                custom_center: [0.5, 0.5],
+                custom_center: [0.5, 0.3],
                 scale_based_on_parent: true
               },
               event
@@ -151,7 +151,7 @@ LoadEverything().then(() => {
               setContainer.find(".character2"),
               {
                 source: `player_list.slot.${player2 ? player2.slotIndex : set.P2}`,
-                custom_center: [0.5, 0.5],
+                custom_center: [0.5, 0.3],
                 scale_based_on_parent: true
               },
               event

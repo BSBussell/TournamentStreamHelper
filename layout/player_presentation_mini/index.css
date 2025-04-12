@@ -224,6 +224,7 @@ body {
 .container .name {
     font-size: 56px;
     overflow: hidden;
+    width: 610px;
 }
 
 .container .name .text > span {

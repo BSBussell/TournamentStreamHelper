@@ -268,12 +268,12 @@ body {
 }
 
 .logo {
-    width: 72px;
-    height: 72px;
-    background-image: url("../logo.png");
+    width: 120px;
+    height: 120px;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
+    border-radius: var(--border-radius);
     flex-shrink: 0;
 }
 

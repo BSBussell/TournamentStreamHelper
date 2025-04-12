@@ -204,7 +204,7 @@ body {
   
   
 .p2 .sponsor {
-    color: var(--p2-sponsor-color);
+    color: var(--p1-sponsor-color);
 }
   
 .losers {
@@ -233,7 +233,9 @@ body {
 
 .avatar_container {
     display: flex;
+    position: absolute;
     justify-content: center;
+    opacity: 0.3;
 }
 
 .p1 .avatar_container {
