@@ -376,10 +376,9 @@ LoadEverything().then(() => {
                 .filter(not_current)
                 .sort((a, b) => b.entrants - a.entrants); // Sort by largest entrants first
 
-
+                
                 // If tournaments are less than 3, then grab the next tournament to fill the gap
                 while (tournaments.length < TOURNAMENTS && remainingTournaments.length > 0) {
-                    
                     console.log("Not enough tournaments, grabbing more");
                     console.log(tournaments);
 
@@ -395,6 +394,15 @@ LoadEverything().then(() => {
                     // Add the largest tournament to the array if it exists
                     if (largestTournament) {
                         tournaments.push(largestTournament);
+
+                        // Remove the added tournament from remainingTournaments
+                        remainingTournaments = remainingTournaments.filter(
+                            (tournament) =>
+                                tournament.tournament_name !== largestTournament.tournament_name,
+                        );
+                    } else {
+                        // Break the loop if no valid tournament is found to avoid infinite loop
+                        break;
                     }
                 }
 
