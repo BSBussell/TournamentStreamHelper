@@ -14,7 +14,7 @@ API_URL = "https://api.start.gg/gql/alpha"
 # export STARTGG_API_KEY="your_api_key_here"
 API_KEY = os.getenv("STARTGG_API_KEY")
 
-default_url = "https://www.start.gg/tournament/volan-2025/event/ultimate-doubles"
+default_url = "https://www.start.gg/tournament/volan-2025/event/ultimate-singles"
 default_file_path = "set_history.json"
 
 if not API_KEY:

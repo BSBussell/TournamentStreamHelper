@@ -1,3 +1,1036 @@
 {
-    "Sets": []
+    "Sets": [
+        {
+            "P1": "storm",
+            "P2": "Viridian",
+            "Score": [
+                3,
+                0
+            ]
+        },
+        {
+            "P1": "Viridian",
+            "P2": "storm",
+            "Score": [
+                0,
+                3
+            ]
+        },
+        {
+            "P1": "Viridian",
+            "P2": "Orex",
+            "Score": [
+                3,
+                0
+            ]
+        },
+        {
+            "P1": "Azeol",
+            "P2": "Orex",
+            "Score": [
+                0,
+                3
+            ]
+        },
+        {
+            "P1": "Viridian",
+            "P2": "Orex",
+            "Score": [
+                3,
+                1
+            ]
+        },
+        {
+            "P1": "storm",
+            "P2": "Azeol",
+            "Score": [
+                3,
+                0
+            ]
+        },
+        {
+            "P1": "Azeol",
+            "P2": "Ave~",
+            "Score": [
+                3,
+                2
+            ]
+        },
+        {
+            "P1": "Orex",
+            "P2": "Lem0nade",
+            "Score": [
+                3,
+                0
+            ]
+        },
+        {
+            "P1": "Ave~",
+            "P2": "Owls",
+            "Score": [
+                3,
+                0
+            ]
+        },
+        {
+            "P1": "HammerBro",
+            "P2": "Lem0nade",
+            "Score": [
+                2,
+                3
+            ]
+        },
+        {
+            "P1": "myriad",
+            "P2": "Viridian",
+            "Score": [
+                2,
+                3
+            ]
+        },
+        {
+            "P1": "Orex",
+            "P2": "Owls",
+            "Score": [
+                3,
+                0
+            ]
+        },
+        {
+            "P1": "storm",
+            "P2": "HammerBro",
+            "Score": [
+                3,
+                1
+            ]
+        },
+        {
+            "P1": "Azeol",
+            "P2": "Lem0nade",
+            "Score": [
+                3,
+                1
+            ]
+        },
+        {
+            "P1": "Owls",
+            "P2": "KornDog",
+            "Score": [
+                3,
+                0
+            ]
+        },
+        {
+            "P1": "myriad",
+            "P2": "Ave~",
+            "Score": [
+                2,
+                3
+            ]
+        },
+        {
+            "P1": "Lem0nade",
+            "P2": "Hidalgo",
+            "Score": [
+                3,
+                2
+            ]
+        },
+        {
+            "P1": "HammerBro",
+            "P2": "Reiko",
+            "Score": [
+                3,
+                1
+            ]
+        },
+        {
+            "P1": "jazz",
+            "P2": "KornDog",
+            "Score": [
+                1,
+                3
+            ]
+        },
+        {
+            "P1": "Coffee",
+            "P2": "Ave~",
+            "Score": [
+                0,
+                3
+            ]
+        },
+        {
+            "P1": "Hidalgo",
+            "P2": "Toastonfir3",
+            "Score": [
+                3,
+                0
+            ]
+        },
+        {
+            "P1": "poisonous_paint",
+            "P2": "Reiko",
+            "Score": [
+                1,
+                3
+            ]
+        },
+        {
+            "P1": "jazz",
+            "P2": "bless",
+            "Score": [
+                3,
+                0
+            ]
+        },
+        {
+            "P1": "KornDog",
+            "P2": "m0use",
+            "Score": [
+                3,
+                2
+            ]
+        },
+        {
+            "P1": "Hutchzilla",
+            "P2": "Coffee",
+            "Score": [
+                1,
+                3
+            ]
+        },
+        {
+            "P1": "Ave~",
+            "P2": "Lord Baccoon",
+            "Score": [
+                3,
+                0
+            ]
+        },
+        {
+            "P1": "Hidalgo",
+            "P2": "Knockoutjoe",
+            "Score": [
+                3,
+                1
+            ]
+        },
+        {
+            "P1": "Tink",
+            "P2": "Toastonfir3",
+            "Score": [
+                2,
+                3
+            ]
+        },
+        {
+            "P1": "Fazfiend",
+            "P2": "poisonous_paint",
+            "Score": [
+                0,
+                3
+            ]
+        },
+        {
+            "P1": "Reiko",
+            "P2": "EdSheeranGaming",
+            "Score": [
+                3,
+                1
+            ]
+        },
+        {
+            "P1": "Ave~",
+            "P2": "Azeol",
+            "Score": [
+                0,
+                3
+            ]
+        },
+        {
+            "P1": "Orex",
+            "P2": "Reiko",
+            "Score": [
+                3,
+                2
+            ]
+        },
+        {
+            "P1": "Owls",
+            "P2": "Hidalgo",
+            "Score": [
+                3,
+                1
+            ]
+        },
+        {
+            "P1": "Lem0nade",
+            "P2": "jazz",
+            "Score": [
+                3,
+                0
+            ]
+        },
+        {
+            "P1": "poisonous_paint",
+            "P2": "TheSamuraiH0B0",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Blank_58",
+            "P2": "Coffee",
+            "Score": [
+                0,
+                2
+            ]
+        },
+        {
+            "P1": "EdSheeranGaming",
+            "P2": "Meteor",
+            "Score": [
+                2,
+                1
+            ]
+        },
+        {
+            "P1": "Marcelainspanish",
+            "P2": "Lord Baccoon",
+            "Score": [
+                0,
+                2
+            ]
+        },
+        {
+            "P1": "Ave~",
+            "P2": "TheSamuraiH0B0",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Orex",
+            "P2": "Coffee",
+            "Score": [
+                2,
+                1
+            ]
+        },
+        {
+            "P1": "poisonous_paint",
+            "P2": "Azeol",
+            "Score": [
+                1,
+                2
+            ]
+        },
+        {
+            "P1": "Reiko",
+            "P2": "Blank_58",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Owls",
+            "P2": "ChillMonkey",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Lem0nade",
+            "P2": "Meteor",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Hidalgo",
+            "P2": "Silvstar",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "jazz",
+            "P2": "EdSheeranGaming",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "poisonous_paint",
+            "P2": "sparx1o1",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Blank_58",
+            "P2": "Uw Spawn Man",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "TheSamuraiH0B0",
+            "P2": "Director Purple",
+            "Score": [
+                2,
+                1
+            ]
+        },
+        {
+            "P1": "Coffee",
+            "P2": "Popsei",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "EdSheeranGaming",
+            "P2": "Amish Carpool",
+            "Score": [
+                2,
+                1
+            ]
+        },
+        {
+            "P1": "Silvstar",
+            "P2": "Marcelainspanish",
+            "Score": [
+                0,
+                2
+            ]
+        },
+        {
+            "P1": "Meteor",
+            "P2": "Seasalt",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "ChillMonkey",
+            "P2": "Lord Baccoon",
+            "Score": [
+                0,
+                2
+            ]
+        },
+        {
+            "P1": "Director Purple",
+            "P2": "AntiMaverick",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Popsei",
+            "P2": "Lucid",
+            "Score": [
+                2,
+                1
+            ]
+        },
+        {
+            "P1": "HeroRNGod",
+            "P2": "Amish Carpool",
+            "Score": [
+                0,
+                2
+            ]
+        },
+        {
+            "P1": "MaYo",
+            "P2": "Marcelainspanish",
+            "Score": [
+                0,
+                2
+            ]
+        },
+        {
+            "P1": "Seasalt",
+            "P2": "8bitguy",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Lord Baccoon",
+            "P2": "Phantom Rose",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Uw Spawn Man",
+            "P2": "Grapeshot",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Rio",
+            "P2": "sparx1o1",
+            "Score": [
+                0,
+                2
+            ]
+        },
+        {
+            "P1": "Ave~",
+            "P2": "8bitguy",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Orex",
+            "P2": "Phantom Rose",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Coffee",
+            "P2": "Lord Baccoon",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "TheSamuraiH0B0",
+            "P2": "Seasalt",
+            "Score": [
+                2,
+                1
+            ]
+        },
+        {
+            "P1": "poisonous_paint",
+            "P2": "Amish Carpool",
+            "Score": [
+                2,
+                1
+            ]
+        },
+        {
+            "P1": "Reiko",
+            "P2": "Marcelainspanish",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Blank_58",
+            "P2": "MaYo",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Azeol",
+            "P2": "HeroRNGod",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Owls",
+            "P2": "Lucid",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Lem0nade",
+            "P2": "AntiMaverick",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "ChillMonkey",
+            "P2": "Popsei",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Meteor",
+            "P2": "Director Purple",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Hidalgo",
+            "P2": "Grapeshot",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "jazz",
+            "P2": "sparx1o1",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Silvstar",
+            "P2": "Uw Spawn Man",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Uw Spawn Man",
+            "P2": "McNessy",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Director Purple",
+            "P2": "Dragonsly109",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Lord Baccoon",
+            "P2": "Lyrix",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "McNessy",
+            "P2": "Phantom Rose",
+            "Score": [
+                0,
+                2
+            ]
+        },
+        {
+            "P1": "Rio",
+            "P2": "8bitguy",
+            "Score": [
+                0,
+                2
+            ]
+        },
+        {
+            "P1": "Amish Carpool",
+            "P2": "Dragonsly109",
+            "Score": [
+                2,
+                1
+            ]
+        },
+        {
+            "P1": "Grapeshot",
+            "P2": "Lyrix",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Tink",
+            "P2": "myriad",
+            "Score": [
+                0,
+                3
+            ]
+        },
+        {
+            "P1": "Fazfiend",
+            "P2": "Viridian",
+            "Score": [
+                1,
+                3
+            ]
+        },
+        {
+            "P1": "storm",
+            "P2": "KornDog",
+            "Score": [
+                3,
+                1
+            ]
+        },
+        {
+            "P1": "HammerBro",
+            "P2": "Hutchzilla",
+            "Score": [
+                3,
+                1
+            ]
+        },
+        {
+            "P1": "soup",
+            "P2": "bless",
+            "Score": [
+                0,
+                2
+            ]
+        },
+        {
+            "P1": "speerit",
+            "P2": "m0use",
+            "Score": [
+                0,
+                2
+            ]
+        },
+        {
+            "P1": "Knockoutjoe",
+            "P2": "Solar C. ~",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Ro",
+            "P2": "Toastonfir3",
+            "Score": [
+                0,
+                2
+            ]
+        },
+        {
+            "P1": "John Wilkes Gooch",
+            "P2": "Tink",
+            "Score": [
+                1,
+                2
+            ]
+        },
+        {
+            "P1": "storm",
+            "P2": "Solar C. ~",
+            "Score": [
+                2,
+                1
+            ]
+        },
+        {
+            "P1": "myriad",
+            "P2": "soup",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Knockoutjoe",
+            "P2": "KornDog",
+            "Score": [
+                0,
+                2
+            ]
+        },
+        {
+            "P1": "m0use",
+            "P2": "Fazfiend",
+            "Score": [
+                1,
+                2
+            ]
+        },
+        {
+            "P1": "Viridian",
+            "P2": "speerit",
+            "Score": [
+                2,
+                1
+            ]
+        },
+        {
+            "P1": "HammerBro",
+            "P2": "Toastonfir3",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Jam",
+            "P2": "Hutchzilla",
+            "Score": [
+                0,
+                2
+            ]
+        },
+        {
+            "P1": "soup",
+            "P2": "THE KINGPIN",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "John Wilkes Gooch",
+            "P2": "bless",
+            "Score": [
+                0,
+                2
+            ]
+        },
+        {
+            "P1": "speerit",
+            "P2": "ShinyPokes",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Solar C. ~",
+            "P2": "S.I.M.R.",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Jam",
+            "P2": "Ro",
+            "Score": [
+                1,
+                2
+            ]
+        },
+        {
+            "P1": "Toastonfir3",
+            "P2": "CookedCanard",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "S.I.M.R.",
+            "P2": "PeeP",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Adventinator The Beastly",
+            "P2": "Ro",
+            "Score": [
+                0,
+                2
+            ]
+        },
+        {
+            "P1": "CookedCanard",
+            "P2": "SheeranGamingTheIsabelle",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "THE KINGPIN",
+            "P2": "Dr./Mr.Shnazzy",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "bless",
+            "P2": "Brosefinho",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "storm",
+            "P2": "SheeranGamingTheIsabelle",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Solar C. ~",
+            "P2": "CookedCanard",
+            "Score": [
+                2,
+                1
+            ]
+        },
+        {
+            "P1": "myriad",
+            "P2": "ShinyPokes",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Knockoutjoe",
+            "P2": "Ro",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "KornDog",
+            "P2": "Adventinator The Beastly",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "m0use",
+            "P2": "Brosefinho",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "HammerBro",
+            "P2": "PeeP",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Fazfiend",
+            "P2": "bless",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Viridian",
+            "P2": "Dr./Mr.Shnazzy",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "S.I.M.R.",
+            "P2": "Toastonfir3",
+            "Score": [
+                0,
+                2
+            ]
+        },
+        {
+            "P1": "speerit",
+            "P2": "THE KINGPIN",
+            "Score": [
+                2,
+                1
+            ]
+        },
+        {
+            "P1": "S.I.M.R.",
+            "P2": "Rogny",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Adventinator The Beastly",
+            "P2": "DA MASKED KUSKO",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "CookedCanard",
+            "P2": "walkupe",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Ro",
+            "P2": "Rogny",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "PeeP",
+            "P2": "DA MASKED KUSKO",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Dr./Mr.Shnazzy",
+            "P2": "LIKEASIRGAMING - noobman",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Jam",
+            "P2": "walkupe",
+            "Score": [
+                2,
+                0
+            ]
+        }
+    ]
 }
