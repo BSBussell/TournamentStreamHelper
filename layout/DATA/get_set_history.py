@@ -12,9 +12,9 @@ API_URL = "https://api.start.gg/gql/alpha"
 # Fetch the API key from the environment variable STARTGG_API_KEY.
 # To set the environment variable, use the following command in your terminal:
 # export STARTGG_API_KEY="your_api_key_here"
-API_KEY = os.getenv("STARTGG_API_KEY")
+API_KEY = "429b0206e418342bb95fecde27cb18d6"
 
-default_url = "https://www.start.gg/tournament/volan-2025/event/ultimate-singles"
+default_url = "https://www.start.gg/tournament/utk-smash-weekly-53-volan-cooldown/event/smash-ultimate-singles"
 default_file_path = "set_history.json"
 
 if not API_KEY:
