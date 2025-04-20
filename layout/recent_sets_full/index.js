@@ -36,6 +36,13 @@ LoadEverything().then(() => {
 
     // SetInnerHtml($(`.recent_sets_content`), recentSetsHtml);
     $(`.recent_sets_content`).html(recentSetsHtml);
+
+    // Make sure the text fits the container
+    $(`.set_text`).each((index, element) => {
+      let setTourneyName = $(element).find(".text").html();
+      FitText($(element), setTourneyName);
+    });
+
   }
 
 
@@ -180,11 +187,11 @@ LoadEverything().then(() => {
             }
 
             // cut tourney name to only 19 characters
-            let char_limit = 20;
-            if (setTourneyName.length > char_limit) {
-              // Set the last three characters to ...
-              setTourneyName = setTourneyName.substring(0, char_limit-3) + "...";
-            }
+            // let char_limit = 20;
+            // if (setTourneyName.length > char_limit) {
+            //   // Set the last three characters to ...
+            //   setTourneyName = setTourneyName.substring(0, char_limit-3) + "...";
+            // }
 
 
             recentSetsHtml += `
@@ -194,8 +201,8 @@ LoadEverything().then(() => {
                   </div>
                   <div class="set_info">
                     <div class="set_col col_1">
-                        
-                          <div class="set_text text">${setTourneyName}</div>
+                         
+                          <div class="set_text"><div class="text">${setTourneyName}</div></div>
                           <div class="set_subtext">${setTourneyDate}</div>
                         
                     </div>
@@ -313,9 +320,9 @@ LoadEverything().then(() => {
         let lifetimeHtml = `
           <div class="lifetime">
             <div class="set_container">
-              <div class=${p1_class}>${player1Sets}</div>
+              <div class="${p1_class}">${player1Sets}</div>
               <div class="lifetime_title">${SEASON_TITLE}</div>
-              <div class=${p2_class}>${player2Sets}</div>
+              <div class="${p2_class}">${player2Sets}</div>
             </div>
           </div>
         `;
