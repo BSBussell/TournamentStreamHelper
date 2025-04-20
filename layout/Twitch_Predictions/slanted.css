@@ -1,0 +1,81 @@
+:root {
+    
+    --local-border-radius: 4px;
+}
+
+
+/* Add to the left and right and then subtract from its width */
+.prediction-bar {
+    /* padding-left: 5%;
+    padding-right: 5%;
+    width: 90%; */
+    box-shadow: none;
+    overflow: visible;
+}
+
+.bar-left,
+.bar-right {
+    border-radius: var(--local-border-radius);
+}
+
+.bar-left {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.bar-right {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.bar-left.leading::after {
+    right: -10vh;
+    width: 32vh;
+    /* clip-path: polygon(0 0, 0% 100%, 100% 0); */
+    clip-path: none;
+
+    border-radius: var(--local-border-radius);
+    transform: skewX(20deg);
+
+    z-index: 10;
+}
+
+.bar-right.leading::before {
+
+    left: -10vh;
+    width: 32vh;
+    clip-path: none;
+
+    border-radius: var(--local-border-radius);
+    transform: skewX(-20deg);
+
+    z-index: 10;
+}
+
+/* Add slant to before */
+.slants {
+  position: absolute;
+  
+  width: 2%;
+  height: 32%;
+  z-index: 0;
+  border-radius: var(--local-border-radius);
+  pointer-events: none;
+}
+
+.bar-left-slant {
+  left: 9.5%; /* Tuck it to the left of .bar-left */
+  background: var(--p1);
+  transform: skewX(-20deg);
+}
+
+.bar-right-slant {
+  right: 9.5%; /* Tuck it to the right of .bar-right */
+  background: var(--p2);
+  transform: skewX(20deg);
+}
+
+.bar-left,
+.bar-right {
+  
+  z-index: 1; /* Ensure bars are above slants */
+}

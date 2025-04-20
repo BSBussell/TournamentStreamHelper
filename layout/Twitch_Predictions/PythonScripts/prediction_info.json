@@ -1,0 +1,28 @@
+{
+  "title": "Who will win Grand Finals?",
+  "status": "LOCKED",
+  "outcomes": [
+    {
+      "title": "m0use",
+      "channel_points": 0,
+      "users": 0,
+      "top_predictors": null
+    },
+    {
+      "title": "HammerBro",
+      "channel_points": 10,
+      "users": 1,
+      "top_predictors": [
+        {
+          "user_id": "771989306",
+          "user_login": "knoxvillessbu",
+          "user_name": "knoxvillessbu",
+          "channel_points_used": 10,
+          "channel_points_won": 0
+        }
+      ]
+    }
+  ],
+  "duration": 600,
+  "creation_time": "2025-04-20T17:11:53.546257278Z"
+}

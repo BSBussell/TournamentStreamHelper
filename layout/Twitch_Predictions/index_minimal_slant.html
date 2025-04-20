@@ -1,10 +1,18 @@
 <html>
+<!-- 
+    THIS ONE ONLY WORKS AT LIKE 1300x100
+    Sorry, it was custom made for our scoreboard
+    If you want to resize it, the slanted.css file
+    is simple enough for it to be a 5 minute job
+-->
 
 <head>
     <meta charset="utf-8" />
     <script src="../include/globals.js"></script>
+
     <link rel="stylesheet" href="../main.css" />
     <link rel="stylesheet" href="./index.css" />
+    <link rel="stylesheet" href="./slanted.css" />
 </head>
 
 <body>
@@ -12,7 +20,7 @@
     <div class="prediction-overlay">
         <div class="prediction-names">
             <div class="p1-container">
-                <span id="p1-name"></span>
+                <span id="left-name">HammerBro</span>
                 <span class="left detail">13 Gamblers</span>
                 <div class="mini-left mini-bar" id="bar-left">
                     <div class="p1-score">60,000</div>
@@ -21,10 +29,10 @@
                 
             </div>
             <div class="center">
-                <span class="center detail">GAMBLING!</span>
+                <span class="center detail">Twitch GAMBLING!</span>
             </div>
             <div class="p2-container">
-                <span id="p2-name"></span>
+                <span id="right-name">m0use</span>
                 <span class="right detail">6 Gamblers</span>
                 <div class="mini-right mini-bar" id="bar-right">
                     <span class="gims">GLRA GIMMS</span>
@@ -33,20 +41,25 @@
             </div>
         </div>
         <div class="prediction-bar">
+            <div class="slants bar-left-slant"></div>
+
             <div class="bar-left leading" id="bar-left">
-            <span class="bar-label" id="left-percent">60%</span>
+                <span class="bar-label" id="left-percent">60%</span>
             </div>
+
             <div class="bar-right" id="bar-right">
-            <span class="bar-label" id="right-percent">40%</span>
+                <span class="bar-label" id="right-percent">40%</span>
             </div>
+
+            <div class="slants bar-right-slant"></div>
         </div>
         
     </div>
     <script>
-        window.hide_names = false;
-        window.hide_count = false;
-        window.bar_only = false;
-        window.hide_percent = false;
+        // window.hide_names = true;
+        // window.hide_points = true;
+        window.bar_only = true;
+        window.hide_percent = true;
     </script>
     <script src="index.js"></script>
 </body>

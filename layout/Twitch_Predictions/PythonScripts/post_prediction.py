@@ -1,13 +1,13 @@
 import requests
 import json
-import time
+import os
 import configparser
 
 
 
 # Loading configs
 config = configparser.ConfigParser()
-config.read("config.ini")
+config.read(os.path.join(os.path.dirname(__file__), "config.ini"))
 
 try:
     ACCESS_TOKEN = config.get("Twitch", "ACCESS_TOKEN")
@@ -18,12 +18,31 @@ except (configparser.NoSectionError, configparser.NoOptionError) as e:
     exit(1)
 
 try:
-    P1_FILE = config.get("TSH", "P1_FILE")
-    P2_FILE = config.get("TSH", "P2_FILE")
-    ROUND_NAME = config.get("TSH", "ROUND_NAME")
-    P1_SCORE = config.get("TSH", "P1_SCORE")
-    P2_SCORE = config.get("TSH", "P2_SCORE")
+    TSH_OUT = config.get("TSH", "TSH_OUT")
     PREDICTION_TIME = config.getint("TSH", "PREDICTION_TIME")
+
+    # Use TSH_OUT to use the correct path
+    '''
+    p1_file = ../../../out/
+    p2_file = ../../../out/score/1/team/2/player/1/name.txt
+    round_name = ../../../out/score/1/match.txt
+    p1_score = ../../../out/score/1/team/1/score.txt
+    p2_score = ../../../out/score/1/team/2/score.txt
+    '''
+
+    P1_FILE = os.path.join(TSH_OUT, 'score/1/team/1/player/1/name.txt')
+    P2_FILE = os.path.join(TSH_OUT, 'score/1/team/2/player/1/name.txt')
+    ROUND_NAME = os.path.join(TSH_OUT, 'score/1/match.txt')
+    P1_SCORE = os.path.join(TSH_OUT, 'score/1/team/1/score.txt')
+    P2_SCORE = os.path.join(TSH_OUT, 'score/1/team/2/score.txt')
+    
+    # Find paths from file path
+    P1_FILE = os.path.join(os.path.dirname(__file__), P1_FILE)
+    P2_FILE = os.path.join(os.path.dirname(__file__), P2_FILE)
+    ROUND_NAME = os.path.join(os.path.dirname(__file__), ROUND_NAME)
+    P1_SCORE = os.path.join(os.path.dirname(__file__), P1_SCORE)
+    P2_SCORE = os.path.join(os.path.dirname(__file__), P2_SCORE)
+    
 except (configparser.NoSectionError, configparser.NoOptionError, ValueError) as e:
     print(f"❌ Error reading TSH configuration: {e}")
     exit(1)

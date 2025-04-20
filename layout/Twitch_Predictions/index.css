@@ -4,6 +4,8 @@
     --bkg: #ffffff;
     --black: #000000;
     --shadow: rgba(0, 0, 0, 0.3);
+
+    --local-border-radius: var(--border-radius);
 }
 
 body {
@@ -21,15 +23,18 @@ body {
     letter-spacing: 1;
   
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: center;
 }
+
+
 
 .prediction-overlay {
     width: 80%;
     height: 80%;
     margin: 0 auto;
     text-align: center;
+    opacity: 0;
 
     display: flex;
     flex-direction: column;
@@ -42,7 +47,7 @@ body {
     display: flex;
     height: 40%;
     width: 100%;
-    border-radius: 8px;
+    border-radius: var(--local-border-radius);
     overflow: hidden;
     margin-top: 12px;
     margin-bottom: 8px;
@@ -73,7 +78,9 @@ body {
     border-bottom-left-radius: 8px;
 
     justify-content: flex-start;
+    
 }
+
   
 .bar-right {
     background-color: var(--p2);
@@ -82,10 +89,35 @@ body {
 
     justify-content: flex-end;
 }
+
+.mini-right {
+    background-color: var(--p2);
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+
+    justify-content: flex-end;
+
+    text-align: left;
+
+    padding-left: 5%;
+}
+
+.mini-left {
+    background-color: var(--p1);
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+
+    justify-content: flex-start;
+
+    text-align: left;
+    padding-left: 5%;
+}
   
 .bar-label {
     padding: 0 8px;
     font-size: 7.5em;
+
+    z-index: 10;
 }
   
 .prediction-names {
@@ -93,16 +125,16 @@ body {
     justify-content: space-between;
     align-items: center;
     color: white;
-    text-shadow: 1px 1px black;
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.125);
     font-size: 2.0em;
 
-    height: 40%;
+    height: 60%;
 }
 
 .p1-container {
     display: flex;
     align-items: flex-start;
-    justify-content: center;
+    justify-content: flex-end;
     flex-direction: column;
     width: 40%;
 
@@ -112,45 +144,96 @@ body {
 .p2-container {
     display: flex;
     align-items: flex-end;
-    justify-content: center;
+    justify-content: flex-end;
     flex-direction: column;
     width: 40%;
 
     height: 90%;
 }
 
-.bar-curve {
-    width: 20px;
-    height: 60px;
-    z-index: 2;
-    display: block;
+
+.p1-container .p2-container {
+    height: 100%;
 }
 
 .mini-bar {
-    height: 40%;
+    height: 40% !important;
     width: 100%;
-    border-radius: var(--border-radius);
+    border-radius: var(--local-border-radius);
+
+    font-size: 0.75em;
+
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    
+    padding-left: 5%;
+    padding-right: 5%;
 }
 
+.bar-left.mini-bar {
+    text-align: left;
+    padding-left: 5%;
+}
+
+.bar-right.mini-bar {
+    text-align: right;
+    padding-right: 5%;
+}
+
+.detail {
+    /* color: var(--accent-color); */
+    text-shadow: 0 0 2px rgba(0, 0, 0, 1), 0 0 4px rgba(0, 0, 0, 1);
+    font-size: 0.95em;
+}
+
+.detail.left {
+    text-align: left;
+}
+.detail.right {
+    text-align: right;
+}
+
+
+/* Leading Step */ 
 .bar-left.leading::after {
     content: "";
     position: absolute;
-    right: -5%;
+    right: -20%;
     top: 0;
-    width: 10%;
+    width: 20%;
     height: 100%;
     background: var(--p1);
-    clip-path: polygon(75% 0%, 100% 50%, 75% 100%, 0% 100%, 25% 50%, 0% 0%);
-    z-index: 3;
+    clip-path: polygon(0 0, 100% 50%, 0 100%);
+    z-index: 1;
+    pointer-events: none;
 }
-.bar-right.leading::after {
+
+
+.bar-right.leading::before {
     content: "";
     position: absolute;
-    left: -5%;
+    left: -20%;
     top: 0;
-    width: 10%;
+    width: 20%;
     height: 100%;
     background: var(--p2);
-    clip-path: polygon(100% 0%, 75% 50%, 100% 100%, 25% 100%, 0% 50%, 25% 0%);
+    clip-path: polygon(0 50%, 100% 0, 100% 100%);
     z-index: 3;
+    pointer-events: none;
+}
+
+.center {
+    align-self: flex-start;
+    font-size: 1.3em;
+    position: absolute;
+    top: 22.5%;
+    left: 50%;
+    width: 100%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+
+
 }

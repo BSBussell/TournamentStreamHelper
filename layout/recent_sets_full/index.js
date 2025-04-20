@@ -1,4 +1,4 @@
-const NUM_SETS = 3;
+// const NUM_SETS = 3;
 
 // Timestamp for the start of the season
 const AFTER = 0;
@@ -128,7 +128,7 @@ LoadEverything().then(() => {
           // If found, add the scores of the sets and remove one of the sets
 
           // Go through all sets
-          if (playersRecentSets.sets.length > NUM_SETS) {
+          if (playersRecentSets.sets.length > window.NUM_SETS) {
             for (let i = 0; i < playersRecentSets.sets.length; i++) {
 
               // Get the set and set flag found to false
@@ -160,7 +160,7 @@ LoadEverything().then(() => {
 
 
 
-          playersRecentSets.sets.slice(0, NUM_SETS).forEach((_set, i) => {
+          playersRecentSets.sets.slice(0, window.NUM_SETS).forEach((_set, i) => {
 
             // set tourney name string
             let setTourneyName = _set.tournament;
