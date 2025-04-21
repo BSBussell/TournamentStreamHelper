@@ -1,4 +1,3 @@
-
 // Customize the name of the points
 const CHANNEL_POINTS_NAME = "GLRA GYMMS";
 
@@ -26,6 +25,9 @@ LoadEverything().then(() => {
         { rotationX: -90, transformOrigin: "top center", opacity: 0 },
         { duration: 0.6, rotationX: 0, opacity: 1, ease: "back.out(2.7)" }, 
         0);
+
+
+    
     let old_json = null;
 
     let stored_data;
@@ -35,7 +37,12 @@ LoadEverything().then(() => {
         pollPredictionInfo();
     };
 
+    let lastPredictionInfo = null;
+
     Update = async (event) => {
+        if (JSON.stringify(stored_data) !== JSON.stringify(event.data)) {
+            lastPredictionInfo = null; // Force prediction info update for side switch
+        }
         stored_data = event.data;
     }
 
@@ -61,18 +68,26 @@ LoadEverything().then(() => {
 
         // Check if player names match scoreboard names from data
         console.log(stored_data.score["1"]);
-        let TSH_P1 = stored_data.score["1"].team["1"].player["1"].name
-        let TSH_P2 = stored_data.score["1"].team["2"].player["1"].name
+        let TSH_P1 = stored_data.score["1"].team["1"].player["1"]
+        let TSH_P2 = stored_data.score["1"].team["2"].player["1"]
         
         let p1_index = 0;
         let p2_index = 1;
 
-        if (player1 == TSH_P2) {
-            player1 = TSH_P1;
-            player2 = TSH_P2;
+        if (player1 == TSH_P2.name) {
+            player1 = TSH_P1.name;
+            player2 = TSH_P2.name;
             p1_index = 1;
             p2_index = 0;
 
+        }
+
+        // Add sponsor to name as span
+        if (TSH_P1.team) {
+            player1 = `${player1}<span class="sponsor">${TSH_P1.team}</span>`;
+        }
+        if (TSH_P2.team) {
+            player2 = `<span class="sponsor">${TSH_P2.team}</span>${player2}`;
         }
 
         
@@ -141,8 +156,8 @@ LoadEverything().then(() => {
         
 
         // Set the player1 and player2 elements to the player1 and player2 points
-        player1Element.innerHTML = player1PointsString;
-        player2Element.innerHTML = player2PointsString;
+        player1Element.innerHTML = [...player1PointsString].map(char => `<span>${char}</span>`).join("");
+        player2Element.innerHTML = [...player2PointsString].map(char => `<span>${char}</span>`).join("");
 
         // Get both gims elements by looping through the elements
         // let gimsElements = document.querySelectorAll(".gims");
@@ -183,9 +198,24 @@ LoadEverything().then(() => {
         // Animate the text changes
         updateTextAnimation.restart();
 
+        // Kill previous animations and reset
+        // let chars = document.querySelectorAll(".p1-score span, .p2-score span");
+        // gsap.killTweensOf(chars);
+
+        // let snakeTimeline = gsap.timeline({ repeat: -1 });
+        // chars.forEach((char, index) => {
+        //   snakeTimeline.to(char, {
+        //     y: -8,
+        //     duration: 0.6,
+        //     ease: "sine.inOut",
+        //     yoyo: true,
+        //     repeat: 1
+        //   }, index * 0.1); // Increase stagger for smoother wave
+        // });
+
     };
 
-    let lastPredictionInfo = null;
+    
 
     async function pollPredictionInfo() {
         try {
