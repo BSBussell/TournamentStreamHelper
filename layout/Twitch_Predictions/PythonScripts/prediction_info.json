@@ -1,20 +1,20 @@
 {
-  "title": "Who will win  Grand Finals ???",
-  "status": "ACTIVE",
+  "title": "Who will win Grand Finals???",
+  "status": "LOCKED",
   "outcomes": [
     {
       "title": "m0use",
-      "channel_points": 200,
+      "channel_points": 0,
       "users": 0,
       "top_predictors": null
     },
     {
       "title": "HammerBro",
-      "channel_points": 130,
+      "channel_points": 0,
       "users": 0,
       "top_predictors": null
     }
   ],
-  "duration": 60,
-  "creation_time": "2025-04-22T03:10:29.998860128Z"
+  "duration": 600,
+  "creation_time": "2025-04-22T20:02:00.166249045Z"
 }

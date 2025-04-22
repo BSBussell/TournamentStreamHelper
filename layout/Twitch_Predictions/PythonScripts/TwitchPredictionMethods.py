@@ -64,7 +64,7 @@ def get_active_prediction_and_outcomes():
     outcomes = {o["title"]: o["id"] for o in pred["outcomes"]}
     return pred["id"], outcomes
 
-def post_prediction(title: str, outcomes: list[str], window: int) -> bool:
+def post_prediction(title: str, outcomes: list[str], window: int = config["TSH"]["prediction_time"]) -> bool:
     payload = {
         "broadcaster_id": config["Twitch"]["broadcaster_id"],
         "title": title,

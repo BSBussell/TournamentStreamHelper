@@ -22,12 +22,17 @@ class PredictionWindow(QMainWindow):
         main_layout = QVBoxLayout()
         central.setLayout(main_layout)
 
+        main_layout.setContentsMargins(20, 20, 20, 20)
+        main_layout.setSpacing(15)
+
         # --- Prediction display ---
         self.name_layout = QHBoxLayout()
         self.name1 = QLabel("P1")
         self.name1.setAlignment(Qt.AlignCenter)
+        self.name1.setStyleSheet("font-size: 18px; font-weight: bold;")
         self.name2 = QLabel("P2")
         self.name2.setAlignment(Qt.AlignCenter)
+        self.name2.setStyleSheet("font-size: 18px; font-weight: bold;")
         self.name_layout.addWidget(self.name1)
         self.name_layout.addWidget(self.name2)
         main_layout.addLayout(self.name_layout)
@@ -35,20 +40,25 @@ class PredictionWindow(QMainWindow):
         self.percent_layout = QHBoxLayout()
         self.pct1 = QLabel("—%")
         self.pct1.setAlignment(Qt.AlignCenter)
+        self.pct1.setStyleSheet("font-size: 16px;")
         self.pct2 = QLabel("—%")
         self.pct2.setAlignment(Qt.AlignCenter)
+        self.pct2.setStyleSheet("font-size: 16px;")
         self.percent_layout.addWidget(self.pct1)
         self.percent_layout.addWidget(self.pct2)
         main_layout.addLayout(self.percent_layout)
 
         # --- Buttons ---
         btn_layout = QVBoxLayout()
+        btn_layout.setSpacing(10)
         btn_start    = QPushButton("Start Prediction")
         btn_decide   = QPushButton("Decide Winner")
         btn_delete   = QPushButton("Delete Prediction")
         btn_verify   = QPushButton("Verify Files")
         btn_quit     = QPushButton("Quit")
         for btn in (btn_start, btn_decide, btn_delete, btn_verify, btn_quit):
+            btn.setMinimumHeight(30)
+            btn.setStyleSheet("font-size: 14px;")
             btn_layout.addWidget(btn)
         main_layout.addLayout(btn_layout)
 
@@ -105,6 +115,35 @@ class PredictionWindow(QMainWindow):
             self.current_pred_id = pred["id"]
             self.current_outcomes = {}
 
+    def get_prediction_inputs(self, default_title, default_p1, default_p2):
+        from PyQt5.QtWidgets import QDialog, QFormLayout, QLineEdit, QDialogButtonBox
+
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Prediction Details")
+        layout = QFormLayout(dialog)
+
+        title_input = QLineEdit(default_title)
+        p1_input = QLineEdit(default_p1)
+        p2_input = QLineEdit(default_p2)
+
+        # Set a minimum width to allow full content to show
+        title_input.setMinimumWidth(300)
+        p1_input.setMinimumWidth(300)
+        p2_input.setMinimumWidth(300)
+
+        layout.addRow("Title:", title_input)
+        layout.addRow("Player 1:", p1_input)
+        layout.addRow("Player 2:", p2_input)
+
+        buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        buttons.accepted.connect(dialog.accept)
+        buttons.rejected.connect(dialog.reject)
+        layout.addWidget(buttons)
+
+        if dialog.exec_() == QDialog.Accepted:
+            return title_input.text(), p1_input.text(), p2_input.text()
+        return None
+
     def on_start(self):
         tags = backend.get_player_tags()
         round_name = backend.get_round_name()
@@ -114,11 +153,15 @@ class PredictionWindow(QMainWindow):
 
         prefix = "Who will win "
         suffix = "???"
-        title = f"{prefix}{round_name}{suffix}"
+        default_title = f"{prefix}{round_name}{suffix}"
         out1, out2 = tags
-        window = backend.get_prediction_window()
 
-        success = backend.post_prediction(title, [out1, out2], window)
+        result = self.get_prediction_inputs(default_title, out1, out2)
+        if not result:
+            return
+        title, player1, player2 = result
+
+        success = backend.post_prediction(title, [player1, player2])
         QMessageBox.information(self, "Start Prediction", "Success!" if success else "Failed.")
 
     def on_decide(self):
@@ -176,6 +219,11 @@ class PredictionWindow(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    from PyQt5.QtGui import QPalette, QColor
+    palette = QPalette()
+    palette.setColor(QPalette.Window, QColor("#f5f5f5"))
+    palette.setColor(QPalette.WindowText, Qt.black)
+    app.setPalette(palette)
     w = PredictionWindow()
     w.show()
     sys.exit(app.exec_())
