@@ -84,7 +84,9 @@ class PredictionWindow(QMainWindow):
 
     def refresh_display(self):
         pred = backend.fetch_current_prediction()
-        if not pred:
+        if not pred or pred.get("status") != "ACTIVE":
+        
+            
             self.name1.setText("No active prediction")
             self.name2.setText("")
             self.pct1.setText("—")
@@ -99,9 +101,12 @@ class PredictionWindow(QMainWindow):
             o1, o2 = outs[0], outs[1]
             self.name1.setText(o1["title"])
             self.name2.setText(o2["title"])
-            total = o1["channel_points"] + o2["channel_points"] or 1
-            p1 = round(100 * o1["channel_points"]/total)
-            p2 = 100 - p1
+            total = o1["channel_points"] + o2["channel_points"]
+            if total == 0:
+                p1, p2 = 50, 50  # Default to 50% each if both have 0 points
+            else:
+                p1 = round(100 * o1["channel_points"] / total)
+                p2 = 100 - p1
             self.pct1.setText(f"{p1}%")
             self.pct2.setText(f"{p2}%")
             self.current_pred_id = pred["id"]

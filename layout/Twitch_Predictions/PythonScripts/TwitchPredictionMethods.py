@@ -121,6 +121,7 @@ def fetch_current_prediction() -> dict | None:
     if not resp or not resp.ok:
         return None
     data = resp.json().get("data", [])
+    print("🔍 Current prediction:", json.dumps(data[0], indent=2) if data else "None")
     return data[0] if data else None
 
 # ——— FILE I/O FOR TSH ———

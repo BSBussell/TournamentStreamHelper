@@ -116,6 +116,15 @@ LoadEverything().then(() => {
         let player1Percent = Math.round((player1Points / (player1Points + player2Points)) * 100);
         let player2Percent = Math.round((player2Points / (player1Points + player2Points)) * 100);
 
+        console.log(player1Percent);
+        console.log(player2Percent);
+        console.log(predictionInfo.status);
+        if (String(predictionInfo.status).toUpperCase() === "CANCELED") {
+            player1Percent = 100;
+            player2Percent = 0;
+            console.log("Prediction Canceled");
+            
+        }
         
         
         let player1PercentString = player1Percent.toString() + "%";

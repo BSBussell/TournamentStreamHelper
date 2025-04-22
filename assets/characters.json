@@ -112575,6 +112575,279 @@
         ],
         "characterId": null,
         "expand": []
+      },
+      {
+        "id": 2623,
+        "name": "Dive Man",
+        "isCommon": null,
+        "videogameId": 68277,
+        "externalIdMap": null,
+        "images": [
+          {
+            "id": 8149005,
+            "width": 128,
+            "height": 128,
+            "ratio": 1,
+            "type": "icon",
+            "url": "https://images.start.gg/images/character/2623/image-a106a891a46cb6815230fd024f658e46.png",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          },
+          {
+            "id": 8149006,
+            "width": 32,
+            "height": 32,
+            "ratio": 1,
+            "type": "stockIcon",
+            "url": "https://images.start.gg/images/character/2623/image-29c28d55b9ddbef1e31ac25982dd7702.png",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          }
+        ],
+        "characterId": null,
+        "expand": []
+      },
+      {
+        "id": 2624,
+        "name": "Crystal Man",
+        "isCommon": null,
+        "videogameId": 68277,
+        "externalIdMap": null,
+        "images": [
+          {
+            "id": 8152277,
+            "width": 128,
+            "height": 128,
+            "ratio": 1,
+            "type": "icon",
+            "url": "https://images.start.gg/images/character/2624/image-7a8be61b68ab3904dff0b6dcff1c402f.png",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          },
+          {
+            "id": 8152278,
+            "width": 32,
+            "height": 32,
+            "ratio": 1,
+            "type": "stockIcon",
+            "url": "https://images.start.gg/images/character/2624/image-d83e18635da5aabdf7ac5a2f75210ba7.png",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          }
+        ],
+        "characterId": null,
+        "expand": []
+      },
+      {
+        "id": 2625,
+        "name": "Mars",
+        "isCommon": null,
+        "videogameId": 68277,
+        "externalIdMap": null,
+        "images": [
+          {
+            "id": 8152283,
+            "width": 128,
+            "height": 128,
+            "ratio": 1,
+            "type": "icon",
+            "url": "https://images.start.gg/images/character/2625/image-cf5c9945dd96ce7a98e0b9899e9ee844.png",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          },
+          {
+            "id": 8152284,
+            "width": 32,
+            "height": 32,
+            "ratio": 1,
+            "type": "stockIcon",
+            "url": "https://images.start.gg/images/character/2625/image-c4550edd2ee87b3000a53a767188e742.png",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          }
+        ],
+        "characterId": null,
+        "expand": []
+      },
+      {
+        "id": 2626,
+        "name": "Book Man",
+        "isCommon": null,
+        "videogameId": 68277,
+        "externalIdMap": null,
+        "images": [
+          {
+            "id": 8152285,
+            "width": 128,
+            "height": 128,
+            "ratio": 1,
+            "type": "icon",
+            "url": "https://images.start.gg/images/character/2626/image-6888fadfedf20981fb40e8f256609c4c.png",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          },
+          {
+            "id": 8152286,
+            "width": 32,
+            "height": 32,
+            "ratio": 1,
+            "type": "stockIcon",
+            "url": "https://images.start.gg/images/character/2626/image-1b6f8e5072cba18a6bd2b1a0b1de12b5.png",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          }
+        ],
+        "characterId": null,
+        "expand": []
+      },
+      {
+        "id": 2627,
+        "name": "Mega Man 4",
+        "isCommon": null,
+        "videogameId": 68277,
+        "externalIdMap": null,
+        "images": [
+          {
+            "id": 8152287,
+            "width": 128,
+            "height": 128,
+            "ratio": 1,
+            "type": "icon",
+            "url": "https://images.start.gg/images/character/2627/image-c8af3a7eb2818849f9d899721b8adbd2.png",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          },
+          {
+            "id": 8152288,
+            "width": 32,
+            "height": 32,
+            "ratio": 1,
+            "type": "stockIcon",
+            "url": "https://images.start.gg/images/character/2627/image-4ed12459619636e2ceb6b8b22391fda5.png",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          }
+        ],
+        "characterId": null,
+        "expand": []
+      },
+      {
+        "id": 2628,
+        "name": "Mega Man 5",
+        "isCommon": null,
+        "videogameId": 68277,
+        "externalIdMap": null,
+        "images": [
+          {
+            "id": 8152292,
+            "width": 128,
+            "height": 128,
+            "ratio": 1,
+            "type": "icon",
+            "url": "https://images.start.gg/images/character/2628/image-f502943e76cd0eef2a2f1334ee6cb524.png",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          },
+          {
+            "id": 8152293,
+            "width": 32,
+            "height": 32,
+            "ratio": 1,
+            "type": "stockIcon",
+            "url": "https://images.start.gg/images/character/2628/image-9d8e21767118238f04c1c3fe2756d7f7.png",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          }
+        ],
+        "characterId": null,
+        "expand": []
+      },
+      {
+        "id": 2629,
+        "name": "Mega Man 6",
+        "isCommon": null,
+        "videogameId": 68277,
+        "externalIdMap": null,
+        "images": [
+          {
+            "id": 8152296,
+            "width": 128,
+            "height": 128,
+            "ratio": 1,
+            "type": "icon",
+            "url": "https://images.start.gg/images/character/2629/image-ef554d65a283493a0e2380954b844678.png",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          },
+          {
+            "id": 8152297,
+            "width": 32,
+            "height": 32,
+            "ratio": 1,
+            "type": "stockIcon",
+            "url": "https://images.start.gg/images/character/2629/image-e72ead8a331230d5dd9d6834f321c3c6.png",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          }
+        ],
+        "characterId": null,
+        "expand": []
       }
     ]
   },
@@ -114958,7 +115231,14 @@
     2619,
     2620,
     2621,
-    2622
+    2622,
+    2623,
+    2624,
+    2625,
+    2626,
+    2627,
+    2628,
+    2629
   ],
   "resultEntity": "character",
   "actionRecords": []
