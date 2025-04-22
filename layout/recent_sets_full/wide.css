@@ -1,7 +1,8 @@
 
 
 .wide {
-    width: 60% !important;
+    width: 50% !important;
+    left: 70%;
 }
 
 .recent_sets_inner {

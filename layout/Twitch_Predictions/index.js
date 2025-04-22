@@ -6,14 +6,14 @@ LoadEverything().then(() => {
 
     let expandAnimation = gsap
         .timeline({ paused: true })
-        .from([".prediction-overlay"], { duration: 1, opacity: 0, width: "50%", ease: "power2.inOut" }, 0)
+        .from([".prediction-overlay"], { duration: 0.2, width: "10%", ease: "power2.inOut" }, 0)
         
         // Fix my messy css
         .from([".bar-left-slant"], { duration: 0.5, opacity: 0, x: 25, skewX: 0, ease: "power2.inOut" }, 0.6)
         .from([".bar-right-slant"], { duration: 0.5, opacity: 0, x: -25, skewX: 0, ease: "power2.inOut" }, 0.6)
 
         // .from([".bar-left-slant", ".bar-right-slant"], { duration: 0.8, opacity: 0, x: 20, ease: "power2.out" }, 0.25)
-        .to([".prediction-overlay"], { duration: 1, opacity: 1, ease: "power2.inOut" }, 0);
+        .to([".prediction-overlay"], { duration: 0.3, opacity: 1, ease: "power2.inOut" }, 0);
      
     let updateTextAnimation = gsap
     .timeline({ paused: true })
@@ -83,10 +83,10 @@ LoadEverything().then(() => {
         }
 
         // Add sponsor to name as span
-        if (TSH_P1.team) {
+        if (TSH_P1.team && !window.hide_sponsor) {
             player1 = `${player1}<span class="sponsor">${TSH_P1.team}</span>`;
         }
-        if (TSH_P2.team) {
+        if (TSH_P2.team  && !window.hide_sponsor) {
             player2 = `<span class="sponsor">${TSH_P2.team}</span>${player2}`;
         }
 
