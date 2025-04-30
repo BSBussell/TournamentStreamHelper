@@ -1,20 +1,50 @@
 {
   "title": "Who will win Grand Finals?",
-  "status": "CANCELED",
+  "status": "RESOLVED",
   "outcomes": [
     {
-      "title": "m0use",
-      "channel_points": 0,
-      "users": 0,
-      "top_predictors": null
+      "title": "HammerBro",
+      "channel_points": 2130,
+      "users": 1,
+      "top_predictors": [
+        {
+          "user_id": "425854637",
+          "user_login": "ttvriddul",
+          "user_name": "ttvriddul",
+          "channel_points_used": 2130,
+          "channel_points_won": 2550
+        }
+      ]
     },
     {
-      "title": "storm",
-      "channel_points": 0,
-      "users": 0,
-      "top_predictors": null
+      "title": "m0use",
+      "channel_points": 420,
+      "users": 3,
+      "top_predictors": [
+        {
+          "user_id": "552521031",
+          "user_login": "storm690ssb",
+          "user_name": "storm690ssb",
+          "channel_points_used": 200,
+          "channel_points_won": 0
+        },
+        {
+          "user_id": "402334970",
+          "user_login": "bumble231",
+          "user_name": "bumble231",
+          "channel_points_used": 120,
+          "channel_points_won": 0
+        },
+        {
+          "user_id": "532031146",
+          "user_login": "hutchzilla___",
+          "user_name": "hutchzilla___",
+          "channel_points_used": 100,
+          "channel_points_won": 0
+        }
+      ]
     }
   ],
   "duration": 600,
-  "creation_time": "2025-04-28T19:55:19.18775205Z"
+  "creation_time": "2025-04-30T02:32:57.670217419Z"
 }
