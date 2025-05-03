@@ -1,50 +1,50 @@
 {
-  "title": "Who will win Grand Finals?",
-  "status": "RESOLVED",
+  "title": "Who will win Winners Round 2?",
+  "status": "ACTIVE",
   "outcomes": [
     {
-      "title": "HammerBro",
-      "channel_points": 2130,
-      "users": 1,
-      "top_predictors": [
-        {
-          "user_id": "425854637",
-          "user_login": "ttvriddul",
-          "user_name": "ttvriddul",
-          "channel_points_used": 2130,
-          "channel_points_won": 2550
-        }
-      ]
-    },
-    {
-      "title": "m0use",
-      "channel_points": 420,
+      "title": "Bepsiboii",
+      "channel_points": 125,
       "users": 3,
       "top_predictors": [
         {
-          "user_id": "552521031",
-          "user_login": "storm690ssb",
-          "user_name": "storm690ssb",
-          "channel_points_used": 200,
+          "user_id": "227397861",
+          "user_login": "renkownl",
+          "user_name": "renkoWNL",
+          "channel_points_used": 55,
+          "channel_points_won": 0
+        },
+        {
+          "user_id": "954164703",
+          "user_login": "ceedonkeykong",
+          "user_name": "CeeDonkeyKong",
+          "channel_points_used": 50,
           "channel_points_won": 0
         },
         {
           "user_id": "402334970",
           "user_login": "bumble231",
           "user_name": "bumble231",
-          "channel_points_used": 120,
+          "channel_points_used": 20,
           "channel_points_won": 0
-        },
+        }
+      ]
+    },
+    {
+      "title": "Uw Spawn Man",
+      "channel_points": 140,
+      "users": 1,
+      "top_predictors": [
         {
-          "user_id": "532031146",
-          "user_login": "hutchzilla___",
-          "user_name": "hutchzilla___",
-          "channel_points_used": 100,
+          "user_id": "771989306",
+          "user_login": "knoxvillessbu",
+          "user_name": "knoxvillessbu",
+          "channel_points_used": 140,
           "channel_points_won": 0
         }
       ]
     }
   ],
   "duration": 600,
-  "creation_time": "2025-04-30T02:32:57.670217419Z"
+  "creation_time": "2025-05-03T21:38:02.988737994Z"
 }
