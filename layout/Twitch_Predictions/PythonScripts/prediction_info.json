@@ -1,50 +1,20 @@
 {
-  "title": "Who will win Winners Round 2?",
-  "status": "ACTIVE",
-  "outcomes": [
-    {
-      "title": "Bepsiboii",
-      "channel_points": 125,
-      "users": 3,
-      "top_predictors": [
+    "title": "Who will win Grand Finals?",
+    "status": "RESOLVED",
+    "outcomes": [
         {
-          "user_id": "227397861",
-          "user_login": "renkownl",
-          "user_name": "renkoWNL",
-          "channel_points_used": 55,
-          "channel_points_won": 0
+            "title": "Tink",
+            "channel_points": 4315,
+            "users": 0,
+            "top_predictors": null
         },
         {
-          "user_id": "954164703",
-          "user_login": "ceedonkeykong",
-          "user_name": "CeeDonkeyKong",
-          "channel_points_used": 50,
-          "channel_points_won": 0
-        },
-        {
-          "user_id": "402334970",
-          "user_login": "bumble231",
-          "user_name": "bumble231",
-          "channel_points_used": 20,
-          "channel_points_won": 0
+            "title": "DKDOUG",
+            "channel_points": 515,
+            "users": 0,
+            "top_predictors": null
         }
-      ]
-    },
-    {
-      "title": "Uw Spawn Man",
-      "channel_points": 140,
-      "users": 1,
-      "top_predictors": [
-        {
-          "user_id": "771989306",
-          "user_login": "knoxvillessbu",
-          "user_name": "knoxvillessbu",
-          "channel_points_used": 140,
-          "channel_points_won": 0
-        }
-      ]
-    }
-  ],
-  "duration": 600,
-  "creation_time": "2025-05-03T21:38:02.988737994Z"
+    ],
+    "duration": 6,
+    "creation_time": "2025-05-12T18:31:56.656812405Z"
 }

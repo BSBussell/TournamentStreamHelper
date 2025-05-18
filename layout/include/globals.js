@@ -32,6 +32,8 @@ async function UpdateWrapper(event) {
       $(document).waitForImages(() => {
         $("body").fadeTo(1, 1, () => {
           console.log("Start()")
+
+          setPlayerScoreColors(data);
           Start();
         });
       });
@@ -131,6 +133,9 @@ async function UpdateData_SocketIO() {
   }
 }
 
+
+
+
 // Load libraries sequentially (to respect dependencies)
 // Then call InitAll
 async function LoadEverything() {
@@ -212,6 +217,24 @@ async function InitAll() {
     document.addEventListener("tsh_update", UpdateWrapper);
     gsap.globalTimeline.timeScale(0);
   })
+}
+
+// Set player score colors
+function setPlayerScoreColors(data) {
+  console.log("setPlayerScoreColors()");
+  const root = document.querySelector(":root");
+
+  // Safety check: make sure data.score["1"] and team colors exist
+  if (!data?.score?.["1"]?.team) return;
+
+  const teams = data.score["1"].team;
+
+  for (let t = 1; t <= 2; t++) {
+    const team = teams[t];
+    if (team?.color) {
+      root.style.setProperty(`--p${t}-score-color`, team.color);
+    }
+  }
 }
 
 // Read program_state.json

@@ -1,6 +1,8 @@
 :root {
     --p1: var(--bg-color);
     --p2: var(--accent-color);
+    
+
     --bkg: #ffffff;
     --black: #000000;
     --shadow: rgba(0, 0, 0, 0.3);
@@ -218,11 +220,11 @@ body {
 
     0%, 100% {
         
-        color: #fbd49d;
+        color: var(--p1);
     }
     50% {
         
-        color: var(--p1);
+        color: var(--p2);
     }
 }
 
@@ -248,7 +250,7 @@ body {
 @keyframes p2-color {
     0%, 100% {
         
-        color: #fbd49d;
+        color: var(--p2);
     }
     50% {
         
