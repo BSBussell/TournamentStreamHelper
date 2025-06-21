@@ -1,20 +1,20 @@
 {
-    "title": "Who will win Grand Finals?",
-    "status": "RESOLVED",
-    "outcomes": [
-        {
-            "title": "Tink",
-            "channel_points": 4315,
-            "users": 0,
-            "top_predictors": null
-        },
-        {
-            "title": "DKDOUG",
-            "channel_points": 515,
-            "users": 0,
-            "top_predictors": null
-        }
-    ],
-    "duration": 6,
-    "creation_time": "2025-05-12T18:31:56.656812405Z"
+  "title": "Who will win Winners Semis?",
+  "status": "CANCELED",
+  "outcomes": [
+    {
+      "title": "Bee",
+      "channel_points": 0,
+      "users": 0,
+      "top_predictors": null
+    },
+    {
+      "title": "Cee",
+      "channel_points": 0,
+      "users": 0,
+      "top_predictors": null
+    }
+  ],
+  "duration": 600,
+  "creation_time": "2025-06-20T23:52:18.598444188Z"
 }

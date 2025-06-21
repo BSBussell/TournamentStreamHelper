@@ -9,8 +9,8 @@ LoadEverything().then(() => {
         .from([".prediction-overlay"], { duration: 0.2, width: "10%", ease: "power2.inOut" }, 0)
         
         // Fix my messy css
-        .from([".bar-left-slant"], { duration: 0.5, opacity: 0, x: 25, skewX: 0, ease: "power2.inOut" }, 0.6)
-        .from([".bar-right-slant"], { duration: 0.5, opacity: 0, x: -25, skewX: 0, ease: "power2.inOut" }, 0.6)
+        .from([".bar-left-slant"], { duration: 0.5, opacity: 0, x: 25, skewX: 0, ease: "power2.inOut" }, 0)
+        .from([".bar-right-slant"], { duration: 0.5, opacity: 0, x: -25, skewX: 0, ease: "power2.inOut" }, 0)
 
         // .from([".bar-left-slant", ".bar-right-slant"], { duration: 0.8, opacity: 0, x: 20, ease: "power2.out" }, 0.25)
         .to([".prediction-overlay"], { duration: 0.3, opacity: 1, ease: "power2.inOut" }, 0);
@@ -183,25 +183,25 @@ LoadEverything().then(() => {
 
         
 
-        // Get the bar-left and bar-right elements
-        let barLeft = document.querySelector(".bar-left");
-        let barRight = document.querySelector(".bar-right");
+        // Get all bar-left and bar-right elements
+        let barsLeft = document.querySelectorAll(".bar-left");
+        let barsRight = document.querySelectorAll(".bar-right");
 
-        // Modify the class with the leading class
+        // Modify the class with the leading class for each bar
         if (player1Points > player2Points) {
-            barLeft.classList.add("leading");
-            barRight.classList.remove("leading");
+            barsLeft.forEach(bar => bar.classList.add("leading"));
+            barsRight.forEach(bar => bar.classList.remove("leading"));
         } else if (player2Points > player1Points) {
-            barRight.classList.add("leading");
-            barLeft.classList.remove("leading");
+            barsRight.forEach(bar => bar.classList.add("leading"));
+            barsLeft.forEach(bar => bar.classList.remove("leading"));
         } else {
-            barLeft.classList.remove("leading");
-            barRight.classList.remove("leading");
+            barsLeft.forEach(bar => bar.classList.remove("leading"));
+            barsRight.forEach(bar => bar.classList.remove("leading"));
         }
 
-        // Set width of the bars
-        barLeft.style.width = player1Percent + "%";
-        barRight.style.width = player2Percent + "%";
+        // Set width of the bars for each
+        barsLeft.forEach(bar => bar.style.width = player1Percent + "%");
+        barsRight.forEach(bar => bar.style.width = player2Percent + "%");
 
 
         // Animate the text changes

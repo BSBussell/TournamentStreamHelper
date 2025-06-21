@@ -19,7 +19,7 @@ body {
     display: flex;
     box-sizing: border-box;
     border-radius: var(--border-radius);
-    background-color: #4b4b4bdd;
+    background-color: #4b4b4b;
 
     align-items: center;
     justify-content: center;

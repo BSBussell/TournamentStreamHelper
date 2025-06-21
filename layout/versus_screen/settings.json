@@ -13,6 +13,9 @@
       "asset_key": "versus_screen",
       "custom_zoom": 1.2,
       "custom_center": [0.55, 0.4]
+    },
+    "ssbu": {
+      "asset_key": "webm"
     }
   }
 }

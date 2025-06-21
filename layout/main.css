@@ -42,8 +42,13 @@
 
 /* Main theme -- Dark Gradient */
 :root {
-    --font: "Rounded Mplus 1c";
-    --border-radius: 16px;
+
+    /* TNGLRA Signature Font */
+    /* --font: "Rounded Mplus 1c"; */
+    
+    /* KnoxEsport Font */
+    --font: "Orbitron";
+    --border-radius: 10px;
     --text-color: white;
     --bg-color: var(--p1-score-color);
     --accent-color: var(--p2-score-color);
@@ -72,6 +77,10 @@
     --p2-score-bg-color: var(--p2-score-color);
     /* --p1-score-color: white; */
     /* --p2-score-color: white; */
+
+    
+    --p1-score-bg-color-dark: color-mix(in srgb, var(--p1-score-bg-color) 60%, black 40%);
+    --p2-score-bg-color-dark: color-mix(in srgb, var(--p2-score-bg-color) 60%, black 40%);
 }
 
 /* Uncomment for themes */

@@ -1,5 +1,6 @@
 body {
-    font-family: "M PLUS 1", sans-serif;
+    font-family: var(--font), sans-serif;
+    font-weight: 1000;
     opacity: 0;
     overflow: hidden;
     margin: 0;
@@ -9,11 +10,30 @@ body {
     letter-spacing: 1;
     text-transform: uppercase;
 
-    filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.12))
+    /* filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.12))
         drop-shadow(0 3px 1px rgba(0, 0, 0, 0.14))
         drop-shadow(0 1px 5px rgba(0, 0, 0, 0.12))
-        drop-shadow(0 -1px 2px rgba(0, 0, 0, 0.1));
+        drop-shadow(0 -1px 2px rgba(0, 0, 0, 0.1)); */
 }
+
+body {
+    -webkit-font-smoothing: antialiased;
+    /* -moz-osx-font-smoothing: grayscale; */
+}
+
+.p1.container,
+.p2.container,
+.phase_container,
+.match_container {
+    will-change: transform;
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+}
+
+.tournament_logo {
+    image-rendering: auto;
+}
+
 
 .container {
 
@@ -41,6 +61,8 @@ body {
 
     border-color: var(--p1-score-bg-color);
     border-right-width: 0px;
+
+    box-shadow: 2.5px 2.5px 0px 2.5px var(--p1-score-bg-color-dark);
 }
 
 .p1 .border {
@@ -58,6 +80,8 @@ body {
 
     border-color: var(--p2-score-bg-color);
     border-left-width: 0px;
+
+    box-shadow: -2.5px 2.5px 0px 2.5px var(--p2-score-bg-color-dark);
 }
 
 .p2 .border {
@@ -105,11 +129,16 @@ body {
 .p1 .sponsor_icon {
     transform: skew(-20deg);
     right: 52px;
+
+    
 }
 
 .p2 .sponsor_icon {
     transform: skew(20deg);
     left: 52px;
+
+    
+    
 }
 
 .sponsor_icon .text > div {
@@ -154,16 +183,35 @@ body {
 
 .logo {
     position: absolute;
-    top: 19px;
+
     left: 50%;
     transform: translateX(-50%);
+
+    
+    /* TN GLRA LOGO */
+/*     
+    top: 0px;
+    width: 150px;
+    height: 150px;
+    */
+
+    /* Base Logo */
+    
+    top: 19px;
     width: 96px;
     height: 96px;
+   
     background-image: url("../logo.png");
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
     border-radius: var(--border-radius);
+    
+
+    image-rendering: pixelated; /* Ensures pixel art is displayed crisply */
+    image-rendering: -moz-crisp-edges; /* For Firefox */
+    image-rendering: -webkit-optimize-contrast; /* For WebKit-based browsers */
+
     z-index: 9;
 }
 
@@ -323,6 +371,8 @@ body {
     flex-direction: row-reverse;
     justify-content: right;
     left: 0px;
+
+    
 }
 
 .p1.under_chips {
@@ -367,6 +417,8 @@ body {
 .p1.under_chips .chip .text:not(.text_empty) {
     margin-left: 4px;
     background: var(--p1-score-bg-color);
+
+    
 }
 
 .p2 .chip .text:not(.text_empty) {
@@ -403,6 +455,8 @@ body {
     transform: skew(-20deg);
     background: var(--text-color);
     border-radius: 8px;
+    height: 30px;
+    box-shadow: 0px 2.5px 0px 2.5px darkgrey;
 }
 
 .phase {
@@ -419,7 +473,9 @@ body {
     transform: skew(-20deg);
     background: var(--bg-color);
     border-radius: 8px;
-    filter: drop-shadow(0 0px 2px rgba(255, 255, 255, 0.85));
+    box-shadow: -2.5px 2.5px 0px 2.5px var(--p1-score-bg-color-dark);
+    /* filter: drop-shadow(0 0px 2px rgba(255, 255, 255, 0.85)); */
+    
 }
 
 .match {
@@ -436,11 +492,14 @@ body {
 }
 
 .info.chips {
-    top: 95px;
+    top: 102.5px;
     left: 0px;
     left: -15px;
     width: 350px;
     width: 362px;
+
+    height: 50px;
+    
 }
 
 .score_boxes {

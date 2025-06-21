@@ -86,12 +86,14 @@ body {
 
     overflow: hidden;
 
-    filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.25))
-        drop-shadow(0 6px 8px rgba(0, 0, 0, 0.1));
+    /* box-shadow: 5px -5px 0px 5px var(--p1-score-bg-color-dark); */
+    /* filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.25))
+        drop-shadow(0 6px 8px rgba(0, 0, 0, 0.1)); */
 }
 
 .container.p1 {
     background-color: var(--bg-color);
+    
 }
 
 .container.p2 {
@@ -697,6 +699,8 @@ div.info {
 
 .p1.facts {
     right: 50px;
+
+    
 }
 
 .p2.facts {
@@ -712,6 +716,8 @@ div.info {
     color: var(--text-color);
     overflow: hidden;
     border-radius: 10px;
+
+    box-shadow: 0px 5px 0px 5px var(--p1-score-bg-color-dark);
     filter: drop-shadow(0 12px 24px rgba(255, 255, 255, 0.25))
         drop-shadow(0 6px 8px rgba(255, 255, 255, 0.1));
     
@@ -1051,6 +1057,8 @@ div.info {
 .info.title {
     font-family: var(--font);
     font-weight: bold;
+
+    box-shadow: 0px 2.5px 0px 2.5px darkgrey;
 }
 
 /* Commentary */
