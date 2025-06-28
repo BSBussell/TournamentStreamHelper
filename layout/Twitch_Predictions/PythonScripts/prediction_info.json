@@ -1,20 +1,28 @@
 {
-  "title": "Who will win Winners Semis?",
-  "status": "CANCELED",
+  "title": "Who will win Grand Finals?",
+  "status": "LOCKED",
   "outcomes": [
     {
-      "title": "Bee",
+      "title": "Orex",
       "channel_points": 0,
       "users": 0,
       "top_predictors": null
     },
     {
-      "title": "Cee",
-      "channel_points": 0,
-      "users": 0,
-      "top_predictors": null
+      "title": "storm",
+      "channel_points": 20,
+      "users": 1,
+      "top_predictors": [
+        {
+          "user_id": "402334970",
+          "user_login": "bumble231",
+          "user_name": "bumble231",
+          "channel_points_used": 20,
+          "channel_points_won": 0
+        }
+      ]
     }
   ],
   "duration": 600,
-  "creation_time": "2025-06-20T23:52:18.598444188Z"
+  "creation_time": "2025-06-21T23:00:32.095933284Z"
 }

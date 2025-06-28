@@ -1056,6 +1056,7 @@ div.info {
 
 .info.title {
     font-family: var(--font);
+    font-size: 42px;
     font-weight: bold;
 }
 

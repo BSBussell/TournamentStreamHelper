@@ -1,0 +1,54 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <script src="../include/globals.js"></script>
+    <link rel="stylesheet" href="../main.css" />
+    <link rel="stylesheet" href="./index.css" />
+</head>
+
+<body>
+    <!-- Background iframe -->
+    <iframe 
+        class="background-iframe" 
+        src="/Users/bbussell/Development/BeesBackdrops/scenicCityLocal.html"
+        frameborder="0">
+    </iframe>
+    
+    <!-- White blur overlay -->
+    <div class="blur-overlay"></div>
+    
+    <div class="overlay-container">
+        <div class="main-content">
+            <div class="title-section">
+                <h1 class="main-title" id="main-title">The Tennessee Gorilla</h1>
+                <h2 class="thanks-subtitle">Thanks You for Watching</h2>
+                <h3 class="tournament-name" id="tournament-name">- Tournament -</h3>
+            </div>
+            
+            <div class="countdown-section">
+                <div class="starting-label">Have a Good Night!</div>
+            </div>
+        </div>
+        
+        <div class="background-elements">
+            <div class="bg-circle bg-circle-1"></div>
+            <div class="bg-circle bg-circle-2"></div>
+            <div class="bg-circle bg-circle-3"></div>
+        </div>
+        
+        <!-- Toaster follow button -->
+        <div class="follow-button" id="follow-toaster">
+            <span class="follow-icon">♥</span>
+            <span class="follow-text">If you enjoyed the show, please follow!</span>
+        </div>
+    </div>
+
+    <script> 
+        // Set variables here
+        const TOURNAMENT_NAME = "Tennessee Gorilla Tournament";
+        const TOURNAMENT_DATE = "June 26, 2025";
+        const START_TIME = "Thanks for Watching!";
+    </script>
+    <script src="index.js"></script>
+</body>

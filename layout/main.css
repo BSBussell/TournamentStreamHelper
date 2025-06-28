@@ -4,6 +4,11 @@
 }
 
 @font-face {
+    font-family: "National Park";
+    src: url("./include/NationalPark.ttf") format("truetype");
+}
+
+@font-face {
     font-family: "RobotoCondensed";
     src: url("./include/RobotoCondensed.ttf") format("truetype");
 }
@@ -40,14 +45,17 @@
     transform-origin: left;
 }
 
+
+
 /* Main theme -- Dark Gradient */
 :root {
 
     /* TNGLRA Signature Font */
-    /* --font: "Rounded Mplus 1c"; */
+    --font: "Rounded Mplus 1c";
+    /* --font: "National Park"; */
     
     /* KnoxEsport Font */
-    --font: "Orbitron";
+    /* --font: "Orbitron"; */
     --border-radius: 10px;
     --text-color: white;
     --bg-color: var(--p1-score-color);

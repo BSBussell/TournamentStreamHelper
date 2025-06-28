@@ -1,0 +1,63 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <script src="../include/globals.js"></script>
+    <link rel="stylesheet" href="../main.css" />
+    <link rel="stylesheet" href="./index.css" />
+</head>
+
+<body>
+    <!-- Background iframe -->
+    <iframe 
+        class="background-iframe" 
+        src="/Users/bbussell/Development/BeesBackdrops/scenicCityLocal.html"
+        frameborder="0">
+    </iframe>
+    
+    <!-- White blur overlay -->
+    <div class="blur-overlay"></div>
+    
+    <div class="overlay-container">
+        <div class="main-content">
+            <div class="title-section">
+                <h1 class="main-title" id="winner">Winner</h1>
+                <h2 class="event-name" id="main-title">- Tournament Name -</h2>
+            </div>
+            
+            <div class="score-section">
+                
+                <div class="score-values">
+                    <span class="score-number" id="team1-score">5</span>
+                    <span class="score-separator">-</span>
+                    <span class="score-number" id="team2-score">0</span>
+                </div>
+            </div>
+            
+            <div class="loading-section">
+                <div class="loading-text" id="loading-text">Congrats to Everyone</div>
+            </div>
+        </div>
+        
+        <div class="background-elements">
+            <div class="bg-circle bg-circle-1"></div>
+            <div class="bg-circle bg-circle-2"></div>
+            <div class="bg-circle bg-circle-3"></div>
+        </div>
+        
+        <!-- Toaster follow button -->
+        <div class="follow-button" id="follow-toaster">
+            <span class="follow-icon">♥</span>
+            <span class="follow-text">Follow Us To Expedite your Gambling Addiction!</span>
+        </div>
+    </div>
+
+    <script> 
+        // Set variables here
+        window.winner = "Knoxville";
+        window.p1_score = 5;
+        window.p2_score = 0;
+        
+    </script>
+    <script src="index.js"></script>
+</body>
