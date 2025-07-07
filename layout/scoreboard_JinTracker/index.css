@@ -189,17 +189,17 @@ body {
 
     
     /* TN GLRA LOGO */
-        
+/*         
     top: 0px;
     width: 150px;
-    height: 150px;
+    height: 150px; */
    
 
     /* Base Logo */
     
-    /* top: 19px;
+    top: 19px;
     width: 96px;
-    height: 96px; */
+    height: 96px;
    
     background-image: url("../logo.png");
     background-size: contain;
