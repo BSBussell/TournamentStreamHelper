@@ -301,23 +301,42 @@ LoadEverything().then(() => {
                         // If there are no facts for the player, use the default
                         if (!playerFacts) playerFacts = facts["default"];
 
+                        console.log(facts["default"]);
+                        console.log(playerFacts);
+
                         // If there are more than 3 facts grab 3 randomly
                         if (playerFacts.length > TOURNAMENTS) {
                             let seed = new Date().getDate();
                             playerFacts = playerFacts
                                 .sort(() => Math.random() - 0.5)
                                 .slice(0, TOURNAMENTS);
+                        
+                        // Otherwise if we have less than 3 facts, add random default facts so we have 3
+                        } else if (playerFacts.length < TOURNAMENTS) {
+                            let seed = new Date().getDate();
+                            let defaultFacts = facts["default"];
+                            while (playerFacts.length < TOURNAMENTS) {
+                                playerFacts.push(defaultFacts[Math.floor(Math.random() * defaultFacts.length)]);
+                            }
+
+                            // Now shuffle the facts
+                            playerFacts = playerFacts.sort(() => Math.random() - 0.5);
+                            
                         }
 
+                        console.log(playerFacts);
+
                         playerFacts.forEach((fact) => {
+
+                            console.log(fact);
                             results_html += `
-                <div class="tournament_container">
-                  <div class="tournament_container_inner">
-                    <div class="tournament_info">
-                      <div class="tournament_name">${fact}</div>
-                    </div>
-                  </div>
-                </div>`;
+                                <div class="tournament_container">
+                                    <div class="tournament_container_inner">
+                                        <div class="tournament_info">
+                                            <div class="tournament_name">${fact}</div>
+                                        </div>
+                                    </div>
+                                </div>`;
                         });
                         $(className).html(results_html);
                     });
@@ -605,7 +624,7 @@ LoadEverything().then(() => {
             });
 
             // Get facts
-            fetch("data/facts.json")
+            fetch("../DATA/facts.json")
                 .then((response) => response.json())
                 .then((facts) => {
                     // Populate player facts with each player's facts
@@ -615,35 +634,57 @@ LoadEverything().then(() => {
                         let playerFact = facts[name];
 
                         // add the player's facts to the list
-                        playerFacts = playerFacts.concat(playerFact);
+                        if (playerFact)
+                            playerFacts = playerFacts.concat(playerFact);
                     });
 
+                    console.log(playerFacts);
+
                     // If there are no facts for the player, use the default
-                    if (!playerFacts) playerFacts = facts["default"];
+                    if (playerFacts.length == 0) playerFacts = facts["default"];
 
                     // If there are more than 4 facts grab 4 randomly
                     if (playerFacts.length > TOURNAMENTS) {
-                        let seed = new Date().getDate();
+                        
                         playerFacts = playerFacts
                             .sort(() => Math.random() - 0.5)
                             .slice(0, TOURNAMENTS);
 
-                        // Otherwise just shuffle the facts
+                        
+                    // Otherwise if we have less than 3 facts, add random default facts so we have 3
+                    } else if (playerFacts.length < TOURNAMENTS) {
+                       
+                        let seed = new Date().getDate();
+                        let defaultFacts = facts["default"];
+                        while (playerFacts.length < TOURNAMENTS) {
+                            playerFacts.push(defaultFacts[Math.floor(Math.random() * defaultFacts.length)]);
+                        }
+
+                        // Now shuffle the facts
+                        playerFacts = playerFacts.sort(() => Math.random() - 0.5);
+                     
+                    // Otherwise just shuffle the facts
                     } else {
+                        
+                        let seed = new Date().getDate();
                         playerFacts = playerFacts.sort(
                             () => Math.random() - 0.5,
                         );
                     }
 
+                    console.log(playerFacts);
+                    console.log(facts["default"]);
+
                     // Build the html for each fact
                     playerFacts.forEach((fact) => {
+                        console.log(fact);
                         results_html += `
                             <div class="tournament_container">
-                            <div class="tournament_container_inner">
-                                <div class="tournament_info">
-                                <div class="tournament_name">${fact}</div>
+                                <div class="tournament_container_inner">
+                                    <div class="fact_info">
+                                        <div class="fun_fact">${fact}</div>
+                                    </div>
                                 </div>
-                            </div>
                             </div>`;
                     });
                     $(className).html(results_html);

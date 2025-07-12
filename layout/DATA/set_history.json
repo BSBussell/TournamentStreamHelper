@@ -1,0 +1,364 @@
+{
+    "Sets": [
+        {
+            "P1": "m0use",
+            "P2": "HammerBro",
+            "Score": [
+                3,
+                1
+            ]
+        },
+        {
+            "P1": "HammerBro",
+            "P2": "m0use",
+            "Score": [
+                2,
+                3
+            ]
+        },
+        {
+            "P1": "HammerBro",
+            "P2": "Meteor",
+            "Score": [
+                3,
+                0
+            ]
+        },
+        {
+            "P1": "Meteor",
+            "P2": "poisonous_paint",
+            "Score": [
+                3,
+                1
+            ]
+        },
+        {
+            "P1": "HammerBro",
+            "P2": "Meteor",
+            "Score": [
+                3,
+                1
+            ]
+        },
+        {
+            "P1": "m0use",
+            "P2": "Uw Spawn Man",
+            "Score": [
+                3,
+                0
+            ]
+        },
+        {
+            "P1": "Meteor",
+            "P2": "Big Mama",
+            "Score": [
+                3,
+                1
+            ]
+        },
+        {
+            "P1": "Uw Spawn Man",
+            "P2": "poisonous_paint",
+            "Score": [
+                0,
+                3
+            ]
+        },
+        {
+            "P1": "EdSheeranGaming",
+            "P2": "Big Mama",
+            "Score": [
+                1,
+                3
+            ]
+        },
+        {
+            "P1": "poisonous_paint",
+            "P2": "ChillMonkey",
+            "Score": [
+                3,
+                0
+            ]
+        },
+        {
+            "P1": "poisonous_paint",
+            "P2": "Meteor",
+            "Score": [
+                1,
+                2
+            ]
+        },
+        {
+            "P1": "Uw Spawn Man",
+            "P2": "IStealDoorDashOrders",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "IStealDoorDashOrders",
+            "P2": "EdSheeranGaming",
+            "Score": [
+                0,
+                2
+            ]
+        },
+        {
+            "P1": "Big Mama",
+            "P2": "soup",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "poisonous_paint",
+            "P2": "SheeranGamingTheIsabelle",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "ChillMonkey",
+            "P2": "John Wilkes Gooch",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "HammerBro",
+            "P2": "IStealDoorDashOrders",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "m0use",
+            "P2": "Meteor",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "John Wilkes Gooch",
+            "P2": "Rogny",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "EdSheeranGaming",
+            "P2": "SheeranGamingTheIsabelle",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "soup",
+            "P2": "samsungsmartrefrigerator",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "poisonous_paint",
+            "P2": "Uw Spawn Man",
+            "Score": [
+                0,
+                2
+            ]
+        },
+        {
+            "P1": "m0use",
+            "P2": "ChillMonkey",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "HammerBro",
+            "P2": "Big Mama",
+            "Score": [
+                2,
+                1
+            ]
+        },
+        {
+            "P1": "soup",
+            "P2": "Meteor",
+            "Score": [
+                0,
+                2
+            ]
+        },
+        {
+            "P1": "John Wilkes Gooch",
+            "P2": "IStealDoorDashOrders",
+            "Score": [
+                0,
+                2
+            ]
+        },
+        {
+            "P1": "EdSheeranGaming",
+            "P2": "Hutchzilla",
+            "Score": [
+                1,
+                0
+            ]
+        },
+        {
+            "P1": "poisonous_paint",
+            "P2": "EdSheeranGaming",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "m0use",
+            "P2": "soup",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "HammerBro",
+            "P2": "John Wilkes Gooch",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "SheeranGamingTheIsabelle",
+            "P2": "Uw Spawn Man",
+            "Score": [
+                1,
+                2
+            ]
+        },
+        {
+            "P1": "Rogny",
+            "P2": "Big Mama",
+            "Score": [
+                0,
+                2
+            ]
+        },
+        {
+            "P1": "samsungsmartrefrigerator",
+            "P2": "ChillMonkey",
+            "Score": [
+                0,
+                2
+            ]
+        },
+        {
+            "P1": "poisonous_paint",
+            "P2": "SheeranGamingTheIsabelle",
+            "Score": [
+                2,
+                1
+            ]
+        },
+        {
+            "P1": "m0use",
+            "P2": "samsungsmartrefrigerator",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "HammerBro",
+            "P2": "Rogny",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Meteor",
+            "P2": "ChillMonkey",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Hutchzilla",
+            "P2": "Uw Spawn Man",
+            "Score": [
+                0,
+                2
+            ]
+        },
+        {
+            "P1": "IStealDoorDashOrders",
+            "P2": "Big Mama",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Meteor",
+            "P2": "samsungsmartrefrigerator",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Hutchzilla",
+            "P2": "SheeranGamingTheIsabelle",
+            "Score": [
+                2,
+                1
+            ]
+        },
+        {
+            "P1": "IStealDoorDashOrders",
+            "P2": "Rogny",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "ChillMonkey",
+            "P2": "soup",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Big Mama",
+            "P2": "John Wilkes Gooch",
+            "Score": [
+                2,
+                0
+            ]
+        },
+        {
+            "P1": "Uw Spawn Man",
+            "P2": "EdSheeranGaming",
+            "Score": [
+                2,
+                1
+            ]
+        }
+    ]
+}

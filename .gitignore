@@ -60,6 +60,10 @@ logs/*
 Pipfile*
 env
 desktop.ini
-assets/controller/*
-assets/*_tmp
-layout_*
+
+venv
+layout/recent_sets_full/thoughts
+scripts/AutoPredictions/config.ini
+layout/Twitch_Predictions/PythonScripts/config.ini
+layout/Twitch_Predictions/PythonScripts/prediction_info.json
+layout/Twitch_Predictions/PythonScripts/prediction_info.json

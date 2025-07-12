@@ -32,7 +32,9 @@ body {
   gap: 32px;
   flex-wrap: wrap;
   justify-content: center;
-  align-content: center;
+  align-content: flex-start;
+
+  overflow-y: auto;
 }
 
 .slot {
@@ -42,6 +44,16 @@ body {
 }
 
 .slot .title {
+  width: 100%;
+  font-size: 34px;
+  margin: 0px 0;
+  padding: 8px 8px;
+  height: 70px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.heading_title {
   width: 100%;
   font-size: 34px;
   margin: 0px 0;
@@ -75,16 +87,26 @@ body {
   border-top-right-radius: 0;
 }
 
+/* Hide all scroll bars and indicators */
+* {
+  scrollbar-width: none; /* For Firefox */
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
+}
+
+*::-webkit-scrollbar {
+  display: none; /* For Chrome, Safari, and Opera */
+}
+
 .name_twitter {
   display: flex;
-  width: 400px;
+  width: 3000%;
   flex-direction: column;
   overflow: hidden;
   justify-content: center;
   padding-left: 8px;
   padding-right: 8px;
   box-sizing: border-box;
-  position: absolute;
+  position: relative;
 }
 
 .filler {

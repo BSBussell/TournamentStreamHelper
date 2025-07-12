@@ -1,0 +1,12 @@
+
+
+.wide {
+    width: 50% !important;
+    left: 70%;
+}
+
+.recent_sets_inner {
+    
+    grid-template-columns: 1fr 1fr;
+    display: grid !important
+}

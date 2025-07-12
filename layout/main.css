@@ -4,6 +4,11 @@
 }
 
 @font-face {
+    font-family: "National Park";
+    src: url("./include/NationalPark.ttf") format("truetype");
+}
+
+@font-face {
     font-family: "RobotoCondensed";
     src: url("./include/RobotoCondensed.ttf") format("truetype");
 }
@@ -40,13 +45,21 @@
     transform-origin: left;
 }
 
+
+
 /* Main theme -- Dark Gradient */
 :root {
+
+    /* TNGLRA Signature Font */
     --font: "Rounded Mplus 1c";
-    --border-radius: 16px;
+    /* --font: "National Park"; */
+    
+    /* KnoxEsport Font */
+    /* --font: "Orbitron"; */
+    --border-radius: 10px;
     --text-color: white;
-    --bg-color: #ff8200;
-    --accent-color: #4b4b4b;
+    --bg-color: var(--p1-score-color);
+    --accent-color: var(--p2-score-color);
 
     /* see DEFAULT_TEAM1_COLOR and DEFAULT_TEAM2_COLOR in src/TSHScoreboardWidget.py */
 
@@ -61,12 +74,21 @@
     rgba(60, 139, 166, 1) 100%
   ); */
 
-    --p1-sponsor-color: #4b4b4b;
-    --p2-sponsor-color: #ff8200;
-    --p1-score-bg-color: #ff8200;
-    --p2-score-bg-color: #4b4b4b;
-    --p1-score-color: white;
-    --p2-score-color: white;
+    /* --p1-sponsor-color: #4b4b4b; */
+    --p1-sponsor-color: var(--p2-score-color);
+    /* --p2-sponsor-color: #ff8200; */
+    --p2-sponsor-color: var(--p1-score-color);
+    /* --p1-score-bg-color: #ff8200;*/
+    --p1-score-bg-color: var(--p1-score-color);
+
+    /* --p2-score-bg-color: #4b4b4b; */
+    --p2-score-bg-color: var(--p2-score-color);
+    /* --p1-score-color: white; */
+    /* --p2-score-color: white; */
+
+    
+    --p1-score-bg-color-dark: color-mix(in srgb, var(--p1-score-bg-color) 60%, black 40%);
+    --p2-score-bg-color-dark: color-mix(in srgb, var(--p2-score-bg-color) 60%, black 40%);
 }
 
 /* Uncomment for themes */

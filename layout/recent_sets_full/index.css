@@ -1,3 +1,5 @@
+/* Beatrice the Spider Queen */
+
 body {
   font-family: var(--font);
   letter-spacing: 1.2px;
@@ -15,7 +17,7 @@ body {
   border-radius: var(--border-radius);
   background: var(--bg-color);
   align-items: center;
-  padding: 20px 40px;
+  /* padding: 20px 40px; */
   filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.12))
     drop-shadow(0 3px 1px rgba(0, 0, 0, 0.14))
     drop-shadow(0 1px 5px rgba(0, 0, 0, 0.12))
@@ -24,26 +26,37 @@ body {
 
 .recent_sets {
   position: absolute;
-  width: 100%;
-  height: 758px;
+  width: 25%;
+  /* height: 758px; */
+
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
   color: var(--text-color);
   font-size: 50px;
   place-content: flex-start;
-  padding-left: 20px;
-  padding-right: 20px;
+  
+  
+  
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
 }
 
+
+
 .recent_sets_content {
   width: 100%;
   height: 100%;
   box-sizing: border-box;
-  overflow: hidden;
+  overflow: visible;
   display: flex;
   align-items: flex-start;
   justify-content: center;
+  flex-direction: column;
+
+  position: relative;
 }
 
 .recent_sets_title {
@@ -51,7 +64,14 @@ body {
   flex-grow: 0;
   width: 100%;
   font-size: 36px;
-  margin-bottom: 20px;
+  
+  border-radius: var(--border-radius);
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.12)) drop-shadow(0 3px 1px rgba(0, 0, 0, 0.14)) drop-shadow(0 1px 5px rgba(0, 0, 0, 0.12)) drop-shadow(0 -1px 2px rgba(0, 0, 0, 0.1));
+  background-color: var(--text-color);
+  color: var(--accent-color);
+
+  z-index: 10;
+
 }
 
 /* Players Section */
@@ -152,14 +172,14 @@ body {
   display: flex;
   flex-direction: column;
   text-overflow: ellipsis;
-  text-align: right;
+  text-align: center;
   justify-content: right;
   overflow: hidden;
   font-size: 32px;
   padding-left: 20px;
   padding-right: 20px;
   color: var(--text-color);
-  width: 50%;
+  width: 90%;
 }
 
 .set_subtext {
@@ -169,11 +189,11 @@ body {
 }
 
 .col_1 .text {
-  justify-content: right;
+  justify-content: center;
 }
 
 .col_2 .text {
-  justify-content: left;
+  justify-content: center;
 }
 
 .set_data {
@@ -226,6 +246,28 @@ body {
   flex-shrink: 0;
 }
 
+.set_text {
+  width: 100%;
+  font-size: 32px;
+}
+
+.set_text .text {
+  font-size: 32px;
+}
+
+.set_tie {
+  
+  font-size: 42px;
+  width: 64px;
+  height: 64px;
+  text-align: center;
+  line-height: 64px;
+  border-radius: 100%;
+  background: var(--accent-color);
+  color: var(--text-color);
+  flex-shrink: 0;
+}
+
 .set_loser {
   font-size: 42px;
   width: 64px;
@@ -238,40 +280,153 @@ body {
   flex-shrink: 0;
 }
 
-.lds-ring {
+/* Loading Screen */
+
+.tn-golira {
   display: inline-block;
   width: 100%;
-  height: 100%;
+  height: 240px;
   display: flex;
   justify-content: center;
-}
-.lds-ring div {
+
+  /* Grey golira */
+  background-color: var(--accent-color);
+  background-image: url('./Tennessee\ Gorilla\ Spin.gif');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  /* Orange Border */
+  /* border: 12px solid var(--bg-color); */
+  /* margin: 10px; */
+
+  /* Rounded container */
+  /* border-radius: 12px; */
+
+  position: relative;
+  /* bottom: 12px; */
+  
   box-sizing: border-box;
-  display: block;
+}
+
+.tn-golira::before {
+  content: '';
+  z-index: 0;
   position: absolute;
-  top: 35%;
-  width: 256px;
-  height: 256px;
-  margin: 12px;
-  border: 48px solid var(--text-color);
-  border-radius: 50%;
-  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-  border-color: var(--text-color) transparent transparent transparent;
+  top: -27px;
+  display: block;
+  height: 27px;
+  width: 576px;
+  background-color: var(--accent-color)
 }
-.lds-ring div:nth-child(1) {
-  animation-delay: -0.45s;
+
+.loading_text {
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  font-size: 36px;
+  color: var(--bg-color);
+
+  /* bold */
+  font-weight: bolder;
+
+  justify-content: center;
+  width: 100%;
+  height: 50px;
+
+  /* Move X amount of pixels over the element it's above */
+  color: var(--accent-color);
+  background-color: var(--text-color);
+  border-radius: var(--border-radius);
+
+  z-index: 1;
 }
-.lds-ring div:nth-child(2) {
-  animation-delay: -0.3s;
+
+/* Take up ten pixels with grey background */
+.tn-golira::after {
+  content: '';
+  z-index: 0;
+  position: absolute;
+  top: 239px;
+  display:block;
+  height: 27px;
+  width: 576px;
+  background-color: var(--accent-color);
 }
-.lds-ring div:nth-child(3) {
-  animation-delay: -0.15s;
+
+.loading_text .dots {
+  display: inline-block;
+  width: 1em;
 }
-@keyframes lds-ring {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+
+
+.loader {
+  display: inline-block;
+  
+  /* Show the overflow */
+  overflow: visible;
+  margin-left: -8px;
+  padding-top: 73px;
+}
+/* HTML: <div class="loader"></div> */
+.loader {
+  width: 85px;
+  aspect-ratio: 2;
+  --_g: no-repeat radial-gradient(circle closest-side,var(--accent-color) 90%, #0000);
+  background: 
+    var(--_g) 0%   50%,
+    var(--_g) 50%  50%,
+    var(--_g) 100% 50%;
+  background-size: calc(100%/3) 12%;
+  background-position: 0% 50%, 33% 50%, 66% 50%, 100% 50%;
+  animation: l3 1s infinite linear;
+}
+@keyframes l3 {
+    20%{background-position:0%  35%, 33%  50%, 66%  50%, 100%  50%}
+    40%{background-position:0%  65%, 33%  35%, 66%  50%, 100%  50%}
+    60%{background-position:0%  50%, 33%  65%, 66%  35%, 100%  50%}
+    80%{background-position:0%  50%, 33%  50%, 66%  65%, 100%  65%}
+}
+
+
+
+
+
+.lifetime {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  gap: 16px;
+  display: flex;
+  flex-direction: column;
+  padding-top: 10px;
+  padding-bottom: 10px;
+
+  border-radius: var(--border-radius);
+  background-color: var(--text-color);
+
+  filter:  drop-shadow(0 -2px 2px rgba(0, 0, 0, 0.12));
+}
+
+.lifetime_title {
+
+  color: var(--accent-color);
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  font-size: 36px;
+  /* color: var(--text-color); */
+
+  /* bold */
+  font-weight: bolder;
+
+  justify-content: center;
+  width: 100%;
+}
+
+.never-played {
+  width: 100%;
+  text-align: center;
 }

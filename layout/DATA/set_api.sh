@@ -1,0 +1,2 @@
+
+export STARTGG_API_KEY="429b0206e418342bb95fecde27cb18d6"

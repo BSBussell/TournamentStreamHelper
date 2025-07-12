@@ -1,0 +1,11 @@
+{
+    "pages": [
+        "p1.html",
+        "p2.html"
+    ],
+    "assets": {
+        "ssbu": {
+            "asset_key": "webm"
+        }
+    }
+}

@@ -70,13 +70,40 @@ LoadEverything().then(() => {
         `
     }
     
-    current_set_nb = 0; // ooooo dirty ass global var
+    current_set_nb = 0; // ooooo dirty ass global var     fuck you ~ Bee <3
     function resetSetsCount(){
         current_set_nb = 0;
     }
 
+    function findPlayer(playerList, tag) {
+        const teams = Object.values(playerList.slot);
+        for (let i = 0; i < teams.length; i++) {
+          const players = Object.values(teams[i].player);
+          for (let j = 0; j < players.length; j++) {
+            if (players[j] && players[j].name && players[j].name.toLowerCase() === tag.toLowerCase()) {
+              // Store the slot index for later use
+              players[j].slotIndex = i + 1;
+
+              console.log(`Found player: ${players[j].name} in slot ${i + 1}`);
+              console.log(players[j]);
+              return players[j];
+            }
+          }
+        }
+        return null;
+      }
+
+
+    function character_html(player, t) {
+        return `
+            <div class = "character_container character_${t}">
+            </div>
+        `
+    }
+
 
     function online_avatar_html(player, t){
+        
         return `
             <div class = "p${t}_avatar avatar_container"> 
                 <span class="avatar" style="background-image: url('${player.online_avatar}')"></span>
@@ -122,7 +149,7 @@ LoadEverything().then(() => {
                         ${ player.twitter ?
                             ` <div class = "twitter">  </div> ` : ''
                         }
-                        ${ player.pronoun ?
+                        ${ player.pronoun && false ?
                             ` <div class = "pronoun"> ${ wrap_text((!isTeams && true) ?  String(player.pronoun) : "") } </div>` : ''
                         }
                         ${ player.seed ?
@@ -164,6 +191,8 @@ LoadEverything().then(() => {
                 </div>
             `;
 
+            
+
             resolver.add(`.set${current_set_nb} .match`, set.match);
             resolver.add(`.set${current_set_nb} .phase`, set.phase);
             resolver.add(`.set${current_set_nb} .station`, "Station " + set.station);
@@ -188,13 +217,15 @@ LoadEverything().then(() => {
 
         let html = ""
         let resolver = new ContentResolver();
+        
 
         resetSetsCount();
 
         for (stream in data.streamQueue){
-            if (config.display.stream_name){
-                html += stream_name_html(stream)
-            }
+            // if (config.display.stream_name){
+            //     html += stream_name_html(stream)
+            // }
+            html += `<div class="title">Up Next!</div>`;
             html += await queue_html(data.streamQueue[stream], resolver, config.display.station, config.station)
         }
 
@@ -211,6 +242,10 @@ LoadEverything().then(() => {
         let html = ""
         let resolver = new ContentResolver();
 
+        // title
+        html += `<div class="title">Up Next!</div>`;
+
+
         let queue = data.streamQueue[streamName];
         if (queue)  {
             if (config.display.stream_name == true){
@@ -223,6 +258,16 @@ LoadEverything().then(() => {
 
 
         update_content(html, resolver);
+
+        // Check if character containers exist
+        // if ($(".character_container").length != 0){
+        //     console.log("Character containers found, loading characters");
+        
+        //     setTimeout(() => {
+        //         waitForPlayerDataAndLoad(data, queue);
+        //     }, 900); // Defer to next event loop tick
+        // }
+
     }
 
     async function display_station(data, oldData){
@@ -260,7 +305,84 @@ LoadEverything().then(() => {
                 {autoAlpha: 0, duration : 0.3},
                 0.3 + 0.2 * current_set_nb
             );
+
+            // Set on finish to populate the character containers
+            tl.eventCallback("onComplete", () => {
+                // Check if character containers exist
+                if ($(".character_container").length != 0){
+                    console.log("Character containers found, loading characters");
+                    load_characters(data);
+                }
+            });
             tl.resume();
+    }
+
+
+    // Base Character loading function:
+    // Update character display for player1
+    // await CharacterDisplay(
+    //     setContainer.find(".character1"),
+    //     {
+    //       source: `player_list.slot.${player1 ? player1.slotIndex : set.P1}`,
+    //       custom_center: [0.5, 0.3],
+    //       scale_based_on_parent: true
+    //     },
+    //     event
+    //   );
+    // FindPlayer function:
+    // Player findPlayer(playerList, tag)    
+    // Search through the character containers and fill them in with the right character
+    function load_characters(data){
+        
+
+        let playerList = data.player_list;
+
+        // Get first queue
+        let queue = data.streamQueue["UTKEsports"];
+        if (!queue) {
+            console.warn("No queue found for UTKEsports");
+            return;
+        }
+
+        
+        for (let i = 0; i <= 4; i++) {
+            const set = queue[i];
+            if (!set || !set.team) continue;
+            const setContainer = $(`.set${i-1}`);
+            const character1Container = setContainer.find(".character_1");
+            const character2Container = setContainer.find(".character_2");
+
+            const player1 = set.team["1"]?.player?.["1"];
+            const player2 = set.team["2"]?.player?.["1"];
+
+            const found1 = player1 ? findPlayer(playerList, player1.name) : null;
+            const found2 = player2 ? findPlayer(playerList, player2.name) : null;
+
+            console.log("Found player 1:", found1);
+            console.log("Found player 2:", found2);
+
+            if (character1Container.length > 0 && found1?.slotIndex !== undefined) {
+                CharacterDisplay(
+                    character1Container,
+                    {
+                        source: `player_list.slot.${found1.slotIndex}`,
+                        custom_center: [0.5, 0.3],
+                        scale_based_on_parent: true
+                    }
+                );
+            }
+
+            if (character2Container.length > 0 && found2?.slotIndex !== undefined) {
+                CharacterDisplay(
+                    character2Container,
+                    {
+                        source: `player_list.slot.${found2.slotIndex}`,
+                        custom_center: [0.5, 0.3],
+                        scale_based_on_parent: true
+                    }
+                );
+            }
+        }
     }
 
     Update = async (event) => {

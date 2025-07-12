@@ -18,8 +18,11 @@ body {
 }
 
 .map {
-  width: 100%;
-  height: 100%;
+  width: 50%;
+  height: 50%;
+  
+  /* Make a big border */
+  border: 8px solid var(--p1-score-color);
 }
 
 .overlay {

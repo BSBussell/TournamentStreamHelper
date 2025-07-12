@@ -9,4 +9,5 @@ Testing and debugging locally with Chrome:
     - On Windows, you can either `"C:\PathTo\chrome.exe" --allow-file-access-from-files` or open the PowerShell and type `Start-Process "chrome.exe" "--allow-file-access-from-files"`
 - Then, you can open a layout `html` file in Chrome, press F12 for developer tools
 - Enable *Device toolbar* and set the screen size to 1920x1080
+    - Or be awesome and design response layouts for versatile usage :3
 With this, you'll have access to the console logs (and errors) and to quickly edit css rules for easier development

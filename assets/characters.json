@@ -114057,45 +114057,6 @@
         ],
         "characterId": null,
         "expand": []
-      },
-      {
-        "id": 2710,
-        "name": "Andy Bogard",
-        "isCommon": null,
-        "videogameId": 73221,
-        "externalIdMap": null,
-        "images": [
-          {
-            "id": 8434092,
-            "width": 128,
-            "height": 128,
-            "ratio": 1,
-            "type": "icon",
-            "url": "https://images.start.gg/images/character/2710/image-0ff152de8aab69948f25e1537aab92d4.png",
-            "isOriginal": true,
-            "entity": null,
-            "entityId": null,
-            "uploadedBy": null,
-            "createdAt": null,
-            "updatedAt": null
-          },
-          {
-            "id": 8434093,
-            "width": 128,
-            "height": 128,
-            "ratio": 1,
-            "type": "stockIcon",
-            "url": "https://images.start.gg/images/character/2710/image-b338b3bb1321e9a8ad65251b7e658a4b.png",
-            "isOriginal": true,
-            "entity": null,
-            "entityId": null,
-            "uploadedBy": null,
-            "createdAt": null,
-            "updatedAt": null
-          }
-        ],
-        "characterId": null,
-        "expand": []
       }
     ]
   },
@@ -116517,8 +116478,7 @@
     2706,
     2707,
     2708,
-    2709,
-    2710
+    2709
   ],
   "resultEntity": "character",
   "actionRecords": []

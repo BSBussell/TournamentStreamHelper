@@ -31,8 +31,8 @@ LoadEverything().then(() => {
 		e += nbtimes-1;
 		nbtimes *=2
 	}
-	let standing = new Array(1,2,3,4)
-	standing = standing.concat(firstpass.map((e)=>e+5));
+	let standing = new Array(1,2,3,4,5,6,7,8,9,10, 'TS', 'BC', 'TM', 'V');
+	// standing = standing.concat(firstpass.map((e)=>e+5));
 	for (const [i, slot] of Object.entries(data.player_list.slot)) {
         let html = `<div class="slot slot${i + 1}">`;
         for (const [p, player] of Object.entries(slot.player)) {
@@ -172,10 +172,58 @@ LoadEverything().then(() => {
 
         gsap.from(
           $(`.slot${t + 1}`),
-          { x: -100, autoAlpha: 0, duration: 0.4, delay: 0 },
-          0.5 + 0.3 * t
+          { x: -100, autoAlpha: 0, duration: 0.3, delay: 0 },
+          0.5 + 0.2 * t
         );
+
+        
+        
       }
+
+      const $el = $(`.Titles`);
+        const baseDelay = 0.5 + 0.2 * 14;
+
+        gsap.fromTo(
+            $el,
+            {
+                y: 300, // rise from below screen
+                autoAlpha: 0,
+                scale: 0.8,
+            },
+            {
+                y: -20, // rise up to just above landing point
+                autoAlpha: 1,
+                scale: 1.1,
+                duration: 0.4,
+                ease: "power4.out",
+                delay: baseDelay,
+                onComplete: () => {
+                    gsap.to($el, {
+                        y: 0,
+                        scale: 0.95,
+                        duration: 0.1,
+                        ease: "power2.in",
+                        onComplete: () => {
+                            gsap.to($el, {
+                                scale: 1,
+                                duration: 0.15,
+                                ease: "elastic.out(1, 0.4)",
+                                onComplete: () => {
+                                    gsap.to($el, {
+                                        x: "+=3",
+                                        y: "-=2",
+                                        duration: 0.05,
+                                        repeat: 3,
+                                        yoyo: true,
+                                        ease: "power1.inOut",
+                                    });
+                                },
+                            });
+                        },
+                    });
+                },
+            }
+        );
     }
   };
 });

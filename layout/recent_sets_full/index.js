@@ -1,8 +1,23 @@
+// const NUM_SETS = 3;
+
+// Timestamp for the start of the season
+const AFTER = 0;
+
+// Title for the set history
+const SEASON_TITLE = "Lifetime";
+
 LoadEverything().then(() => {
   
+  // TODO: Keep working
   let startingAnimation = gsap
     .timeline({ paused: true })
-    .from($(".recent_sets"), { autoAlpha: 0 });
+    .from($(".recent_sets"), { autoAlpha: 0, scaleY: 0.1, transformOrigin: "top", duration: 0.3, ease: "back.out(1.5)" });
+
+  let transitionAnimation = gsap
+    .timeline({ paused: true })
+    .to($(".recent_sets"), { scaleY: 0.1, transformOrigin: "top", duration: 0.25, ease: "power2.in" }) // Smooth shrink
+    .add(() => updateRecentSetsContent()) // Change content at smallest size
+    .to($(".recent_sets"), { scaleY: 1, transformOrigin: "top", duration: 0.25, ease: "power2.out" }); // Smooth expand
 
   var playersRecentSets = null;
   var players = [];
@@ -13,46 +28,172 @@ LoadEverything().then(() => {
 
   var data = {};
   var oldData = {};
+  var animationPlayed = false;
+  recentSetsHtml = "";
+
+  // Function to set inner HTML with recent sets html
+  function updateRecentSetsContent() {
+
+    // SetInnerHtml($(`.recent_sets_content`), recentSetsHtml);
+    $(`.recent_sets_content`).html(recentSetsHtml);
+
+    // Make sure the text fits the container
+    $(`.set_text`).each((index, element) => {
+      let setTourneyName = $(element).find(".text").html();
+      FitText($(element), setTourneyName);
+    });
+
+  }
+
 
   Update = async (event) => {
     let data = event.data;
     let oldData = event.oldData;
 
+    // If data has changed, update display
     if (
       !oldData.score ||
       JSON.stringify(oldData.score[window.scoreboardNumber].recent_sets) !=
         JSON.stringify(data.score[window.scoreboardNumber].recent_sets)
     ) {
+
+      // Get Recent sets
       playersRecentSets = data.score[window.scoreboardNumber].recent_sets;
       console.log(playersRecentSets);
 
       players = [];
-      recentSetsHtml = "";
+      recentSetsHtml = ""
+      
 
-      if (
-        playersRecentSets == null ||
-        (playersRecentSets.state == "done" &&
-          playersRecentSets.sets.length == 0)
+      // If resent sets is empty say no sets found
+      if (playersRecentSets != null &&
+        (playersRecentSets.state == "done" && playersRecentSets.sets.length == 0)
       ) {
-        recentSetsHtml += `No sets found`;
+
+
+        // Display no sets found
+        recentSetsHtml += `<div class="never-played">NEVER PLAYED</div>`;
         players = [];
-        $(`.recent_sets_content`).html(recentSetsHtml);
-      } else if (playersRecentSets.state != "done") {
-        recentSetsHtml += `<div class="lds-ring"><div></div><div></div><div></div><div></div></div>`;
+        // $(`.recent_sets_content`).html(recentSetsHtml);
+
+        
+        // If played before, show transition animation
+        if (animationPlayed) {
+          transitionAnimation.restart();
+        } else {
+          updateRecentSetsContent();
+        }
+        animationPlayed = true;
+
+
+      // Otherwise if we're waiting on recent sets to be constructed
+      } else if (playersRecentSets == null || playersRecentSets.state != "done") {
+        
+
+        // startingAnimation.restart();
+        recentSetsHtml += `
+          <div class="tn-golira"></div>
+          <div class="loading_text">LOADING<div class="loader"></div></div>
+        `;
         players = [];
-        $(`.recent_sets_content`).html(recentSetsHtml);
+
+        // Hide and show the relevant elements, then fill in the content
+        $(`.recent_sets`).css('display', 'flex');
+
+        // If played before, show transition animation
+        if (animationPlayed) {
+          transitionAnimation.restart();
+        } else {
+          updateRecentSetsContent();
+        }
+        animationPlayed = true;
+
       } else {
         if (
           !oldData.score ||
           JSON.stringify(oldData.score[window.scoreboardNumber].recent_sets) !=
             JSON.stringify(data.score[window.scoreboardNumber].recent_sets)
         ) {
-          playersRecentSets = data.score[window.scoreboardNumber].recent_sets;
+
+          // Ensure lifetime is displayed
+          $(`.recent_sets`).css('display', 'flex');
+
+          
+
+          // Create a deep copy of the recent sets to avoid modifying the original data
+          playersRecentSets = JSON.parse(JSON.stringify(data.score[window.scoreboardNumber].recent_sets));
+
+            playersRecentSets.sets = playersRecentSets.sets.filter((set) => {
+            return (
+              !set.event.toLowerCase().includes("doubles") &&
+              !set.event.toLowerCase().includes("squad strike")
+            );
+            });
+            console.log(playersRecentSets.sets);
+
+          // Traverse recent sets, search for sets in the same tournament with the same players
+          // If found, add the scores of the sets and remove one of the sets
+
+          // Go through all sets
+          if (playersRecentSets.sets.length > window.NUM_SETS) {
+            for (let i = 0; i < playersRecentSets.sets.length; i++) {
+
+              // Get the set and set flag found to false
+              let set = playersRecentSets.sets[i];
+              let found = false;
+
+              // Go through all sets after the current set
+              for (let j = i + 1; j < playersRecentSets.sets.length; j++) {
+
+                // Get comparison set
+                let set2 = playersRecentSets.sets[j];
+
+                // If the sets are in the same tournament and same events then merge them
+                // by adding the scores together and removing the second set
+                if (set.tournament == set2.tournament && set.event == set2.event) {
+                  set.score[0] += set2.score[0];
+                  set.score[1] += set2.score[1];
+                  playersRecentSets.sets.splice(j, 1);
+                  j--;
+                  found = true;
+                }
+              }
+            }
+          }
 
           console.log(playersRecentSets);
 
           recentSetsHtml += '<div class="recent_sets_inner">';
-          playersRecentSets.sets.slice(0, 5).forEach((_set, i) => {
+
+
+
+          playersRecentSets.sets.slice(0, window.NUM_SETS).forEach((_set, i) => {
+
+            // set tourney name string
+            let setTourneyName = _set.tournament;
+            let setTourneyDate = new Date(_set.timestamp * 1000).toLocaleDateString("en-US", {
+              month: "short",
+              day: "2-digit",
+              year: "numeric",
+            });
+
+            // if tourney name has UTK in it, remove the word esports
+            if (setTourneyName.includes("UTK")) {
+              setTourneyName = setTourneyName.replace(" Esports ", " ");
+
+              // remove the 'Smash Weekly' portion
+              setTourneyName = setTourneyName.replace(" Smash Weekly ", " Weekly ");
+              
+            }
+
+            // cut tourney name to only 19 characters
+            // let char_limit = 20;
+            // if (setTourneyName.length > char_limit) {
+            //   // Set the last three characters to ...
+            //   setTourneyName = setTourneyName.substring(0, char_limit-3) + "...";
+            // }
+
+
             recentSetsHtml += `
                 <div class="set_container set_${i}">
                   <div class="${_set.winner == 0 ? "set_winner" : "set_loser"}">
@@ -60,12 +201,10 @@ LoadEverything().then(() => {
                   </div>
                   <div class="set_info">
                     <div class="set_col col_1">
-                        <div class="set_text"></div>
-                        <div class="set_subtext"></div>
-                    </div>
-                    <div class="set_col col_2">
-                        <div class="set_text"></div>
-                        <div class="set_subtext"></div>
+                         
+                          <div class="set_text"><div class="text">${setTourneyName}</div></div>
+                          <div class="set_subtext">${setTourneyDate}</div>
+                        
                     </div>
                   </div>
                   <div class="${_set.winner == 1 ? "set_winner" : "set_loser"}">
@@ -77,14 +216,41 @@ LoadEverything().then(() => {
           recentSetsHtml += "</div>";
         }
 
-        $(`.recent_sets_content`).html(recentSetsHtml);
+        // $(`.recent_sets_content`).html(recentSetsHtml);
+        
 
-        playersRecentSets.sets.slice(0, 5).forEach((_set, i) => {
-          SetInnerHtml(
+        // Fill in the the remaining sets icons 
+        /*
+        playersRecentSets.sets.slice(0, NUM_SETS).forEach((_set, i) => {
+
+
+            // set tourney name string
+            let setTourneyName = _set.tournament;
+
+            
+
+            // if tourney name has UTK in it, remove the word esports
+            if (setTourneyName.includes("UTK")) {
+              setTourneyName = setTourneyName.replace(" Esports ", " ");
+
+              // IF tourney has : in it, remove the 'Smash Weekly' portion
+              if (setTourneyName.includes(":")) {
+                setTourneyName = setTourneyName.replace(" Smash Weekly ", " ");
+              }
+            }
+
+            // cut tourney name to only 19 characters
+            let char_limit = 20;
+            if (setTourneyName.length > char_limit) {
+              // Set the last three characters to ...
+              setTourneyName = setTourneyName.substring(0, char_limit-3) + "...";
+            }
+
+            SetInnerHtml(
             $(`.set_${i} .col_1 .set_text`),
             (_set.online ? `<div class="wifi_icon"></div>` : "") +
-              _set.tournament
-          );
+              setTourneyName
+            );
           SetInnerHtml(
             $(`.set_${i} .col_1 .set_subtext`),
             new Date(_set.timestamp * 1000).toLocaleDateString("en-US", {
@@ -93,13 +259,91 @@ LoadEverything().then(() => {
               year: "numeric",
             })
           );
-          SetInnerHtml(
-            $(`.set_${i} .col_2 .set_text`),
-            _set.event + " - " + _set.phase_id + _set.phase_name
-          );
-          SetInnerHtml($(`.set_${i} .col_2 .set_subtext`), _set.round);
         });
+        */
+
+     
+        // Don't care about duplicates anymore:
+        playersRecentSets = data.score[window.scoreboardNumber].recent_sets;
+        console.log(data.score[window.scoreboardNumber].recent_sets);
+
+        // Remove all sets that have doubles in the event name
+        playersRecentSets.sets = playersRecentSets.sets.filter((set) => {
+          return (
+            !set.event.toLowerCase().includes("doubles") &&
+            !set.event.toLowerCase().includes("squad strike") &&
+            set.timestamp > AFTER
+          );
+        });
+        console.log(playersRecentSets.sets);
+
+        
+
+        // Display Lifetime set record
+        
+        // Find how many sets each player won
+        let player1Sets = 0;
+        let player2Sets = 0;
+
+        // Go through all sets
+        for (let i = 0; i < playersRecentSets.sets.length; i++) {
+          let set = playersRecentSets.sets[i];
+
+          // If player 1 won the set
+          if (set.winner == 0) {
+            player1Sets++;
+          } else {
+            player2Sets++;
+          }
+        }
+
+        // Log total set record
+        console.log(player1Sets, player2Sets);
+
+        // Populate life time with:
+        /*
+        <div class="set_container">
+            <div class="set_loser">0</div>
+            <div class="lifetime_title">LIFETIME</div>
+            <div class="set_winner">0</div>
+          </div>
+        */
+
+        let p1_class = player1Sets > player2Sets ? "set_winner" : "set_loser";
+        let p2_class = player2Sets > player1Sets ? "set_winner" : "set_loser";
+
+        if (player1Sets == player2Sets) {
+          p1_class = "set_tie";
+          p2_class = "set_tie";
+        }
+
+        let lifetimeHtml = `
+          <div class="lifetime">
+            <div class="set_container">
+              <div class="${p1_class}">${player1Sets}</div>
+              <div class="lifetime_title">${SEASON_TITLE}</div>
+              <div class="${p2_class}">${player2Sets}</div>
+            </div>
+          </div>
+        `;
+
+        recentSetsHtml += lifetimeHtml;
+
+        
+        // If played before, show transition animation
+        if (animationPlayed) {
+         
+          // Wait for the animation to finish before updating the content
+          await transitionAnimation.restart();
+        } else {
+          updateRecentSetsContent();
+        }
+
+        //Set the inner HTML of the lifetime container
+        // $(`.lifetime`).html(lifetimeHtml);
+        animationPlayed = true;
       }
+
     }
 
     for (const [t, team] of [
