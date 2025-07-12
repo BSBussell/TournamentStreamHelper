@@ -4,6 +4,7 @@ from qtpy.QtGui import *
 from qtpy.QtWidgets import *
 from qtpy.QtCore import *
 import orjson
+
 from .StateManager import StateManager
 from .TSHStatsUtil import TSHStatsUtil
 from .SettingsManager import SettingsManager
@@ -11,8 +12,12 @@ from loguru import logger
 from .TSHGameAssetManager import TSHGameAssetManager
 from .TSHBracketView import TSHBracketView
 from .TSHBracketWidget import TSHBracketWidget
+from .TSHScoreboardWidget import TSHScoreboardWidget
 from .TSHTournamentDataProvider import TSHTournamentDataProvider
+from .TSHCommentaryWidget import TSHCommentaryWidget
+from .Helpers.TSHControllerHelper import TSHControllerHelper
 from .Workers import Worker
+import os
 
 import logging
 log = logging.getLogger('werkzeug')
@@ -20,10 +25,11 @@ log.setLevel(logging.ERROR)
 
 
 class WebServerActions(QThread):
-    def __init__(self, parent=None, scoreboard=None, stageWidget=None) -> None:
+    def __init__(self, parent=None, scoreboard=None, stageWidget=None, commentaryWidget: TSHCommentaryWidget=None) -> None:
         super().__init__(parent)
         self.scoreboard = scoreboard
         self.stageWidget = stageWidget
+        self.commentaryWidget = commentaryWidget
         self.threadPool = QThreadPool()
 
     def program_state(self):
@@ -158,6 +164,10 @@ class WebServerActions(QThread):
             self.scoreboard.GetScoreboard(scoreboard).signals.CommandTeamColor.emit(1, color)
         return "OK"
 
+    def get_scoreboard(self, scoreboard):
+        sb_widget: TSHScoreboardWidget = self.scoreboard.GetScoreboard(scoreboard)
+        return StateManager.Get(f'score.{sb_widget.scoreboardNumber}')
+
     def set_route(self,
                   scoreboard,
                   bestOf=None,
@@ -222,6 +232,15 @@ class WebServerActions(QThread):
         })
         return "OK"
 
+    def set_commentary_data(self, index, data):
+        logger.info(self.commentaryWidget)
+        index = int(index) - 1
+        if index < 0:
+            return "ERROR : index can't be lower than 1"
+        self.commentaryWidget.ChangeCommDataSignal.emit(index, data)
+
+        return "OK"
+
     def get_characters(self):
         data = {}
         for row in range(TSHGameAssetManager.instance.characterModel.rowCount()):
@@ -231,6 +250,23 @@ class WebServerActions(QThread):
 
             if item_data is not None:
                 data[item_data.get("name")] = item_data
+        return data
+    
+    def get_variants(self):
+        data = {}
+        for row in range(TSHGameAssetManager.instance.variantModel.rowCount()):
+            item: QStandardItem = TSHGameAssetManager.instance.variantModel.index(
+                row, 0)
+            item_data = item.data(Qt.ItemDataRole.UserRole)
+
+            if item_data is not None:
+                data[item_data.get("name")] = item_data
+        return data
+    
+    def get_controllers(self):
+        data = TSHControllerHelper.instance.controller_list
+        for key in data.keys():
+            data[key]["codename"] = key
         return data
 
     def swap_teams(self, scoreboard):
@@ -317,6 +353,15 @@ class WebServerActions(QThread):
         self.scoreboard.GetScoreboard(scoreboard).CommandClearAll()
         return "OK"
     
+    def get_thumbnail(self, scoreboard, file_format):
+        thumbnailPath = self.scoreboard.GetScoreboard(scoreboard).GenerateThumbnail(quiet_mode=True, disable_msgbox=True)
+        if thumbnailPath:
+            if file_format == "jpg":
+                thumbnailPath = thumbnailPath.replace(".png", ".jpg")
+            return os.path.abspath(thumbnailPath)
+        else:
+            return None
+    
     def update_bracket(self):
         id = TSHTournamentDataProvider.instance.provider.GetTournamentPhases()[0].get("groups")[0].get("id")
         data = TSHTournamentDataProvider.instance.provider.GetTournamentPhaseGroup(id)
@@ -379,6 +424,12 @@ class WebServerActions(QThread):
             return "OK"
         else:
             return "ERROR"
+
+    def load_commentator_from_tag(self, index, tag, no_mains=False):
+        index = int(index) - 1
+        if index < 0:
+            return "ERROR : index can't be lower than 1" 
+        result = self.commentaryWidget.LoadCommFromTagSignal.emit(index, tag, no_mains)
 
     def load_tournament(self, url=None):
         logger.error(f"URL PROVIDED: {url}")

@@ -60,5 +60,6 @@ logs/*
 Pipfile*
 env
 desktop.ini
-
-venv
+assets/controller/*
+assets/*_tmp
+layout_*

@@ -8,11 +8,15 @@ from loguru import logger
 from .TSHScoreboardPlayerWidget import TSHScoreboardPlayerWidget
 from .Helpers.TSHBadWordFilter import TSHBadWordFilter
 from .TSHPlayerDB import TSHPlayerDB
+from .SettingsManager import SettingsManager
 from .StateManager import StateManager
 from .TSHGameAssetManager import TSHGameAssetManager
 
 
 class TSHCommentaryWidget(QDockWidget):
+    ChangeCommDataSignal = Signal(int, object)
+    LoadCommFromTagSignal = Signal(int, str, bool)
+
     def __init__(self, *args):
         super().__init__(*args)
         self.setWindowTitle(QApplication.translate("app", "Commentary"))
@@ -30,6 +34,9 @@ class TSHCommentaryWidget(QDockWidget):
         topOptions.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Maximum)
 
         self.widget.layout().addWidget(topOptions)
+        
+        self.ChangeCommDataSignal.connect(self.SetData)
+        self.LoadCommFromTagSignal.connect(self.LoadCommentatorFromTag)
 
         col = QWidget()
         col.setLayout(QVBoxLayout())
@@ -63,21 +70,25 @@ class TSHCommentaryWidget(QDockWidget):
         menu.addSection("Players")
 
         self.elements = [
-            ["Real Name", ["real_name", "real_nameLabel"]],
-            ["Twitter", ["twitter", "twitterLabel"]],
-            ["Location", ["locationLabel", "state", "country"]],
-            ["Characters", ["characters"]],
-            ["Pronouns", ["pronoun", "pronounLabel"]],
+            ["Real Name",              ["real_name", "real_nameLabel"],       "show_name"],
+            ["Twitter",                ["twitter", "twitterLabel"],           "show_social"],
+            ["Location",               ["locationLabel", "state", "country"], "show_location"],
+            ["Characters",             ["characters"],                        "show_characters"],
+            ["Pronouns",               ["pronoun", "pronounLabel"],           "show_pronouns"],
+            ["Controller",             ["controller", "controllerLabel"],     "show_controller"],
+            ["Additional information", ["custom_textbox"],                    "show_additional"],
         ]
         self.elements[0][0] = QApplication.translate("app", "Real Name")
         self.elements[1][0] = QApplication.translate("app", "Twitter")
         self.elements[2][0] = QApplication.translate("app", "Location")
         self.elements[3][0] = QApplication.translate("app", "Characters")
         self.elements[4][0] = QApplication.translate("app", "Pronouns")
+        self.elements[5][0] = QApplication.translate("app", "Controller")
+        self.elements[6][0] = QApplication.translate("app", "Additional information")
         for element in self.elements:
             action: QAction = self.eyeBt.menu().addAction(element[0])
             action.setCheckable(True)
-            action.setChecked(True)
+            action.setChecked(SettingsManager.Get(f"display_options.{element[2]}", True))
             action.toggled.connect(
                 lambda toggled, action=action, element=element: self.ToggleElements(action, element[1]))
         
@@ -97,7 +108,7 @@ class TSHCommentaryWidget(QDockWidget):
 
         self.widget.layout().addWidget(scrollArea)
 
-        self.commentaryWidgets = []
+        self.commentaryWidgets: list[TSHScoreboardPlayerWidget] = []
 
         StateManager.Set("commentary", {})
         self.commentatorNumber.setValue(2)
@@ -107,6 +118,32 @@ class TSHCommentaryWidget(QDockWidget):
             self.SetDefaultsFromAssets
         )
 
+        for x, element in enumerate(self.elements, start=1):
+            action: QAction = self.eyeBt.menu().actions()[x]
+            self.ToggleElements(action, element[1])
+
+    def SetData(self, index, data):
+        if index > len(self.commentaryWidgets):
+            self.SetCommentatorNumber(index+1)
+            self.commentatorNumber.setValue(index+1)
+
+        logger.info(index)
+
+        commentatorWidget = self.commentaryWidgets[index]
+        logger.info(commentatorWidget)
+        commentatorWidget.SetData(data, False, False)
+
+    def LoadCommentatorFromTag(self, index: int, tag: str, no_mains: bool):
+        if index > len(self.commentaryWidgets) - 1:
+            self.SetCommentatorNumber(index+1)
+            self.commentatorNumber.setValue(index+1)
+
+        playerData = TSHPlayerDB.GetPlayerFromTag(tag)
+        if playerData:
+            widget = self.commentaryWidgets[index]
+            widget.SetData(playerData, False, True, no_mains)
+            return True
+        return False
 
     def SetCommentatorNumber(self, number):
         while len(self.commentaryWidgets) < number:

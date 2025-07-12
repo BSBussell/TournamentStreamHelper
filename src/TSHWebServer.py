@@ -4,7 +4,7 @@ import traceback
 from qtpy.QtGui import *
 from qtpy.QtWidgets import *
 from qtpy.QtCore import *
-from flask import Flask, send_from_directory, request
+from flask import Flask, send_from_directory, request, send_file
 from flask_cors import CORS, cross_origin
 from flask_socketio import SocketIO, emit
 import orjson
@@ -12,6 +12,7 @@ from loguru import logger
 from .TSHWebServerActions import WebServerActions
 from .TSHScoreboardManager import TSHScoreboardManager
 from .TSHTournamentDataProvider import TSHTournamentDataProvider
+from .TSHCommentaryWidget import TSHCommentaryWidget
 import traceback
 
 import logging
@@ -32,12 +33,13 @@ class WebServer(QThread):
     app.config['CORS_HEADERS'] = 'Content-Type'
     actions = None
 
-    def __init__(self, parent=None, stageWidget=None) -> None:
+    def __init__(self, parent=None, stageWidget=None, commentaryWidget: TSHCommentaryWidget=None) -> None:
         super().__init__(parent)
         WebServer.actions = WebServerActions(
             parent=parent,
             scoreboard=TSHScoreboardManager.instance,
-            stageWidget=stageWidget
+            stageWidget=stageWidget,
+            commentaryWidget=commentaryWidget
         )
         self.host_name = "0.0.0.0"
         self.port = 5000
@@ -175,6 +177,11 @@ class WebServer(QThread):
         emit('team_scoredown',
              WebServer.actions.team_color(info.get("scoreboardNumber", "1"), info.get("team"), "#" + info.get("color")))
 
+
+    @app.route('/scoreboard<scoreboardNumber>-get')
+    def get_route(scoreboardNumber):
+        return WebServer.actions.get_scoreboard(scoreboardNumber)
+
     # Dynamic endpoint to allow flexible sets of information
     # Ex. http://192.168.1.2:5000/set?best-of=5
     #
@@ -222,7 +229,21 @@ class WebServer(QThread):
                  data.get("team"),
                  data.get("player"),
                  data
-             ))
+            ))
+
+    @app.post('/update-commentary-<caster>')
+    def set_commentary_data(caster):
+        data = request.get_json()
+        return WebServer.actions.set_commentary_data(caster, data)
+    
+    @socketio.on('update_commentary')
+    def ws_set_commentary_data(message):
+        data = orjson.loads(message)
+        emit('update_commentary', 
+            WebServer.actions.set_commentary_data(
+                data.get("commentator"),
+                data
+            ))
 
     # Get characters
     @app.route('/characters')
@@ -232,6 +253,24 @@ class WebServer(QThread):
     @socketio.on('characters')
     def ws_get_characters(message):
         emit('characters', WebServer.actions.get_characters(), json=True)
+
+    # Get variants
+    @app.route('/variants')
+    def get_variants():
+        return WebServer.actions.get_variants()
+
+    @socketio.on('variants')
+    def ws_get_variants(message):
+        emit('variants', WebServer.actions.get_variants(), json=True)
+
+    # Get controllers
+    @app.route('/controllers')
+    def get_controllers():
+        return WebServer.actions.get_controllers()
+
+    @socketio.on('controllers')
+    def ws_get_controllers(message):
+        emit('controllers', WebServer.actions.get_controllers(), json=True)
 
     # Swaps teams
     @app.route('/scoreboard<scoreboardNumber>-swap-teams')
@@ -375,6 +414,18 @@ class WebServer(QThread):
         info = orjson.loads(message)
         emit('clear_all',
              WebServer.actions.clear_all(info.get("scoreboardNumber", "1")))
+        
+    # Get thumbnail
+    @app.route('/scoreboard<scoreboardNumber>-get-thumbnail-<fileFormat>')
+    def get_thumbnail(scoreboardNumber, fileFormat):
+        if fileFormat.lower() in ["png", "jpg"]:
+            result = WebServer.actions.get_thumbnail(scoreboardNumber, fileFormat.lower())
+            if result:
+                return send_file(result, mimetype=f"image/{fileFormat.lower()}")
+            else:
+                return "An error has occured, please check TSH logs for more information"
+        else:
+            return f"File format {fileFormat} not recognized"
 
     # Get the sets to be played
     @app.route('/get-sets')
@@ -462,6 +513,23 @@ class WebServer(QThread):
         emit('load_player_from_tag', WebServer.actions.load_player_from_tag(
             scoreboardNumber, html.unescape(args.get('tag')), team, player, no_mains))
 
+    @app.route('/load-commentator-from-tag-<caster>')
+    def load_commentator_from_tag(caster):
+        if request.args.get('tag') is None:
+            return "No tag provided"
+        no_mains = request.args.get('no-mains') is not None
+        return WebServer.actions.load_commentator_from_tag(caster, html.unescape(request.args.get('tag')), no_mains)
+
+    @socketio.on('load_commentator_from_tag')
+    def ws_load_commentator_from_tag(message):
+        args = orjson.loads(message)
+        if args.get('tag') is None:
+            emit('load_commentator_from_tag', 'No tag provided')
+            return
+        no_mains = args.get('no-mains') is not None
+        caster = args.get('commentator')
+        emit('load_commentator_from_tag', WebServer.actions.load_commentator_from_tag(caster, html.unescape(args.get('tag')), no_mains))
+
     # Update bracket
     @app.route('/set-tournament')
     def set_tournament():
@@ -471,12 +539,18 @@ class WebServer(QThread):
     def ws_set_tournament(message):
         emit('set_tournament', WebServer.actions.load_tournament(request.args.get('url')))
 
-    @app.route('/', defaults=dict(filename=None))
+    @app.route('/')
+    @app.route('/scoreboard')
+    @app.route('/stage-strike-app')
+    @cross_origin()
+    def stage_strike_app():
+        return send_file(os.path.join(os.path.abspath('.'), 'stage_strike_app/build/index.html'))
+
+
     @app.route('/<path:filename>', methods=['GET', 'POST'])
     @cross_origin()
     def test(filename):
         try:
-            filename = filename or 'stage_strike_app/build/index.html'
             return send_from_directory(os.path.abspath('.'), filename, as_attachment=filename.endswith('.gz'))
         except Exception as e:
             logger.error(f"File not found: {e}")
