@@ -1,71 +1,28 @@
 {
-  "title": "Who will win Grand Finals?",
+  "title": "Who will win Exhibition Match?",
   "status": "RESOLVED",
   "outcomes": [
     {
-      "title": "Orex",
-      "channel_points": 2518,
-      "users": 4,
+      "title": "AhribockanonaDEM",
+      "channel_points": 200,
+      "users": 1,
       "top_predictors": [
-        {
-          "user_id": "786414779",
-          "user_login": "lenssbu",
-          "user_name": "LenSSBU",
-          "channel_points_used": 1508,
-          "channel_points_won": 1957
-        },
         {
           "user_id": "954164703",
           "user_login": "ceedonkeykong",
           "user_name": "CeeDonkeyKong",
-          "channel_points_used": 500,
-          "channel_points_won": 649
-        },
-        {
-          "user_id": "532031146",
-          "user_login": "hutchzilla___",
-          "user_name": "hutchzilla___",
-          "channel_points_used": 490,
-          "channel_points_won": 636
-        },
-        {
-          "user_id": "426262518",
-          "user_login": "viridianimago",
-          "user_name": "ViridianImago",
-          "channel_points_used": 20,
-          "channel_points_won": 26
+          "channel_points_used": 200,
+          "channel_points_won": 200
         }
       ]
     },
     {
-      "title": "CookedCanard",
-      "channel_points": 750,
-      "users": 3,
-      "top_predictors": [
-        {
-          "user_id": "402334970",
-          "user_login": "bumble231",
-          "user_name": "bumble231",
-          "channel_points_used": 500,
-          "channel_points_won": 0
-        },
-        {
-          "user_id": "88603564",
-          "user_login": "ishtariaam",
-          "user_name": "ishtariaAM",
-          "channel_points_used": 200,
-          "channel_points_won": 0
-        },
-        {
-          "user_id": "153177338",
-          "user_login": "poisonous_paint",
-          "user_name": "poisonous_paint",
-          "channel_points_used": 50,
-          "channel_points_won": 0
-        }
-      ]
+      "title": "John Wilkes Gooch",
+      "channel_points": 0,
+      "users": 0,
+      "top_predictors": null
     }
   ],
   "duration": 600,
-  "creation_time": "2025-07-02T01:53:18.757217848Z"
+  "creation_time": "2025-09-02T22:52:31.465958371Z"
 }

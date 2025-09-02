@@ -11,6 +11,9 @@ body {
         drop-shadow(0 1px 5px rgba(0, 0, 0, 0.12))
         drop-shadow(0 -1px 2px rgba(0, 0, 0, 0.1));
     letter-spacing: 1;
+
+    --transparent-bg: color-mix(in srgb, var(--bg-color) 50%, transparent);
+    --transparent-accent: color-mix(in srgb, white 25%, transparent);
 }
 
 .container {
@@ -19,7 +22,11 @@ body {
     display: flex;
     box-sizing: border-box;
     border-radius: var(--border-radius);
-    background-color: var(--accent-color);
+
+    background-color: var(--transparent-accent);
+    /* border: 2px solid var(--accent-color); */
+
+    /* background-color: var(--accent-color); */
 
     align-items: center;
     justify-content: center;
@@ -54,6 +61,7 @@ body {
 .players_container {
     display: flex;
     flex-direction: column;
+    
     height: 100%;
     gap: 8px 32px;
     flex-wrap: wrap;
@@ -96,6 +104,7 @@ body {
 .player.container {
     position: relative;
     height: 100%;
+    border: 2px solid var(--accent-color);
 }
 
 .footer {
