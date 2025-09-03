@@ -1,28 +1,43 @@
 {
-  "title": "Who will win Exhibition Match?",
+  "title": "Who will win True Grand Finals?",
   "status": "RESOLVED",
   "outcomes": [
     {
-      "title": "AhribockanonaDEM",
-      "channel_points": 200,
-      "users": 1,
+      "title": "storm",
+      "channel_points": 60,
+      "users": 2,
       "top_predictors": [
         {
-          "user_id": "954164703",
-          "user_login": "ceedonkeykong",
-          "user_name": "CeeDonkeyKong",
-          "channel_points_used": 200,
-          "channel_points_won": 200
+          "user_id": "532031146",
+          "user_login": "hutchzilla___",
+          "user_name": "hutchzilla___",
+          "channel_points_used": 50,
+          "channel_points_won": 78
+        },
+        {
+          "user_id": "88603564",
+          "user_login": "ishtariaam",
+          "user_name": "ishtariaAM",
+          "channel_points_used": 10,
+          "channel_points_won": 16
         }
       ]
     },
     {
-      "title": "John Wilkes Gooch",
-      "channel_points": 0,
-      "users": 0,
-      "top_predictors": null
+      "title": "HammerBro",
+      "channel_points": 33,
+      "users": 1,
+      "top_predictors": [
+        {
+          "user_id": "227397861",
+          "user_login": "renkownl",
+          "user_name": "renkoWNL",
+          "channel_points_used": 33,
+          "channel_points_won": 0
+        }
+      ]
     }
   ],
   "duration": 600,
-  "creation_time": "2025-09-02T22:52:31.465958371Z"
+  "creation_time": "2025-09-03T03:41:33.246865429Z"
 }
