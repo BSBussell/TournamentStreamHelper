@@ -117060,6 +117060,279 @@
         ],
         "characterId": null,
         "expand": []
+      },
+      {
+        "id": 2787,
+        "name": "Lucy",
+        "isCommon": null,
+        "videogameId": 33945,
+        "externalIdMap": null,
+        "images": [
+          {
+            "id": 8683948,
+            "width": 512,
+            "height": 512,
+            "ratio": 1,
+            "type": "icon",
+            "url": "https://images.start.gg/images/character/2787/image-7a36d78e1215f1fc4357a83003d607e4.png",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          },
+          {
+            "id": 8683949,
+            "width": 512,
+            "height": 512,
+            "ratio": 1,
+            "type": "stockIcon",
+            "url": "https://images.start.gg/images/character/2787/image-87897c9b080ca0ec69a9fbfe344c8e84.png",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          }
+        ],
+        "characterId": null,
+        "expand": []
+      },
+      {
+        "id": 2788,
+        "name": "Vi",
+        "isCommon": null,
+        "videogameId": 64423,
+        "externalIdMap": null,
+        "images": [
+          {
+            "id": 8703209,
+            "width": 100,
+            "height": 100,
+            "ratio": 1,
+            "type": "icon",
+            "url": "https://images.start.gg/images/character/2788/image-3e118b034e4c1990c2ef298f5bef361c.png",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          },
+          {
+            "id": 8703210,
+            "width": 100,
+            "height": 100,
+            "ratio": 1,
+            "type": "stockIcon",
+            "url": "https://images.start.gg/images/character/2788/image-a7bc6b1613e0832cbe003bef2f86d3f6.png",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          }
+        ],
+        "characterId": null,
+        "expand": []
+      },
+      {
+        "id": 2789,
+        "name": "Blitzcrank",
+        "isCommon": null,
+        "videogameId": 64423,
+        "externalIdMap": null,
+        "images": [
+          {
+            "id": 8703215,
+            "width": 100,
+            "height": 100,
+            "ratio": 1,
+            "type": "icon",
+            "url": "https://images.start.gg/images/character/2789/image-58d7b9f6450b92d0d4e7561a41433f01.png",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          },
+          {
+            "id": 8703216,
+            "width": 100,
+            "height": 100,
+            "ratio": 1,
+            "type": "stockIcon",
+            "url": "https://images.start.gg/images/character/2789/image-58d7b9f6450b92d0d4e7561a41433f01.png",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          }
+        ],
+        "characterId": null,
+        "expand": []
+      },
+      {
+        "id": 2790,
+        "name": "Texas",
+        "isCommon": null,
+        "videogameId": 1150,
+        "externalIdMap": null,
+        "images": [
+          {
+            "id": 8736346,
+            "width": 714,
+            "height": 714,
+            "ratio": 1,
+            "type": "icon",
+            "url": "https://images.start.gg/images/character/2790/image-e2ba2206fd0b56978131a0e1bcd6b68a.png",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          },
+          {
+            "id": 8736347,
+            "width": 714,
+            "height": 714,
+            "ratio": 1,
+            "type": "stockIcon",
+            "url": "https://images.start.gg/images/character/2790/image-e2ba2206fd0b56978131a0e1bcd6b68a.png",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          }
+        ],
+        "characterId": null,
+        "expand": []
+      },
+      {
+        "id": 2791,
+        "name": "Stronghoof",
+        "isCommon": null,
+        "videogameId": 1150,
+        "externalIdMap": null,
+        "images": [
+          {
+            "id": 8736348,
+            "width": 710,
+            "height": 710,
+            "ratio": 1,
+            "type": "icon",
+            "url": "https://images.start.gg/images/character/2791/image-412cf00c0ca9280cd2f0a62e9f8454fc.png",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          },
+          {
+            "id": 8736349,
+            "width": 710,
+            "height": 710,
+            "ratio": 1,
+            "type": "stockIcon",
+            "url": "https://images.start.gg/images/character/2791/image-412cf00c0ca9280cd2f0a62e9f8454fc.png",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          }
+        ],
+        "characterId": null,
+        "expand": []
+      },
+      {
+        "id": 2792,
+        "name": "Nidra",
+        "isCommon": null,
+        "videogameId": 1150,
+        "externalIdMap": null,
+        "images": [
+          {
+            "id": 8736350,
+            "width": 600,
+            "height": 600,
+            "ratio": 1,
+            "type": "icon",
+            "url": "https://images.start.gg/images/character/2792/image-d1a2da8de20439af033f1b025f959be9.png",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          },
+          {
+            "id": 8736351,
+            "width": 600,
+            "height": 600,
+            "ratio": 1,
+            "type": "stockIcon",
+            "url": "https://images.start.gg/images/character/2792/image-d1a2da8de20439af033f1b025f959be9.png",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          }
+        ],
+        "characterId": null,
+        "expand": []
+      },
+      {
+        "id": 2793,
+        "name": "Baihe",
+        "isCommon": null,
+        "videogameId": 1150,
+        "externalIdMap": null,
+        "images": [
+          {
+            "id": 8736353,
+            "width": 697,
+            "height": 697,
+            "ratio": 1,
+            "type": "icon",
+            "url": "https://images.start.gg/images/character/2793/image-a7196fb6296441cb0b5773be80a6ccca.png",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          },
+          {
+            "id": 8736354,
+            "width": 697,
+            "height": 697,
+            "ratio": 1,
+            "type": "stockIcon",
+            "url": "https://images.start.gg/images/character/2793/image-242bd0be8adeb64a37a655bac9a5ba4a.png",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          }
+        ],
+        "characterId": null,
+        "expand": []
       }
     ]
   },
@@ -119558,7 +119831,14 @@
     2783,
     2784,
     2785,
-    2786
+    2786,
+    2787,
+    2788,
+    2789,
+    2790,
+    2791,
+    2792,
+    2793
   ],
   "resultEntity": "character",
   "actionRecords": []
