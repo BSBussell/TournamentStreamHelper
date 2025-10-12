@@ -37,13 +37,11 @@
         "Previously #1 in Tricot",
         "Got 7th at Volan24"
     ],
-
     "Yuno Smyles": [
         "Is an accomplished percussionist",
         "Has written and composed a song",
         "It's called The Birth of Falling Stars"
     ],
-
     "THE KINGPIN": [
         "He's a math teacher.",
         "The ACTUAL second coming of the Greg",
@@ -59,7 +57,6 @@
         "Does NOT care about winning",
         "Tries to make his opponent rage"
     ],
-
     "Hidalgo": [
         "Beat a nationally ranked Mexican cloud player",
         "His mentality is \"I am Pikachu\"",
@@ -129,7 +126,7 @@
         "Hidden Boss",
         "Former Knoxville PR"
     ],
-        "Tadeo": [
+    "Tadeo": [
         "Loves to party",
         "Ranked 8th in Chattanooga",
         "2-0 on Storm"
@@ -196,7 +193,7 @@
     "So-Ren": [
         "Allegedly has lots of hidden knowledge"
     ],
-        "Berg": [
+    "Berg": [
         "Esteemed UTK Team Member",
         "Caught on to me trolling him"
     ],
@@ -216,7 +213,7 @@
     "Fedora": [
         "Ranked 5th in Chattanooga"
     ],
-        "Thicc": [
+    "Thicc": [
         "Used Pikachu and Luigi",
         "Now simply plays Luigi"
     ],
@@ -330,7 +327,6 @@
         "wants to know when braacket will be updated",
         "6th most locked in player in Knoxville",
         "Seeks votes for the gorilla invitational"
-
     ],
     "HeroRNGod": [
         "Took 3 stocks off of Jack with Magic Burst in a single game.",
@@ -347,7 +343,7 @@
         "Plays the forbidden game",
         "Puff Enjoyer"
     ],
-        "Deceased V0rtex": [
+    "Deceased V0rtex": [
         "Esteemed UTK Alum"
     ],
     "Benimaru": [
@@ -359,7 +355,7 @@
     "Quetzal": [
         "\"I'll just give you 15 dollars because I feel sorry for your broke [arse]\""
     ],
-        "Giizus": [
+    "Giizus": [
         "Cosplayed as Snake at ChattCon"
     ],
     "John Wilkes Gooch": [
@@ -612,7 +608,7 @@
         "Undefeated in Pokemon DND battles",
         "Had their Passimian blown up and deaded because of Noah"
     ],
-        "T_Pot Legal Team": [
+    "T_Pot Legal Team": [
         "Invented Ed Sheeran Planking",
         "\"It's like I'm in the K-hole when I'm moving with Isabelle\"",
         "1/2 of <i>The Tennessee Gorilla</i>",
@@ -624,9 +620,8 @@
         "List of rivals: Shlumped, Meteor, Mayer, Renkofr",
         "List of rivals is slightly longer on showdown",
         "Undefeated in Pokemon DND battles",
-        "Had their Passimian blown up and deaded because of Noah",
-        ],
-    
+        "Had their Passimian blown up and deaded because of Noah"
+    ],
     "default": [
         "Has a unique taste in food",
         "Has definitely played more than 30 hours of Super Smash Bros. Ultimate",
@@ -678,7 +673,7 @@
         "Has made people laugh",
         "Has a goofy side they seldom reveal",
         "Hits combos sometimes",
-"a level 3 cpu is no match for them",
-"has never been purposefully spiked by luigi taunt"
+        "a level 3 cpu is no match for them",
+        "has never been purposefully spiked by luigi taunt"
     ]
 }
