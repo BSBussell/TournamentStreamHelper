@@ -90,7 +90,7 @@ body {
     font-size: 2.2rem;
     font-weight: 400;
     color: var(--p1-score-color);
-    font-style: italic;
+    font-style: bold;
     letter-spacing: 0.05em;
     text-shadow: 0 2px 0 rgba(0, 0, 0, 0.3);
     opacity: 0;
@@ -221,6 +221,7 @@ body {
     top: 10%;
     left: 15%;
     animation-delay: 0s;
+    display: none;
 }
 
 .bg-circle-2 {
@@ -230,6 +231,7 @@ body {
     bottom: 20%;
     right: 20%;
     animation-delay: 2s;
+    display: none;
 }
 
 .bg-circle-3 {
@@ -239,6 +241,7 @@ body {
     top: 60%;
     left: 5%;
     animation-delay: 4s;
+    display: none;
 }
 
 @keyframes float {

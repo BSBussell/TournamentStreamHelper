@@ -9,7 +9,7 @@ const TIMING_CONFIG = {
 };
 
 let config = {
-    main_title: "The Tennessee Gorilla",
+    main_title: "The Tennessee Hive",
     tournament_name: "Tournament", // This will get the actual tournament name
     show_countdown: false, // No countdown for thanks screen
 };
@@ -144,7 +144,7 @@ LoadEverything().then(() => {
         let data = event.data;
         let oldData = event.oldData;
 
-        console.log("GLRA Thanks UPDATE -------------------");
+        console.log("HIVE Thanks UPDATE -------------------");
 
         // Update tournament info from TSH data structure
         if (data.tournamentInfo) {
@@ -169,7 +169,7 @@ LoadEverything().then(() => {
 });
 
 function updateTournamentInfo() {
-    // Update main title with wave effect (always "The Tennessee Gorilla")
+    // Update main title with wave effect (always "The Tennessee Hive")
     const titleElement = document.getElementById('main-title');
     if (titleElement) {
         applyWaveText(titleElement, config.main_title);

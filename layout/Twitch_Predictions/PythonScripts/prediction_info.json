@@ -3,34 +3,18 @@
   "status": "LOCKED",
   "outcomes": [
     {
-      "title": "storm",
-      "channel_points": 20,
-      "users": 1,
-      "top_predictors": [
-        {
-          "user_id": "954164703",
-          "user_login": "ceedonkeykong",
-          "user_name": "CeeDonkeyKong",
-          "channel_points_used": 20,
-          "channel_points_won": 0
-        }
-      ]
+      "title": "Orex",
+      "channel_points": 0,
+      "users": 0,
+      "top_predictors": null
     },
     {
-      "title": "Viridian",
-      "channel_points": 10,
-      "users": 1,
-      "top_predictors": [
-        {
-          "user_id": "227397861",
-          "user_login": "renkownl",
-          "user_name": "renkoWNL",
-          "channel_points_used": 10,
-          "channel_points_won": 0
-        }
-      ]
+      "title": "storm",
+      "channel_points": 0,
+      "users": 0,
+      "top_predictors": null
     }
   ],
   "duration": 600,
-  "creation_time": "2025-10-08T02:08:36.558285945Z"
+  "creation_time": "2026-04-08T02:29:14.944480364Z"
 }

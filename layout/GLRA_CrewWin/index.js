@@ -137,7 +137,7 @@ LoadEverything().then(() => {
         let data = event.data;
         let oldData = event.oldData;
 
-        console.log("GLRA Crew Win UPDATE -------------------");
+        console.log("HIVE Crew Win UPDATE -------------------");
 
         // Update tournament info from TSH data structure
         if (data.tournamentInfo) {

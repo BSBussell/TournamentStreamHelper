@@ -13,7 +13,7 @@ body {
     letter-spacing: 1;
 
     --transparent-bg: color-mix(in srgb, var(--bg-color) 50%, transparent);
-    --transparent-accent: color-mix(in srgb, white 25%, transparent);
+    --transparent-accent: color-mix(in srgb, #CFFBFF 5%, transparent);
 }
 
 .container {
@@ -104,7 +104,7 @@ body {
 .player.container {
     position: relative;
     height: 100%;
-    border: 2px solid var(--accent-color);
+    /* border: 2px solid var(--accent-color); */
 }
 
 .footer {

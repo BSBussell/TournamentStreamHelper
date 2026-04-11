@@ -1,5 +1,5 @@
 // Customize the name of the points
-const CHANNEL_POINTS_NAME = "GLRA GYMMS";
+const CHANNEL_POINTS_NAME = "Pollen Points";
 
 
 LoadEverything().then(() => {

@@ -182,13 +182,14 @@ body {
 }
 
 .logo {
+    /* display: none; */
     position: absolute;
 
     left: 50%;
     transform: translateX(-50%);
 
     
-    /* TN GLRA LOGO */
+    /* TN HIVE LOGO */
         
     /* top: 0px;
     width: 150px;

@@ -108,23 +108,23 @@ function applyWaveText(element, text) {
 
 // Animation cycle for status messages
 const originalStatusMessages = [
-    'Eating Bananas',
+    'Buzzing around',
     'Rigging the Bracket',
     'Power Napping',
     'Debugging the Replay Script',
-    'Downloading new Transitions',
+    'Designing new layouts',
     'Seeding Bracket again',
     'Waiting for the T.O. to show up',
     'Practicing the Worm',
-    'Counting my Gorilla Gimms',
+    'Counting my Pollen Points',
     'Refilling our water bottles',
-    'Monkeying around',
+    'Bumbling around',
     'Getting in their heads',
     'Breaking the rules',
     'Making you wait for absolutely no reason',
     'Practicing dancing behind the players',
-    'Talking to Foster',
-    'Spending too much time working on the playlist',
+    'Talking to Nutpea',
+    'Spending too much time building the playlist',
     'Bee stayed up til 5am making this screen',
     'Bee doesn\'t know why she did that',
     'Hopefully we\'ll be starting soon',
@@ -153,19 +153,15 @@ const originalStatusMessages = [
     'Reconsidering font choices',
     'Pre-regging for Evo 2018',
     'Time Traveling Storm to beat Cosmos',
-    'Praying Meeka picks isabelle',
     'Neuron Activation Via Diddy Kong Movement',
     'Throwing away a stitch',
     "Practicing Hidalgo's patented luigi combos",
-    'Samsplaining Gorilla Code',
-    'Samsplaining my bowling alley transitions',
+    'Samsplaining Hive Code',
     'Moneymatches anyone?',
     'What purple is he directing?',
     'Voting Reiko for president of UTC eSports',
     'Hutchzilla must now be called SDI-yler',
     'Hoping m0use wins this whole thing',
-    'Removing "Swagadelic" from my vocab',
-    'Coming up with tags organically',
     'Memorizing sound fonts',
 ];
 
@@ -279,7 +275,7 @@ LoadEverything().then(() => {
         let data = event.data;
         let oldData = event.oldData;
 
-        console.log("GLRA Starting Soon UPDATE -------------------");
+        console.log("HIVE Starting Soon UPDATE -------------------");
 
         // Update tournament info from TSH data structure
         if (data.tournamentInfo) {
