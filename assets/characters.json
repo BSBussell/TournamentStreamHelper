@@ -117686,45 +117686,6 @@
         "expand": []
       },
       {
-        "id": 2803,
-        "name": "Random",
-        "isCommon": null,
-        "videogameId": 53945,
-        "externalIdMap": null,
-        "images": [
-          {
-            "id": 8801555,
-            "width": 512,
-            "height": 512,
-            "ratio": 1,
-            "type": "icon",
-            "url": "https://images.start.gg/images/character/2803/image-559bdc1eb516a207d9363182934d894e.png",
-            "isOriginal": true,
-            "entity": null,
-            "entityId": null,
-            "uploadedBy": null,
-            "createdAt": null,
-            "updatedAt": null
-          },
-          {
-            "id": 8801556,
-            "width": 512,
-            "height": 512,
-            "ratio": 1,
-            "type": "stockIcon",
-            "url": "https://images.start.gg/images/character/2803/image-1aa33f7ef46c91046a283941ddf82a15.png",
-            "isOriginal": true,
-            "entity": null,
-            "entityId": null,
-            "uploadedBy": null,
-            "createdAt": null,
-            "updatedAt": null
-          }
-        ],
-        "characterId": null,
-        "expand": []
-      },
-      {
         "id": 2804,
         "name": "Armor King",
         "isCommon": null,
@@ -118902,12 +118863,12 @@
         "externalIdMap": null,
         "images": [
           {
-            "id": 9255467,
-            "width": 512,
-            "height": 512,
+            "id": 9360606,
+            "width": 1024,
+            "height": 1024,
             "ratio": 1,
             "type": "icon",
-            "url": "https://images.start.gg/images/character/2834/image-b0dd9a83d10de2d1e7e1f38a8dba4584.png",
+            "url": "https://images.start.gg/images/character/2834/image-bd0c6fc6368a569232d8ea55022a5619.png",
             "isOriginal": true,
             "entity": null,
             "entityId": null,
@@ -118916,12 +118877,12 @@
             "updatedAt": null
           },
           {
-            "id": 9255468,
-            "width": 512,
-            "height": 512,
+            "id": 9360607,
+            "width": 1024,
+            "height": 1024,
             "ratio": 1,
             "type": "stockIcon",
-            "url": "https://images.start.gg/images/character/2834/image-045f9b6dca8f22a16d1d8a15afeeaf5e.png",
+            "url": "https://images.start.gg/images/character/2834/image-40c0f7bdf5ac9a2bdc25379fdc5fde8d.png",
             "isOriginal": true,
             "entity": null,
             "entityId": null,
@@ -123885,6 +123846,84 @@
         ],
         "characterId": null,
         "expand": []
+      },
+      {
+        "id": 2962,
+        "name": "Jam",
+        "isCommon": null,
+        "videogameId": 33945,
+        "externalIdMap": null,
+        "images": [
+          {
+            "id": 9360286,
+            "width": 512,
+            "height": 512,
+            "ratio": 1,
+            "type": "icon",
+            "url": "https://images.start.gg/images/character/2962/image-254d37f86b59a6cb7a196aff2321fe2e.png",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          },
+          {
+            "id": 9360287,
+            "width": 512,
+            "height": 512,
+            "ratio": 1,
+            "type": "stockIcon",
+            "url": "https://images.start.gg/images/character/2962/image-cd65ae8e477d567d3aead2f657709d58.png",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          }
+        ],
+        "characterId": null,
+        "expand": []
+      },
+      {
+        "id": 2963,
+        "name": "Krauser",
+        "isCommon": null,
+        "videogameId": 73221,
+        "externalIdMap": null,
+        "images": [
+          {
+            "id": 9372837,
+            "width": 512,
+            "height": 512,
+            "ratio": 1,
+            "type": "icon",
+            "url": "https://images.start.gg/images/character/2963/image-f0bc15fb52f01c32a3bdf8397a821b86.png",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          },
+          {
+            "id": 9372838,
+            "width": 512,
+            "height": 512,
+            "ratio": 1,
+            "type": "stockIcon",
+            "url": "https://images.start.gg/images/character/2963/image-85b3a2a16de8a1d008e5ed2e0b138964.png",
+            "isOriginal": true,
+            "entity": null,
+            "entityId": null,
+            "uploadedBy": null,
+            "createdAt": null,
+            "updatedAt": null
+          }
+        ],
+        "characterId": null,
+        "expand": []
       }
     ]
   },
@@ -126400,7 +126439,6 @@
     2800,
     2801,
     2802,
-    2803,
     2804,
     2805,
     2806,
@@ -126558,7 +126596,9 @@
     2958,
     2959,
     2960,
-    2961
+    2961,
+    2962,
+    2963
   ],
   "resultEntity": "character",
   "actionRecords": []

@@ -7,6 +7,18 @@ body {
     opacity: 0;
     overflow: hidden;
     margin: 0;
+    position: relative;
+}
+
+body::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 50% 48%, rgba(255, 255, 255, 0.05), transparent 40%),
+        linear-gradient(180deg, rgba(0, 0, 0, 0.08) 0%, rgba(0, 0, 0, 0.16) 100%);
+    z-index: -998;
 }
 
 .container {
@@ -16,12 +28,37 @@ body {
     box-sizing: border-box;
     border-radius: var(--border-radius);
     background: var(--bg-color);
+    background-image: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.08) 0%,
+        rgba(255, 255, 255, 0.03) 34%,
+        rgba(0, 0, 0, 0.12) 100%
+    );
     align-items: center;
     /* padding: 20px 40px; */
     filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.12))
         drop-shadow(0 3px 1px rgba(0, 0, 0, 0.14))
         drop-shadow(0 1px 5px rgba(0, 0, 0, 0.12))
         drop-shadow(0 -1px 2px rgba(0, 0, 0, 0.1));
+    isolation: isolate;
+}
+
+.container::before,
+.recent_sets_title::before,
+.set_winner::before,
+.set_loser::before,
+.set_tie::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.16) 0%,
+        rgba(255, 255, 255, 0.05) 18%,
+        rgba(255, 255, 255, 0) 48%
+    );
 }
 
 .recent_sets {
@@ -53,6 +90,7 @@ body {
     flex-direction: column;
 
     position: relative;
+    padding: 12px 0 4px;
 }
 
 .recent_sets_title {
@@ -70,6 +108,9 @@ body {
     color: var(--accent-color);
 
     z-index: 10;
+    position: relative;
+    isolation: isolate;
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.14);
 }
 
 /* Players Section */
@@ -134,6 +175,18 @@ body {
     gap: 16px;
     display: flex;
     flex-direction: column;
+    padding-bottom: 8px;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: var(--border-radius);
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.08) 0%,
+        rgba(255, 255, 255, 0.03) 36%,
+        rgba(0, 0, 0, 0.12) 100%
+    );
+    box-shadow: 0 14px 24px rgba(0, 0, 0, 0.16);
 }
 
 .set_container {
@@ -153,6 +206,8 @@ body {
     white-space: nowrap;
     overflow: hidden;
     align-items: center;
+    position: relative;
+    isolation: isolate;
 }
 
 .set_info {
@@ -184,6 +239,7 @@ body {
     text-overflow: ellipsis;
     opacity: 0.75;
     font-size: 26px;
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
 }
 
 .col_1 .text {
@@ -242,6 +298,8 @@ body {
     background: #29b548;
     color: var(--text-color);
     flex-shrink: 0;
+    position: relative;
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.14);
 }
 
 .set_text {
@@ -263,6 +321,8 @@ body {
     background: var(--accent-color);
     color: var(--text-color);
     flex-shrink: 0;
+    position: relative;
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.14);
 }
 
 .set_loser {
@@ -275,6 +335,8 @@ body {
     background: #ff3837;
     color: var(--text-color);
     flex-shrink: 0;
+    position: relative;
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.14);
 }
 
 /* Loading Screen */
@@ -352,6 +414,7 @@ body {
     border-radius: var(--border-radius);
 
     z-index: 1;
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.14);
 }
 
 /* Take up ten pixels with grey background */
@@ -463,4 +526,5 @@ body {
 .never-played {
     width: 100%;
     text-align: center;
+    text-shadow: 0 8px 16px rgba(0, 0, 0, 0.14);
 }

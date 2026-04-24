@@ -10,13 +10,12 @@
         "10th most locked in player in Knoxville -Alice's version",
         "Member of the TN Spidurzz",
         "Esteemed UTK Alum",
-        "formally a any% world record holder in spongebob bikini bottom chess",
+        
         "#2 TN Spidur",
         "Ranked #5 in East TN",
         "Rival: Storm",
         "Demon: Storm",
         "Blessing: Hidalgo"
-    
     ],
     "Blank_58": [
         "Waxed light in poker",
@@ -55,21 +54,13 @@
         "4th most locked in player in Knoxville",
         "Has beef with Noah",
         "Only has beef with people in DC",
-        "New UTK Student Recruit",
-        "Speedruns Mario Party",
-        "Demon: Lem0nade",
-        "Rival: Big Mama",
-        "Blessing: BuyingLake"
-
+        "Speedruns Mario Party"
     ],
     "Koreki": [
         "UTK Splatoon Goat and Team Captain",
         "Got on Purdue PR with random"
     ],
-    "dylan": [
-        "Does NOT care about winning",
-        "Tries to make his opponent rage"
-    ],
+    "dylan": ["Does NOT care about winning", "Tries to make his opponent rage"],
     "Hidalgo": [
         "Don't ask him about the Netanyahu incident",
         "Beat a nationally ranked Mexican cloud player",
@@ -91,7 +82,7 @@
         "Demon: Orex",
         "Blessing: Hutchzilla"
     ],
-    "Hutchzilla": [
+    "[   ]": [
         "Caused a sonic to rage quit in a collegiate wifi crew battle",
         "Lost a bet that he could hit 10 lariats in a row (2/10)",
         "Gifted 10 subs to Hbox",
@@ -104,6 +95,7 @@
         "Unironic Least Woke Woke Person",
         "Member of the TN SPIDURZZ",
         "Founded the TN SPIDURZZ",
+        "formally a any% world record holder in spongebob bikini bottom chess",
         "Is Cee's tenkaichi doubles partner and together we are the TN Jungle",
         "#3 TN Spidur",
         "Has beef with JohnWilkesGooch",
@@ -111,17 +103,16 @@
         "Has a rivalry with Big Mama",
         "Rival: Big Mama",
         "Demon: Hidalgo",
-        "Blessing: AhribockanonaD.E.M."
+        "Blessing: AhribockanonaD.E.M.",
+        "Solo'd UTC in Crews",
+        "\"Mining is soo stimulating\""
     ],
     "DKDOUG": [
         "His name is actually Douglas Kong",
         "Was the head Smash 4 Knox TO",
         "DBQ Member"
     ],
-    "Hobbes": [
-        "3rd in Cookeville",
-        "Was the head Smash 4 Knox TO"
-    ],
+    "Hobbes": ["3rd in Cookeville", "Was the head Smash 4 Knox TO"],
     "Meow": [
         "#1 in Rivals 2 in Chattanooga",
         "#5 in Ultimate in Chattanooga",
@@ -144,15 +135,8 @@
         "Won doubles at VOLAN24 with KornDog",
         "Also known as 'The Benadryllionaire'"
     ],
-    "Zappa": [
-        "Hidden Boss",
-        "Former Knoxville PR"
-    ],
-    "Tadeo": [
-        "Loves to party",
-        "Ranked 8th in Chattanooga",
-        "2-0 on Storm"
-    ],
+    "Zappa": ["Hidden Boss", "Former Knoxville PR"],
+    "Tadeo": ["Loves to party", "Ranked 8th in Chattanooga", "2-0 on Storm"],
     "KornDog": [
         "Proprietor of his own Esports organization for carried players",
         "Former Knoxville PR",
@@ -204,16 +188,9 @@
         "#65 Speedrunner of Run 2 Any%",
         "Ranked 9th in East TN"
     ],
-    "BuyingLake": [
-        "Specializes in beating Mario players"
-    ],
-    "Knockoutjoe": [
-        "Locked in ICs player",
-        "Former Mid TN PR when active"
-    ],
-    "So-Ren": [
-        "Allegedly has lots of hidden knowledge"
-    ],
+    "BuyingLake": ["Specializes in beating Mario players"],
+    "Knockoutjoe": ["Locked in ICs player", "Former Mid TN PR when active"],
+    "So-Ren": ["Allegedly has lots of hidden knowledge"],
     "grabmeat300": [
         "Esteemed UTK Team Member",
         "Caught on to me trolling him",
@@ -233,25 +210,15 @@
         "Vote Reiko for president",
         "Ranked 3rd in Chattanooga"
     ],
-    "Ave~": [
-        "Ranked 1st in Chattanooga"
-    ],
-    "Fedora": [
-        "Ranked 5th in Chattanooga"
-    ],
-    "Thicc": [
-        "Used Pikachu and Luigi",
-        "Now simply plays Luigi"
-    ],
+    "Ave~": ["Ranked 1st in Chattanooga"],
+    "Fedora": ["Ranked 5th in Chattanooga"],
+    "Thicc": ["Used Pikachu and Luigi", "Now simply plays Luigi"],
     "Meeka": [
         "Hidden boss in Chattanooga",
         "Tied for best Isabelle in the land",
         "Swaggiest Isabelle in the land"
     ],
-    "Fazfiend": [
-        "Ranked 14th in East TN PR",
-        "Ranked 3rd in Tricot PR"
-    ],
+    "Fazfiend": ["Ranked 14th in East TN PR", "Ranked 3rd in Tricot PR"],
     "kaden": [
         "Former Knox PR",
         "Probably the only talented Smash 4 player in this room",
@@ -267,7 +234,8 @@
     "SmokedSam": [
         "Invented a Nasty Criminal technique called 'the felonious ghoul swipe.'",
         "Better vs. K. Rool than Zomba",
-        "Ranked 5th in East TN PR"
+        "Ranked 5th in East TN PR",
+        "Was once a professional circus raccoon that got shot out of a cannon"
     ],
     "Hatsune Pyukumuku": [
         "Invented a Nasty Criminal technique called 'the felonious ghoul swipe.'",
@@ -305,9 +273,7 @@
         "Rival: Orex",
         "Demon: Dany"
     ],
-    "Mr.Caffeine": [
-        ""
-    ],
+    "Mr.Caffeine": [""],
     "soup": [
         "Hasn’t beat Lem0nade since removing the 12 from his tag.",
         "\"I'm a high value male\"",
@@ -321,9 +287,7 @@
         "Blessing: Junt Wilkes Jack",
         "Blessing: SmashSensei"
     ],
-    "Rio": [
-        "10th most locked in player in Knoxville"
-    ],
+    "Rio": ["10th most locked in player in Knoxville"],
     "YDelirious": [
         "Honorable mention in Middle TN",
         "Beat Peabnut",
@@ -337,9 +301,7 @@
         "Doctor Purple",
         "Notorious for being aggressive"
     ],
-    "MayerMayhem": [
-        "\"Fundies be damned I'm gonna neutral B.\""
-    ],
+    "MayerMayhem": ["\"Fundies be damned I'm gonna neutral B.\""],
     "Amish Carpool": [
         "\"I am the prophet in a region full of campers\".",
         "Commentated Volan24 to mixed reception",
@@ -380,25 +342,15 @@
         "Has two cats, one of them named gameboy, but responds to gay",
         "NOT on Alice's version of top 10 most locked in players in Knox"
     ],
-    "MaYo": [
-        "Plays the forbidden game",
-        "Puff Enjoyer"
-    ],
-    "Deceased V0rtex": [
-        "Esteemed UTK Alum"
-    ],
-    "Benimaru": [
-        "GOATed on the sticks (this game)"
-    ],
-    "Abs0lute_un1t_": [
-        "Has a win on John Wilkes Gooch"
-    ],
+    "MaYo": ["Plays the forbidden game", "Puff Enjoyer"],
+    "Deceased V0rtex": ["Esteemed UTK Alum"],
+    "Benimaru": ["GOATed on the sticks (this game)"],
+    "Abs0lute_un1t_": ["Has a win on John Wilkes Gooch"],
     "Quetzal": [
         "\"I'll just give you 15 dollars because I feel sorry for your broke [arse]\""
     ],
-    "Giizus": [
-        "Cosplayed as Snake at ChattCon"
-    ],
+    "KnoxTim": ["Has a child", "Can close his nose without touching it"],
+    "Giizus": ["Cosplayed as Snake at ChattCon"],
     "Junt Wilkes Gooch": [
         "Notorious for non-monetary gambling habits.",
         "Aspiring elite smash fiend.",
@@ -438,7 +390,8 @@
         "Semi Retired Spidur",
         "hates the dexcom g7"
     ],
-    "D.E.M.": [
+    "AhribockanonaD.E.M.": [
+        "allegedly solved a rubix cube in 30 seconds once",
         "Used to main mewtwo.",
         "Nobody knows what z0id is.",
         "1/2 of the soup brothers.",
@@ -463,10 +416,7 @@
     "Marcelainspanish": [
         "Only TN player to have released a diss-track and not be banned."
     ],
-    "Perseus": [
-        "Occasionally Commentates Smash",
-        "Was Raised in chicago"
-    ],
+    "Perseus": ["Occasionally Commentates Smash", "Was Raised in chicago"],
     "PhantomRose": [
         "https://shorturl.at/idbJs",
         "Impressive control of walking.",
@@ -479,10 +429,7 @@
         "Nick's friend",
         "Was drafted by Sam in the Knoxville fantasy league"
     ],
-    "FoxboxRay": [
-        "TO of Smash the Cave",
-        "Excellent Artist"
-    ],
+    "FoxboxRay": ["TO of Smash the Cave", "Excellent Artist"],
     "E Man": [
         "Notorious for excellent counters",
         "TO of ETSUcon (sign up, y'all!)",
@@ -497,14 +444,8 @@
         "Demon: KornDog",
         "Blessing: CookedCannard"
     ],
-    "groceries!!": [
-        "Violet's brother",
-        "Mains Fox"
-    ],
-    "Nyxis": [
-        "Steve player",
-        "Was Knox PR when he was active"
-    ],
+    "groceries!!": ["Violet's brother", "Mains Fox"],
+    "Nyxis": ["Steve player", "Was Knox PR when he was active"],
     "jazz": [
         "Ranked 2nd in Cookeville",
         "The one woke captain falcon main",
@@ -513,18 +454,10 @@
         "Poet",
         "Like Smash Sensei in that they main Captain Falcon. (NO other similarities)"
     ],
-    "Azeol": [
-        "Ranked 5th in Cookeville"
-    ],
-    "Popsei": [
-        "Ranked 10th in Cookeville"
-    ],
-    "Lord Baccoon": [
-        "Ranked 7th in Cookeville"
-    ],
-    "S.I.M.R.": [
-        "Ranked 4th in Cookeville"
-    ],
+    "Azeol": ["Ranked 5th in Cookeville"],
+    "Popsei": ["Ranked 10th in Cookeville"],
+    "Lord Baccoon": ["Ranked 7th in Cookeville"],
+    "S.I.M.R.": ["Ranked 4th in Cookeville"],
     "Solar Colony": [
         "Ranked 6th in Cookeville",
         "works at Food Lion SO amazingly efficiently that he's earned the coveted title of \"Food Lion\" among his peers",
@@ -532,9 +465,7 @@
         "Won a tiebreaking qualifier against the Fedora",
         "Bayonetta Gaming"
     ],
-    "ShinyPokes": [
-        "is a top-level \"A Hat in Time\" speedrunner"
-    ],
+    "ShinyPokes": ["is a top-level \"A Hat in Time\" speedrunner"],
     "Tink": [
         "has such good taste in music that top-level professionals constantly hit him up requesting guidance for the music industry"
     ],
@@ -573,17 +504,13 @@
         "Fox player",
         "Falco player"
     ],
-    "TC": [
-        "Used to run Play2Win tournament series"
-    ],
-    "They/Them Kong #EdSheezy": [
-        "Used to run Play2Win tournament series"
-    ],
+    "TC": ["Used to run Play2Win tournament series"],
+    "They/Them Kong #EdSheezy": ["Used to run Play2Win tournament series"],
     "Falkion": [
         "Made an upset at Volan24 then went back to being an engineering student",
         "Might be the best marth player in knoxville"
     ],
-        "A PICKLE": [
+    "A PICKLE": [
         "Esteemed UTK Team Member",
         "Took a game off of Orex",
         "Decent at Tenkaichi",
@@ -605,21 +532,13 @@
         "4th most locked in player in Knoxville -Alice's version",
         "Ranked 4th in East TN PR"
     ],
-    "Mascara": [
-        "Bowser Jr.",
-        "Might be the best R.O.B. in TN"
-    ],
-    "Devta": [
-        "Plays Byleth",
-        "Will juggle you.",
-        "Has a sick sweater"
-    ],
+    "Mascara": ["Bowser Jr.", "Might be the best R.O.B. in TN"],
+    "Devta": ["Plays Byleth", "Will juggle you.", "Has a sick sweater"],
     "Riddul": [
         "Plays Diddy Kong",
         "5th in East TN",
         "\"Can you put that I'm 6 feet tall on there?\"",
         "Hosted the summer Riddul invitation in a house with a fire pole"
-
     ],
     "Dragonsly109": [
         "Secretly has a sick pocket Wii Fit Trainer",
@@ -647,15 +566,9 @@
         "Rival: Hatsune Pyukumyuku",
         "Blessing: RenkoFr"
     ],
-    "renkofr": [
-        "hates the dexcom g7",
-        "Is Alice"
-    ],
-    "Coffeenut": [
-        "The improover",
-        "Meeps' cousin"
-    ],
-    "tootru": [
+    "renkofr": ["hates the dexcom g7", "Is Alice"],
+    "Coffeenut": ["The improover", "Meeps' cousin"],
+    "RowleyJeffersonGaming": [
         "The improover",
         "Was very happy to take a game off Cee's PT",
         "2nd Falco with name starting with \"ty\"",
@@ -697,7 +610,7 @@
         "List of rivals is slightly longer on showdown",
         "Undefeated in Pokemon DND battles",
         "Had their Passimian blown up and deaded because of Noah",
-                "One with many aliases",
+        "One with many aliases",
         "Lives in a nest"
     ],
     "default": [

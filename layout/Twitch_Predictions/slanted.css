@@ -1,12 +1,10 @@
 :root {
-    
     --local-border-radius: 4px;
 }
 
 body {
-  filter: none;
+    filter: none;
 }
-
 
 /* Add to the left and right and then subtract from its width */
 .prediction-bar {
@@ -15,12 +13,11 @@ body {
     width: 90%; */
     box-shadow: none;
     overflow: visible;
-
 }
 
 .bar-left,
 .bar-right {
-  border-radius: 0px;
+    border-radius: 0px;
     /* border-radius: var(--local-border-radius); */
 }
 
@@ -45,7 +42,6 @@ body {
 }
 
 .bar-right.leading::before {
-
     left: -10vh;
     width: 32vh;
     clip-path: none;
@@ -58,55 +54,68 @@ body {
 
 /* Add slant to before */
 .slants {
-  position: absolute;
-  
-  width: 3%;
-  height: 31.8%;
-  z-index: 0;
-  border-radius: var(--local-border-radius);
-  pointer-events: none;
+    position: absolute;
 
-  /* box-shadow: 0px 5px 0px 5px var(--p1-score-bg-color-dark); */
+    width: 3%;
+    height: 31.8%;
+    z-index: 0;
+    border-radius: var(--local-border-radius);
+    pointer-events: none;
 
+    /* box-shadow: 0px 5px 0px 5px var(--p1-score-bg-color-dark); */
 }
 
 .bar-left-slant {
-  left: 9%; /* Tuck it to the left of .bar-left */
-  background: var(--p1);
-  transform: skewX(-20deg);
+    left: 9%; /* Tuck it to the left of .bar-left */
+    background: var(--p1);
+    /*background-image: linear-gradient(
+        160deg,
+        rgba(255, 255, 255, 0.16) 0%,
+        rgba(255, 255, 255, 0.05) 24%,
+        rgba(255, 255, 255, 0) 48%,
+        rgba(0, 0, 0, 0.08) 100%
+    );*/
 
-  box-shadow: 0px 2.5px 0px 2.5px var(--p1-score-bg-color-dark);
+    transform: skewX(-20deg);
+
+    box-shadow: 0px 2.5px 0px 2.5px var(--p1-score-bg-color-dark);
 }
 
 .bar-right-slant {
-  right: 9%; /* Tuck it to the right of .bar-right */
-  background: var(--p2);
-  transform: skewX(20deg);
+    right: 9%; /* Tuck it to the right of .bar-right */
+    background: var(--p2);
+    /*background-image: linear-gradient(
+        200deg,
+        rgba(255, 255, 255, 0.16) 0%,
+        rgba(255, 255, 255, 0.05) 24%,
+        rgba(255, 255, 255, 0) 48%,
+        rgba(0, 0, 0, 0.08) 100%
+    );*/
 
-  box-shadow: 0px 2.5px 0px 2.5px var(--p2-score-bg-color-dark);
+    transform: skewX(20deg);
+
+    box-shadow: 0px 2.5px 0px 2.5px var(--p2-score-bg-color-dark);
 }
 
 .bar-left,
 .bar-right {
- 
-  
-  z-index: 2; /* Ensure bars are above slants */
+    z-index: 2; /* Ensure bars are above slants */
 }
 
 .bar-left {
-  filter: drop-shadow(0px 5px 0px var(--p1-score-bg-color-dark));
+    filter: drop-shadow(0px 5px 0px var(--p1-score-bg-color-dark));
 }
 .bar-left-slant {
-  /* box-shadow: 0px -5px 0px 5px var(--p1-score-bg-color-dark); */
+    /* box-shadow: 0px -5px 0px 5px var(--p1-score-bg-color-dark); */
 }
 
 .bar-right {
-  filter: drop-shadow(0px 5px 0px var(--p2-score-bg-color-dark));
-  /* z-index: 1; */
+    filter: drop-shadow(0px 5px 0px var(--p2-score-bg-color-dark));
+    /* z-index: 1; */
 }
 .bar-right-slant {
-  /* box-shadow: 0px -5px 0px 5px var(--p2-score-bg-color-dark); */
-  /* filter: drop-shadow(0px 7px 0px var(--p2-score-bg-color-dark))
+    /* box-shadow: 0px -5px 0px 5px var(--p2-score-bg-color-dark); */
+    /* filter: drop-shadow(0px 7px 0px var(--p2-score-bg-color-dark))
   drop-shadow(2.5px 1px 0px var(--p2-score-bg-color-dark))
   drop-shadow(2.5px 2px 0px var(--p2-score-bg-color-dark)); */
 }

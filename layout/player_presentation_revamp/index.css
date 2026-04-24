@@ -17,6 +17,18 @@ body {
     margin: 0;
     width: 1920px;
     height: 1080px;
+    position: relative;
+}
+
+body::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.05), transparent 45%),
+        linear-gradient(180deg, rgba(0, 0, 0, 0.08) 0%, rgba(0, 0, 0, 0.18) 100%);
+    z-index: -998;
 }
 
 .stage {
@@ -81,8 +93,15 @@ body {
     box-sizing: border-box;
     border-radius: var(--border-radius);
     background-color: var(--bg-color);
+    background-image: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.08) 0%,
+        rgba(255, 255, 255, 0.03) 34%,
+        rgba(0, 0, 0, 0.12) 100%
+    );
     align-items: center;
     padding: 20px 40px;
+    isolation: isolate;
     
     /* filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.2X5))
         drop-shadow(0 6px 8px rgba(0, 0, 0, 0.1)); */
@@ -90,12 +109,34 @@ body {
 
 .container.p1 {
     background-color: var(--bg-color);
-    box-shadow: 5px 5px 0px 5px var(--p1-score-bg-color-dark);
+    box-shadow: 5px 5px 0px 5px var(--p1-score-bg-color-dark),
+        0 18px 28px rgba(0, 0, 0, 0.16),
+        0 0 18px color-mix(in srgb, var(--p1-score-bg-color) 16%, transparent);
 }
 
 .container.p2 {
     background-color: var(--accent-color);
-    box-shadow: -5px 5px 0px 5px var(--p2-score-bg-color-dark);
+    box-shadow: -5px 5px 0px 5px var(--p2-score-bg-color-dark),
+        0 18px 28px rgba(0, 0, 0, 0.16),
+        0 0 18px color-mix(in srgb, var(--p2-score-bg-color) 16%, transparent);
+}
+
+.player.container::before,
+.tournament_container_inner::before,
+.set_container_inner::before,
+.info div::before,
+div.info::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.16) 0%,
+        rgba(255, 255, 255, 0.05) 18%,
+        rgba(255, 255, 255, 0) 48%
+    );
 }
 
 .player_col {
@@ -340,12 +381,19 @@ div.info {
     width: 60%; /* Makes the div 80% of its parent's width */
     max-width: 600px; /* Ensures it doesn't get too wide */
     margin: 16px auto; /* Centers the div itself horizontally */
+    position: relative;
+    isolation: isolate;
 
     /* filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.25))
         drop-shadow(0 6px 8px rgba(0, 0, 0, 0.1)); */
     
 
-    background-color: white;
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.98) 0%,
+        rgba(249, 249, 249, 0.96) 58%,
+        rgba(232, 232, 232, 0.94) 100%
+    );
     
 }
 
@@ -410,9 +458,11 @@ div.info {
     height: 36px;
     display: flex;
     justify-content: center;
-    border: 2px solid white;
+    border: 2px solid rgba(255, 255, 255, 0.9);
     margin-bottom: 16px;
     border-radius: 8px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18),
+        0 8px 16px rgba(0, 0, 0, 0.14);
 }
 
 .flagname {
@@ -442,6 +492,8 @@ div.info {
     margin: 0 16px;
     font-family: "Tomorrow_Night";
     font-weight: normal;
+    text-shadow: 0 0 22px rgba(255, 255, 255, 0.1),
+        0 14px 20px rgba(0, 0, 0, 0.2);
 
     /* Force it to move down a lil */
     transform: translateY(25px);
@@ -499,6 +551,10 @@ div.info {
     top: 0;
     position: absolute;
     left: 0%;
+}
+
+.character video {
+    filter: brightness(0.88) saturate(0.94);
 }
 
 .p2.character video {
@@ -588,6 +644,8 @@ div.info {
     background-position: center;
     background-size: contain;
     background-repeat: no-repeat;
+    filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.18))
+        drop-shadow(0 0 18px rgba(255, 255, 255, 0.08));
 }
 
 .p1 .sponsor_logo {
@@ -611,11 +669,12 @@ div.info {
     background: linear-gradient(
         90deg,
         transparent 0%,
-        var(--bg-color) 20%,
-        var(--bg-color) 80%,
+        color-mix(in srgb, var(--bg-color) 82%, rgba(255, 255, 255, 0.14)) 18%,
+        color-mix(in srgb, var(--bg-color) 86%, rgba(255, 255, 255, 0.08)) 82%,
         transparent 100%
     );
     color: var(--text-color);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.14);
 }
 
 .p2 .character_name {
@@ -702,6 +761,7 @@ div.info {
     color: var(--text-color);
     overflow: hidden;
     border-radius: 10px;
+    position: relative;
     /* filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.25))
         drop-shadow(0 6px 8px rgba(0, 0, 0, 0.1)); */
 }
@@ -724,16 +784,30 @@ div.info {
     border-radius: 10px;
     justify-content: flex-start;
     box-sizing: border-box;
+    position: relative;
+    isolation: isolate;
 }
 
 .p1 .tournament_container_inner {
     flex-direction: row-reverse;
     background-color: var(--bg-color);
+    background-image: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.08) 0%,
+        rgba(255, 255, 255, 0.02) 34%,
+        rgba(0, 0, 0, 0.12) 100%
+    );
     box-shadow: 5px 5px 0px 5px var(--p1-score-bg-color-dark);
 }
 
 .p2 .tournament_container_inner {
     background-color: var(--accent-color);
+    background-image: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.08) 0%,
+        rgba(255, 255, 255, 0.02) 34%,
+        rgba(0, 0, 0, 0.12) 100%
+    );
     box-shadow: -5px 5px 0px 5px var(--p2-score-bg-color-dark);
 }
 
@@ -886,6 +960,7 @@ div.info {
     color: var(--text-color);
     overflow: hidden;
     border-radius: 10px;
+    position: relative;
 
     display: flex;
     flex-direction: row;
@@ -911,10 +986,18 @@ div.info {
     align-items: center;
     box-sizing: border-box;
     font-size: 25px;
+    position: relative;
+    isolation: isolate;
 }
 
 .p1 .set_container_inner {
     background-color: var(--bg-color);
+    background-image: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.08) 0%,
+        rgba(255, 255, 255, 0.02) 38%,
+        rgba(0, 0, 0, 0.12) 100%
+    );
 }
 
 .p1 .set_container_inner .phase_match {
@@ -923,6 +1006,12 @@ div.info {
 
 .p2 .set_container_inner {
     background-color: var(--accent-color);
+    background-image: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.08) 0%,
+        rgba(255, 255, 255, 0.02) 38%,
+        rgba(0, 0, 0, 0.12) 100%
+    );
     flex-direction: row-reverse;
 }
 
@@ -940,6 +1029,7 @@ div.info {
     padding: 5px 0px;
 
     flex-shrink: 1;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
 .result_tag.winner {
@@ -1029,6 +1119,7 @@ div.info {
     padding-left: 16px;
     padding-right: 16px;
     border-radius: 50px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 .p1 .set_score {

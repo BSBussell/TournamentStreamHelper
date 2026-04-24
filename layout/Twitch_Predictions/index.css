@@ -1,7 +1,6 @@
 :root {
     --p1: var(--bg-color);
     --p2: var(--accent-color);
-    
 
     --bkg: #ffffff;
     --black: #000000;
@@ -15,67 +14,127 @@
         filter: hue-rotate(0deg);
     }
     100% {
-        filter: hue-rotate(360deg); 
+        filter: hue-rotate(360deg);
     }
 }
 
 /* Make the color rainbow */
 @keyframes rainbow-color {
-    
-    0% { 
-        color: #FFB3B3;
+    0% {
+        color: #ffb3b3;
     } /* Pastel Red */
-    16.67% { color: #FFD9B3; } /* Pastel Orange */
-    33.33% { color: #FFFFB3; } /* Pastel Yellow */
-    50% { color: #B3FFB3; } /* Pastel Green */
-    66.67% { color: #B3D9FF; } /* Pastel Blue */
-    83.33% { color: #D9B3FF; } /* Pastel Indigo */
-    100% { color: #FFB3FF; 
-        filter: hue-rotate(360deg);} /* Pastel Violet */
+    16.67% {
+        color: #ffd9b3;
+    } /* Pastel Orange */
+    33.33% {
+        color: #ffffb3;
+    } /* Pastel Yellow */
+    50% {
+        color: #b3ffb3;
+    } /* Pastel Green */
+    66.67% {
+        color: #b3d9ff;
+    } /* Pastel Blue */
+    83.33% {
+        color: #d9b3ff;
+    } /* Pastel Indigo */
+    100% {
+        color: #ffb3ff;
+        filter: hue-rotate(360deg);
+    } /* Pastel Violet */
 }
 
 /* Make the shadow rainbow */
 @keyframes rainbow-shadow {
-    0% { text-shadow: 0 0 3px red, 0 0 6px red, 0 0 12px red; }
-    16.67% { text-shadow: 0 0 3px orange, 0 0 6px orange, 0 0 12px orange; }
-    33.33% { text-shadow: 0 0 3px yellow, 0 0 6px yellow, 0 0 12px yellow; }
-    50% { text-shadow: 0 0 3px green, 0 0 6px green, 0 0 12px green; }
-    66.67% { text-shadow: 0 0 3px blue, 0 0 6px blue, 0 0 12px blue; }
-    83.33% { text-shadow: 0 0 3px indigo, 0 0 6px indigo, 0 0 12px indigo; }
-    100% { text-shadow: 0 0 3px violet, 0 0 6px violet, 0 0 12px violet; }
+    0% {
+        text-shadow:
+            0 0 3px red,
+            0 0 6px red,
+            0 0 12px red;
+    }
+    16.67% {
+        text-shadow:
+            0 0 3px orange,
+            0 0 6px orange,
+            0 0 12px orange;
+    }
+    33.33% {
+        text-shadow:
+            0 0 3px yellow,
+            0 0 6px yellow,
+            0 0 12px yellow;
+    }
+    50% {
+        text-shadow:
+            0 0 3px green,
+            0 0 6px green,
+            0 0 12px green;
+    }
+    66.67% {
+        text-shadow:
+            0 0 3px blue,
+            0 0 6px blue,
+            0 0 12px blue;
+    }
+    83.33% {
+        text-shadow:
+            0 0 3px indigo,
+            0 0 6px indigo,
+            0 0 12px indigo;
+    }
+    100% {
+        text-shadow:
+            0 0 3px violet,
+            0 0 6px violet,
+            0 0 12px violet;
+    }
 }
 
 /* Neon animation alternating between bg-color and accent-color */
 @keyframes neon-bg-color {
-    0%, 100% { color: var(--bg-color); }
-    50% { color: var(--accent-color); }
+    0%,
+    100% {
+        color: var(--bg-color);
+    }
+    50% {
+        color: var(--accent-color);
+    }
 }
 
 @keyframes neon-bg-shadow {
-    0%, 100% { text-shadow: 0 0 3px var(--bg-color), 0 0 6px var(--bg-color), 0 0 12px var(--bg-color); }
-    50% { text-shadow: 0 0 3px var(--accent-color), 0 0 6px var(--accent-color), 0 0 12px var(--accent-color); }
+    0%,
+    100% {
+        text-shadow:
+            0 0 3px var(--bg-color),
+            0 0 6px var(--bg-color),
+            0 0 12px var(--bg-color);
+    }
+    50% {
+        text-shadow:
+            0 0 3px var(--accent-color),
+            0 0 6px var(--accent-color),
+            0 0 12px var(--accent-color);
+    }
 }
 
 body {
     font-family: var(--font);
     font-weight: bold;
-    opacity: 1.0;
+    opacity: 1;
     overflow: hidden;
     margin: 0;
     width: 100vw;
     height: 100vh;
     filter: drop-shadow(0 2px 0px rgba(0, 0, 0, 0.12))
-      drop-shadow(0 3px 0px rgba(0, 0, 0, 0.14))
-      drop-shadow(0 1px 0px rgba(0, 0, 0, 0.12))
-      drop-shadow(0 -1px 0px rgba(0, 0, 0, 0.1));
+        drop-shadow(0 3px 0px rgba(0, 0, 0, 0.14))
+        drop-shadow(0 1px 0px rgba(0, 0, 0, 0.12))
+        drop-shadow(0 -1px 0px rgba(0, 0, 0, 0.1));
     letter-spacing: 1;
-  
+
     display: flex;
     align-items: center;
     justify-content: center;
 }
-
-
 
 .prediction-overlay {
     width: 80%;
@@ -87,10 +146,8 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-
-
 }
-  
+
 .prediction-bar {
     display: flex;
     height: 40%;
@@ -99,9 +156,11 @@ body {
     overflow: hidden;
     margin-top: 12px;
     margin-bottom: 8px;
-    box-shadow: 0 0 8px rgba(0,0,0,0.3);
+    box-shadow:
+        0 0 8px rgba(0, 0, 0, 0.3),
+        0 14px 26px rgba(0, 0, 0, 0.18);
 }
-  
+
 .bar-left,
 .bar-right {
     height: 100%;
@@ -111,6 +170,9 @@ body {
     color: white;
     transition: width 0.5s ease;
     position: relative;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.16),
+        inset 0 -10px 18px rgba(0, 0, 0, 0.1);
 }
 
 .bar-left {
@@ -119,19 +181,31 @@ body {
 .bar-right {
     width: 40%;
 }
-  
+
 .bar-left {
     background-color: var(--p1);
+    background-image: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.16) 0%,
+        rgba(255, 255, 255, 0.05) 24%,
+        rgba(255, 255, 255, 0) 48%,
+        rgba(0, 0, 0, 0.08) 100%
+    );
     border-top-left-radius: 8px;
     border-bottom-left-radius: 8px;
 
     justify-content: flex-start;
-    
 }
 
-  
 .bar-right {
     background-color: var(--p2);
+    background-image: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.16) 0%,
+        rgba(255, 255, 255, 0.05) 24%,
+        rgba(255, 255, 255, 0) 48%,
+        rgba(0, 0, 0, 0.08) 100%
+    );
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
 
@@ -140,6 +214,13 @@ body {
 
 .mini-right {
     background-color: var(--p2);
+    /*background-image: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.16) 0%,
+        rgba(255, 255, 255, 0.05) 24%,
+        rgba(255, 255, 255, 0) 48%,
+        rgba(0, 0, 0, 0.08) 100%
+    );*/
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
 
@@ -148,10 +229,20 @@ body {
     text-align: left;
 
     padding-left: 5%;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.16),
+        0 10px 18px rgba(0, 0, 0, 0.14);
 }
 
 .mini-left {
     background-color: var(--p1);
+    /*background-image: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.16) 0%,
+        rgba(255, 255, 255, 0.05) 24%,
+        rgba(255, 255, 255, 0) 48%,
+        rgba(0, 0, 0, 0.08) 100%
+    );*/
     border-top-left-radius: 8px;
     border-bottom-left-radius: 8px;
 
@@ -159,22 +250,28 @@ body {
 
     text-align: left;
     padding-left: 5%;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.16),
+        0 10px 18px rgba(0, 0, 0, 0.14);
 }
-  
+
 .bar-label {
     padding: 0 8px;
     font-size: 7.5em;
 
     z-index: 10;
+    text-shadow:
+        0 10px 18px rgba(0, 0, 0, 0.16),
+        0 0 18px rgba(255, 255, 255, 0.08);
 }
-  
+
 .prediction-names {
     display: flex;
     justify-content: space-between;
     align-items: center;
     color: white;
     text-shadow: 1px 1px rgba(0, 0, 0, 0.125);
-    font-size: 2.0em;
+    font-size: 2em;
 
     height: 60%;
 }
@@ -190,25 +287,21 @@ body {
 
 #p1-name {
     /* -webkit-text-stroke: 4px var(--p1); */
-    
-    animation: 
+
+    animation:
         p1-pulse 2s infinite linear,
         p1-color 1s infinite linear;
     align-self: flex-start;
-
-    
 }
 
 #p2-name {
     /* -webkit-text-stroke: 4px var(--p2); */
-    
-    animation: 
+
+    animation:
         p2-pulse 2s infinite linear,
         p2-color 1s infinite linear;
     align-self: flex-end;
-
 }
-
 
 /* .p1-score span, .p2-score span {
     display: inline-block;
@@ -216,14 +309,12 @@ body {
     will-change: transform;
     font-size: 0.5em;
   } */
-@keyframes p1-color{
-
-    0%, 100% {
-        
+@keyframes p1-color {
+    0%,
+    100% {
         color: var(--p1);
     }
     50% {
-        
         color: var(--p2);
     }
 }
@@ -233,27 +324,31 @@ body {
         text-shadow: none;
     }
     25% {
-        text-shadow: 0 0 1px var(--p1), 0 0 2px var(--p1), 0 0 4px var(--p1);
+        text-shadow:
+            0 0 1px var(--p1),
+            0 0 2px var(--p1),
+            0 0 4px var(--p1);
     }
     50% {
         text-shadow: none;
     }
     75% {
-        text-shadow: 0 0 1px var(--p1), 0 0 2px var(--p1), 0 0 4px var(--p1);
+        text-shadow:
+            0 0 1px var(--p1),
+            0 0 2px var(--p1),
+            0 0 4px var(--p1);
     }
     100% {
         text-shadow: none;
     }
-    
 }
 
 @keyframes p2-color {
-    0%, 100% {
-        
+    0%,
+    100% {
         color: var(--p2);
     }
     50% {
-        
         color: var(--p1);
     }
 }
@@ -263,13 +358,19 @@ body {
         text-shadow: none;
     }
     25% {
-        text-shadow: 0 0 1px var(--p2), 0 0 2px var(--p2), 0 0 4px var(--p2);
+        text-shadow:
+            0 0 1px var(--p2),
+            0 0 2px var(--p2),
+            0 0 4px var(--p2);
     }
     50% {
         text-shadow: none;
     }
     75% {
-        text-shadow: 0 0 1px var(--p2), 0 0 2px var(--p2), 0 0 4px var(--p2);
+        text-shadow:
+            0 0 1px var(--p2),
+            0 0 2px var(--p2),
+            0 0 4px var(--p2);
     }
     100% {
         text-shadow: none;
@@ -277,7 +378,7 @@ body {
 }
 
 /* #p2-name {
-    animation-delay: 0.5s; 
+    animation-delay: 0.5s;
 } */
 
 #p1-name .sponsor,
@@ -298,7 +399,6 @@ body {
 
 #p1-name .text {
     min-width: 60% !important;
-    
 }
 #p2-name .text {
     align-content: flex-end;
@@ -310,15 +410,12 @@ body {
     padding-right: 5%;
 }
 
-
 #p1-name .sponsor {
     color: var(--p1);
-    
 }
 #p2-name .sponsor {
     color: var(--p2);
 }
-
 
 .p1-container {
     display: flex;
@@ -340,7 +437,6 @@ body {
     height: 90%;
 }
 
-
 .p1-container .p2-container {
     height: 100%;
 }
@@ -358,9 +454,10 @@ body {
     justify-content: space-between;
     align-items: center;
     flex-shrink: 0;
-    
+
     padding-left: 5%;
     padding-right: 5%;
+    border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .bar-left.mini-bar {
@@ -373,18 +470,11 @@ body {
     padding-right: 5%;
 }
 
-.p1-score, .p2-score {
+.p1-score,
+.p2-score {
     font-size: 1.6em;
     /* padding-top: 4%; */
-    
-} 
-
-
-
-
-  
-
-
+}
 
 .detail.left {
     text-align: left;
@@ -402,7 +492,7 @@ body {
     /* border-left: 2px solid var(--p2); */
 }
 
-/* Leading Step */ 
+/* Leading Step */
 .bar-left.leading::after {
     content: "";
     position: absolute;
@@ -414,8 +504,10 @@ body {
     clip-path: polygon(0 0, 100% 50%, 0 100%);
     z-index: 1;
     pointer-events: none;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.16),
+        inset 0 -8px 14px rgba(0, 0, 0, 0.08);
 }
-
 
 .bar-right.leading::before {
     content: "";
@@ -428,6 +520,9 @@ body {
     clip-path: polygon(0 50%, 100% 0, 100% 100%);
     z-index: 3;
     pointer-events: none;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.16),
+        inset 0 -8px 14px rgba(0, 0, 0, 0.08);
 }
 
 .center {
@@ -440,9 +535,9 @@ body {
     transform: translate(-50%, -50%) rotate(1deg);
     z-index: 1;
 
-    text-shadow: 
-        0 0 3px var(--bg-color), 
-        0 0 6px var(--bg-color), 
+    text-shadow:
+        0 0 3px var(--bg-color),
+        0 0 6px var(--bg-color),
         0 0 12px var(--bg-color);
     font-size: 1.4em;
     font-family: "Daydream";
@@ -450,14 +545,14 @@ body {
 
     /* Orgin center */
     transform-origin: center center;
-    animation: rainbow-shadow 3s infinite linear,
-    hueRotate 3s infinite linear,
-    idleWobbleCenter 6s infinite linear;
-    text-shadow: 
-        0 0 3px red, 
-        0 0 6px red, 
+    animation:
+        rainbow-shadow 3s infinite linear,
+        hueRotate 3s infinite linear,
+        idleWobbleCenter 6s infinite linear;
+    text-shadow:
+        0 0 3px red,
+        0 0 6px red,
         0 0 12px red;
-
 }
 
 @keyframes idleWobbleCenter {
@@ -492,14 +587,15 @@ body {
     }
 }
 
-.p1-score, .p2-score {
+.p1-score,
+.p2-score {
     font-family: "Daydream";
     /* padding-top: 3%; */
     /* font-size: 1.1em; */
     -webkit-text-stroke: 1px orange;
-    animation: 
+    animation:
     /* rainbow-color 3s infinite linear,  */
-    rainbow-shadow 3s infinite linear,
-    hueRotate 3s infinite linear,
-    idleWobble 0.6s infinite linear;
+        rainbow-shadow 3s infinite linear,
+        hueRotate 3s infinite linear,
+        idleWobble 0.6s infinite linear;
 }

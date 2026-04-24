@@ -21,6 +21,29 @@ body {
     /* -moz-osx-font-smoothing: grayscale; */
 }
 
+.phase_container,
+.match_container,
+.box {
+    position: relative;
+    isolation: isolate;
+}
+
+.phase_container::before,
+.match_container::before,
+.box::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.2) 0%,
+        rgba(255, 255, 255, 0.06) 18%,
+        rgba(255, 255, 255, 0) 52%
+    );
+}
+
 .p1.container,
 .p2.container,
 .phase_container,
@@ -46,6 +69,12 @@ body {
     justify-content: center;
     box-sizing: border-box;
     background-color: var(--bg-color);
+    background-image: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.08) 0%,
+        rgba(255, 255, 255, 0.02) 38%,
+        rgba(0, 0, 0, 0.08) 100%
+    );
     border-radius: 8px;
     overflow: hidden;
 
@@ -62,7 +91,10 @@ body {
     border-color: var(--p1-score-bg-color);
     border-right-width: 0px;
 
-    box-shadow: 2.5px 2.5px 0px 2.5px var(--p1-score-bg-color-dark);
+    box-shadow: 2.5px 2.5px 0px 2.5px var(--p1-score-bg-color-dark),
+        0 14px 24px rgba(0, 0, 0, 0.18),
+        0 0 18px color-mix(in srgb, var(--p1-score-bg-color) 22%, transparent),
+        inset 0 1px 0 rgba(255, 255, 255, 0.16);
 }
 
 .p1 .border {
@@ -81,7 +113,10 @@ body {
     border-color: var(--p2-score-bg-color);
     border-left-width: 0px;
 
-    box-shadow: -2.5px 2.5px 0px 2.5px var(--p2-score-bg-color-dark);
+    box-shadow: -2.5px 2.5px 0px 2.5px var(--p2-score-bg-color-dark),
+        0 14px 24px rgba(0, 0, 0, 0.18),
+        0 0 18px color-mix(in srgb, var(--p2-score-bg-color) 22%, transparent),
+        inset 0 1px 0 rgba(255, 255, 255, 0.16);
 }
 
 .p2 .border {
@@ -404,8 +439,13 @@ body {
     padding-left: 12px;
     padding-right: 12px;
     min-width: unset;
-    /* color: var(--text-color); */
-    background: rgba(0, 0, 0, 0);
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.12) 0%,
+        rgba(255, 255, 255, 0.04) 34%,
+        rgba(0, 0, 0, 0.14) 100%
+    );
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
 }
 
 .under_chips .chip .text:not(.text_empty) {
@@ -458,7 +498,8 @@ body {
     background: var(--text-color);
     border-radius: 8px;
     height: 30px;
-    box-shadow: 0px 2.5px 0px 2.5px darkgrey;
+    box-shadow: 0px 2.5px 0px 2.5px rgba(82, 82, 82, 0.9),
+        0 10px 20px rgba(0, 0, 0, 0.14);
 }
 
 .phase {
@@ -474,8 +515,15 @@ body {
 .match_container {
     transform: skew(-20deg);
     background: var(--bg-color);
+    background-image: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.1) 0%,
+        rgba(255, 255, 255, 0.02) 36%,
+        rgba(0, 0, 0, 0.12) 100%
+    );
     border-radius: 8px;
-    box-shadow: -2.5px 2.5px 0px 2.5px var(--p1-score-bg-color-dark);
+    box-shadow: -2.5px 2.5px 0px 2.5px var(--p1-score-bg-color-dark),
+        0 10px 20px rgba(0, 0, 0, 0.14);
     /* filter: drop-shadow(0 0px 2px rgba(255, 255, 255, 0.85)); */
     
 }
@@ -536,6 +584,8 @@ body {
     border-radius: 8px;
 
     text-shadow: 0em 0em 0.2em #000;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14),
+        0 8px 18px rgba(0, 0, 0, 0.14);
 }
 
 .p1_won {
@@ -547,7 +597,11 @@ body {
 }
 
 .neither_won {
-    background: rgba(255, 255, 255, 0.3);
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.36) 0%,
+        rgba(255, 255, 255, 0.2) 100%
+    );
 }
 
 .bg {
