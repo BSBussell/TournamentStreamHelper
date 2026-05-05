@@ -594,7 +594,7 @@ async function CenterImageDo(element) {
     let customElement = null;
 
     if (scale_based_on_parent) {
-      customElement = element.parent().parent();
+      customElement = $(element).parent().parent();
     }
 
     if (typeof assetData == "string") {

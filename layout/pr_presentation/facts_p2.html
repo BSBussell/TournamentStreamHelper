@@ -1,68 +1,45 @@
+<!DOCTYPE html>
 <html>
     <head>
         <meta charset="utf-8" />
         <script src="../include/globals.js"></script>
         <link rel="stylesheet" href="../main.css" />
-        <link rel="stylesheet" href="./index.css" />
+        <link rel="stylesheet" href="./index.css?v=33" />
     </head>
     <body>
         <div class="stage"></div>
-
-        <!--
-    <div class="info">
-      <div class="tournament"></div>
-      <div class="match"></div>
-      <div class="phase_best_of"></div>
-    </div>
-    -->
-
-        <div class="p2 player container">
-            <div class="sponsor_logo"></div>
-            <!-- <div class="character_name"></div> -->
-
-            <div class="player_col">
-                <div class="name_row">
-                    <div class="name"></div>
-                    <div class="flagscontainer">
-                        <div class="flagcountry"></div>
-                        <div class="flagstate"></div>
+        <main class="pr-scene">
+            <section class="teaser-screen" aria-label="Knoxville Spring 2026 PR reveal coming up">
+                <div class="teaser-bg-collage" aria-hidden="true"></div>
+                <div class="teaser-energy" aria-hidden="true"></div>
+                <div class="teaser-embers" aria-hidden="true"></div>
+                <section class="teaser-panel">
+                    <img class="teaser-crest" src="../logo.png" alt="" />
+                    <div class="teaser-kicker">Power Ranking Announcement</div>
+                    <h1 class="teaser-title">KNOXVILLE SPRING 2026 PR</h1>
+                    <div class="teaser-subtitle">TOP 10 REVEAL COMING UP</div>
+                    <p class="teaser-copy">Stick around — rankings will be announced live tonight.</p>
+                    <div class="teaser-loading" aria-hidden="true">
+                        <div class="teaser-loading-track">
+                            <div class="teaser-loading-fill"></div>
+                        </div>
+                        <div class="teaser-tip-row">
+                            <span class="teaser-tip-label">Loading Tip</span>
+                            <span class="teaser-tip-text"></span>
+                        </div>
                     </div>
-                </div>
-                <div class="real_name"></div>
-                <div class="info_grid">
-                    <div class="pronoun"></div>
-                    <div class="twitter"></div>
-                    <div class="seed"></div>
-                </div>
-            </div>
-
-            <div class="score"></div>
-            <div class="losers_badge">LOSERS</div>
-        </div>
-
-        <div class="p2 character"></div>
-
-        <!-- Content panels that will be switched -->
-        <div class="p2 content-panels">
-            <!-- Recent tournament results panel -->
-            <div class="content-panel" id="tournament-results">
-                <div class="p2 results"></div>
-            </div>
-            
-            <!-- Fun facts panel -->
-            <div class="content-panel" id="fun-facts">
-                <div class="p2 facts"></div>
-            </div>
-        </div>
-        
-        <div class="p2 sets"></div>
-
+                </section>
+            </section>
+            <section class="ranking-plate"></section>
+            <div class="character-aura"></div>
+            <section class="rank-badge"></section>
+            <section class="rank-card"></section>
+            <section class="leaderboard-panel"></section>
+            <div class="pr-character"></div>
+        </main>
         <script>
             window.PLAYER = 2;
-            window.START_WITH_FACTS = true; // Set the default starting panel
-            window.ROTATE = false; // Set to true to enable rotation
-            window.PANEL_ROTATION_INTERVAL = 10; // Set the interval for panel rotation (in seconds)
         </script>
-        <script src="index.js"></script>
+        <script src="index.js?v=17"></script>
     </body>
 </html>

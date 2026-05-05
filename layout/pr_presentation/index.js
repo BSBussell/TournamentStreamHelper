@@ -1,973 +1,1077 @@
-const TOURNAMENTS = 7;
-const SETS = 4;
-const FACTS_TRANSITION_DELAY = 10; // Time in seconds before transitioning to fun facts
+const DEFAULT_RANKING_JSON = "./player_placements_startgg.json";
+const FALLBACK_PFP = "./person.svg";
+const FINAL_LEADERBOARD_TITLE = "Knoxville Spring 26 PR";
+const FINAL_COLLAGE_IMAGE = "./collage/characters-wreath.png";
+const THUNDER_SFX = "./sfx/thunder.mp3";
+const THUNDER_SFX_PLAYBACK_RATE = 1.12;
+const TEASER_TIP_INTERVAL_MS = 5200;
+const LEADERBOARD_FLASH_SFX_DELAY_MS = 990;
+const TEASER_LOADING_TIPS = [
+    "Could be convinced to open a prediction for PR placements.",
+    "Rigging the PR stats.",
+    "Starting PR discourse again.",
+    "Ignoring PR elligibility rules.",
+    "Gaslighting the PR committee.",
+    "GateKeeping the PR committee.",
+    "GirlBossing the PR committee.",
+    "DDOS attacking braacket to make everyones life miserable.",
+    "Wondering why the PR scene crashed OBS.",
+    "Scheming to abolish PR and replace it with a more woke alternative.",
+];
+
+let rankedPlayers = [];
+let currentIndex = 0;
+let currentView = "teaser";
+let transitionLocked = true;
+let characterRenderToken = 0;
+let teaserTipIndex = 0;
+let teaserLoadingTween = null;
+let thunderAudio = null;
+let openingCharacterPreloadPromise = null;
+const jsonCache = {};
 
 let config = {
-    display_titles: true,
+    ranking_json: DEFAULT_RANKING_JSON,
+    start_placement: 10,
+    character_asset_pack: "webm",
+    character_game: "ssbu",
 };
 
 function getNumberOrdinal(n) {
-    var s = ["th", "st", "nd", "rd"],
-        v = n % 100;
+    const s = ["th", "st", "nd", "rd"];
+    const v = n % 100;
     return s[(v - 20) % 10] || s[v] || s[0];
 }
 
-LoadEverything().then(() => {
-    let window_config = window.config || {};
-    function isDefault(value) {
-        return (
-            value === "" ||
-            value === -1 ||
-            value === undefined ||
-            value === null
-        );
-    }
-    function assignDefault(target, source) {
-        for (k in target) {
-            let value = source[k];
-            if (typeof value === "object" && value !== null) {
-                let matchingObject = target[k];
-                if (typeof matchingObject != "object") {
-                    matchingObject = value;
-                } else {
-                    assignDefault(matchingObject, value);
-                }
+function isDefault(value) {
+    return value === "" || value === -1 || value === undefined || value === null;
+}
+
+function assignDefault(target, source) {
+    for (const key in source) {
+        const value = source[key];
+        if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+            if (typeof target[key] !== "object" || target[key] === null) {
+                target[key] = {};
             }
-            if (!isDefault(value)) {
-                target[k] = value;
+            assignDefault(target[key], value);
+        } else if (!isDefault(value)) {
+            target[key] = value;
+        }
+    }
+}
+
+async function loadRankingJson(path) {
+    const response = await fetch(path, { cache: "no-store" });
+    if (!response.ok) {
+        throw new Error(`Could not load ${path}: HTTP ${response.status}`);
+    }
+    return response.json();
+}
+
+async function loadJsonCached(path) {
+    if (!jsonCache[path]) {
+        jsonCache[path] = fetch(path, { cache: "no-store" }).then((response) => {
+            if (!response.ok) {
+                throw new Error(`Could not load ${path}: HTTP ${response.status}`);
+            }
+            return response.json();
+        });
+    }
+    return jsonCache[path];
+}
+
+function getProfileImage(player) {
+    if (player.pfp) return player.pfp;
+
+    const images = _.get(player, "startgg.images", []);
+    const profile = images.find((image) => image && image.type === "profile" && image.url);
+    if (profile) return profile.url;
+
+    const firstImage = images.find((image) => image && image.url);
+    return firstImage ? firstImage.url : FALLBACK_PFP;
+}
+
+function sanitizeRankedPlayers(rawData) {
+    const rawPlayers = Array.isArray(rawData.players) ? rawData.players : [];
+    const validPlayers = rawPlayers
+        .map((player) => ({
+            ...player,
+            placement: Number(player.placement),
+            pfp: getProfileImage(player),
+        }))
+        .filter((player) => Number.isFinite(player.placement) && player.placement > 0 && player.tag);
+
+    validPlayers.sort((a, b) => a.placement - b.placement);
+    return validPlayers;
+}
+
+function getStartingIndex(players) {
+    if (players.length === 0) return 0;
+
+    const requestedPlacement = Number(config.start_placement || 10);
+    let index = players.findIndex((player) => player.placement === requestedPlacement);
+    if (index !== -1) return index;
+
+    const availableAtOrBelowStart = players.filter((player) => player.placement <= requestedPlacement);
+    if (availableAtOrBelowStart.length > 0) {
+        const lowestPlacement = Math.max(...availableAtOrBelowStart.map((player) => player.placement));
+        return players.findIndex((player) => player.placement === lowestPlacement);
+    }
+
+    return players.length - 1;
+}
+
+function getCurrentPlayer() {
+    return rankedPlayers[currentIndex] || null;
+}
+
+function getPlayerDisplayName(player) {
+    const gamerTag = _.get(player, "startgg.gamerTag") || player.tag || "";
+    const prefix = _.get(player, "startgg.prefix") || "";
+    return prefix ? `${prefix} | ${gamerTag}` : gamerTag;
+}
+
+function getPlayerGamerTag(player) {
+    return _.get(player, "startgg.gamerTag") || player.tag || "";
+}
+
+function getPlayerPrefix(player) {
+    return _.get(player, "startgg.prefix") || "";
+}
+
+function getPlayerSponsor(player) {
+    const prefix = getPlayerPrefix(player);
+    return prefix ? prefix.trim() : "";
+}
+
+function getPlacementHeat(placement) {
+    if (placement <= 1) return 1;
+    if (placement === 2) return 0.78;
+    if (placement === 3) return 0.55;
+    return Math.max(0, Math.min(0.34, (10 - placement) / 18));
+}
+
+function getPlacementTheme(placement) {
+    if (placement <= 1) {
+        return {
+            accent: "#f6a900",
+            strong: "#ffe78a",
+            dark: "#8a4d00",
+            soft: "rgba(255, 184, 28, 0.22)",
+        };
+    }
+
+    if (placement === 2) {
+        return {
+            accent: "#b8cfe8",
+            strong: "#edf7ff",
+            dark: "#4a6075",
+            soft: "rgba(154, 193, 230, 0.18)",
+        };
+    }
+
+    if (placement === 3) {
+        return {
+            accent: "#c87532",
+            strong: "#ffd09a",
+            dark: "#6d2f10",
+            soft: "rgba(210, 112, 42, 0.3)",
+        };
+    }
+
+    if (placement <= 6) {
+        return {
+            accent: "#ff9d1b",
+            strong: "#ffe06a",
+            dark: "#9b3900",
+            soft: "rgba(255, 150, 24, 0.3)",
+        };
+    }
+
+    return {
+        accent: "#ff7418",
+        strong: "#ffc247",
+        dark: "#8f2500",
+        soft: "rgba(255, 103, 16, 0.28)",
+    };
+}
+
+function getRankGlowSettings(placement) {
+    const heat = getPlacementHeat(placement);
+    const withMotionSettings = (settings) => ({
+        ...settings,
+        extraWide: settings.wide * 1.24,
+        innerGlowSize: Math.max(2, settings.tight * 0.25),
+        flickerLowBrightness: 1 + settings.heat * 0.05,
+        flickerPeakBrightness: 1 + settings.heat * 0.12,
+        flickerSettleBrightness: 1 + settings.heat * 0.07,
+        flickerLateBrightness: 1 + settings.heat * 0.1,
+        flickerLowSaturation: 1 + settings.heat * 0.04,
+        flickerPeakSaturation: 1 + settings.heat * 0.08,
+        flickerSettleSaturation: 1 + settings.heat * 0.05,
+        flickerLateSaturation: 1 + settings.heat * 0.07,
+        auraHotScale: 1.01 + settings.heat * 0.035,
+    });
+
+    if (placement <= 1) {
+        return withMotionSettings({
+            heat: 1,
+            tight: 12,
+            wide: 54,
+            auraOpacity: 0.46,
+            auraRestOpacity: 0.26,
+            innerGlowOpacity: 0.34,
+            chargeOpacity: 0.38,
+            flickerDuration: "1.16s",
+        });
+    }
+
+    if (placement === 2) {
+        return withMotionSettings({
+            heat: 0.78,
+            tight: 11,
+            wide: 46,
+            auraOpacity: 0.4,
+            auraRestOpacity: 0.23,
+            innerGlowOpacity: 0.28,
+            chargeOpacity: 0.32,
+            flickerDuration: "1.24s",
+        });
+    }
+
+    if (placement === 3) {
+        return withMotionSettings({
+            heat: 0.58,
+            tight: 10,
+            wide: 38,
+            auraOpacity: 0.36,
+            auraRestOpacity: 0.21,
+            innerGlowOpacity: 0.22,
+            chargeOpacity: 0.26,
+            flickerDuration: "1.32s",
+        });
+    }
+
+    return withMotionSettings({
+        heat,
+        tight: 8 + heat * 10,
+        wide: 22 + heat * 42,
+        auraOpacity: 0.3 + heat * 0.24,
+        auraRestOpacity: 0.18 + heat * 0.12,
+        innerGlowOpacity: 0.08 + heat * 0.34,
+        chargeOpacity: 0.06 + heat * 0.36,
+        flickerDuration: `${1.62 - heat * 0.42}s`,
+    });
+}
+
+function applyPlacementTheme(player) {
+    const theme = getPlacementTheme(player.placement);
+
+    $(".pr-scene").css({
+        "--rank-accent": theme.accent,
+        "--rank-accent-strong": theme.strong,
+        "--rank-accent-dark": theme.dark,
+        "--rank-accent-soft": theme.soft,
+    });
+}
+
+function getThunderAudio() {
+    if (!thunderAudio) {
+        thunderAudio = new Audio(THUNDER_SFX);
+        thunderAudio.preload = "auto";
+        thunderAudio.volume = 0.9;
+        thunderAudio.playbackRate = THUNDER_SFX_PLAYBACK_RATE;
+    }
+
+    return thunderAudio;
+}
+
+function playThunderSfx() {
+    const audio = getThunderAudio();
+    audio.pause();
+    audio.currentTime = 0;
+    audio.play().catch((error) => {
+        console.warn("Could not play leaderboard thunder SFX.", error);
+    });
+}
+
+function buildTeaserRankTransition() {
+    const transition = $(`
+        <div class="teaser-rank-transition" aria-hidden="true">
+            <div class="teaser-rank-transition-clouds"></div>
+            <div class="teaser-rank-transition-flash"></div>
+            <div class="teaser-rank-transition-streak"></div>
+            <div class="teaser-rank-transition-haze"></div>
+        </div>
+    `);
+    $(".pr-scene").append(transition);
+    return transition;
+}
+
+function renderRankBadge(player) {
+    const glow = getRankGlowSettings(player.placement);
+    const badge = $(".rank-badge");
+
+    badge.html(`
+        <div class="rank-number">#${player.placement}</div>
+    `);
+
+    badge.css({
+        "--rank-heat": glow.heat,
+        "--rank-glow-tight": `${glow.tight}px`,
+        "--rank-glow-wide": `${glow.wide}px`,
+        "--rank-glow-extra-wide": `${glow.extraWide}px`,
+        "--rank-inner-glow-size": `${glow.innerGlowSize}px`,
+        "--rank-aura-opacity": glow.auraOpacity,
+        "--rank-aura-rest-opacity": glow.auraRestOpacity,
+        "--rank-inner-glow-opacity": glow.innerGlowOpacity,
+        "--rank-charge-opacity": glow.chargeOpacity,
+        "--rank-flicker-duration": glow.flickerDuration,
+        "--rank-flicker-low-brightness": glow.flickerLowBrightness,
+        "--rank-flicker-peak-brightness": glow.flickerPeakBrightness,
+        "--rank-flicker-settle-brightness": glow.flickerSettleBrightness,
+        "--rank-flicker-late-brightness": glow.flickerLateBrightness,
+        "--rank-flicker-low-saturation": glow.flickerLowSaturation,
+        "--rank-flicker-peak-saturation": glow.flickerPeakSaturation,
+        "--rank-flicker-settle-saturation": glow.flickerSettleSaturation,
+        "--rank-flicker-late-saturation": glow.flickerLateSaturation,
+        "--rank-aura-hot-scale": glow.auraHotScale,
+    });
+}
+
+function renderPfp(player) {
+    return `
+        <div class="pfp-frame">
+            <img class="pfp-image" src="${player.pfp || FALLBACK_PFP}" alt="" onerror="this.onerror=null;this.src='${FALLBACK_PFP}';" />
+        </div>
+    `;
+}
+
+function renderTwitter(player) {
+    const authorizations = _.get(player, "startgg.authorizations", []);
+    const twitter = authorizations.find((auth) => auth && auth.type === "TWITTER" && auth.externalUsername);
+    return twitter ? `<a href="${twitter.url || "#"}">@${_.escape(twitter.externalUsername)}</a>` : "";
+}
+
+function getCharacterGameCodename() {
+    return config.character_game || _.get(data, "game.codename", "ssbu") || "ssbu";
+}
+
+function getPlayerMains(player) {
+    const gameCodename = getCharacterGameCodename();
+    const mains = _.get(player, `mains.${gameCodename}`, _.get(player, "mains.ssbu", []));
+    return Array.isArray(mains) ? mains : [];
+}
+
+function assetValueForSkin(values, codename, skin) {
+    const entries = _.get(values, codename, {});
+    if (!entries || Object.keys(entries).length === 0) return undefined;
+    return entries[String(skin)] || entries["0"] || Object.values(entries)[0];
+}
+
+function candidateSkinIds(assetConfig, codename, skin) {
+    const ids = [skin];
+    const mappedSkin = Number(_.get(assetConfig, `skin_mapping.${codename}.${skin}`));
+    if (Number.isFinite(mappedSkin)) ids.push(mappedSkin);
+    ids.push(0);
+    return [...new Set(ids)];
+}
+
+async function assetExists(path) {
+    const response = await fetch(path, { method: "HEAD", cache: "no-store" }).catch(() => null);
+    return Boolean(response && response.ok);
+}
+
+async function findSkinFile(assetConfig, gameCodename, assetPack, codename, skin) {
+    const prefix = assetConfig.prefix || "";
+    const postfix = assetConfig.postfix || "";
+    const baseName = `${prefix}${codename}${postfix}`;
+    const extensions = [".png", ".webp", ".jpg", ".jpeg", ".webm"];
+
+    for (const skinId of candidateSkinIds(assetConfig, codename, skin)) {
+        const skinTexts = [`${skinId}`];
+        if (skinId < 10) skinTexts.unshift(`0${skinId}`);
+
+        for (const skinText of skinTexts) {
+            for (const extension of extensions) {
+                const file = `${baseName}${skinText}${extension}`;
+                const path = `../../user_data/games/${gameCodename}/${assetPack}/${file}`;
+                if (await assetExists(path)) return file;
             }
         }
     }
 
-    assignDefault(config, tsh_settings);
-    assignDefault(config, window_config);
+    return null;
+}
 
-    if (!window.PLAYER) {
-        window.PLAYER = 1;
+async function buildRankedCharacterAsset(main, assetPackOverride = null) {
+    if (!Array.isArray(main) || !main[0]) return null;
+
+    const gameCodename = getCharacterGameCodename();
+    const assetPack = assetPackOverride || config.character_asset_pack || "full";
+    const skin = Number.isFinite(Number(main[1])) ? Number(main[1]) : 0;
+    const gameConfig = await loadJsonCached(`../../user_data/games/${gameCodename}/base_files/config.json`);
+    const assetConfig = await loadJsonCached(`../../user_data/games/${gameCodename}/${assetPack}/config.json`);
+    const character = gameConfig.character_to_codename?.[main[0]];
+    const codename = _.get(character, "codename");
+
+    if (!codename) {
+        console.warn(`No ${gameCodename} codename found for PR character "${main[0]}".`);
+        return null;
     }
 
-    // Set the opacity of the starting panel to 1
-    if (window.START_WITH_FACTS) {
-        gsap.set("#fun-facts", { opacity: 1 });
+    const file = await findSkinFile(assetConfig, gameCodename, assetPack, codename, skin);
+
+    if (!file) {
+        console.warn(`No ${assetPack} asset found for PR character "${main[0]}" skin ${skin}.`);
+        return null;
+    }
+
+    const asset = {
+        type: assetConfig.type || [],
+        asset: `./user_data/games/${gameCodename}/${assetPack}/${file}`,
+        eyesight: assetValueForSkin(assetConfig.eyesights, codename, skin),
+        image_size: assetValueForSkin(assetConfig.image_sizes, codename, skin),
+        rescaling_factor: assetValueForSkin(assetConfig.rescaling_factor, codename, skin),
+        unflippable: assetValueForSkin(assetConfig.unflippable, codename, skin),
+        uncropped_edge: assetConfig.uncropped_edge,
+        average_size: assetConfig.average_size,
+    };
+
+    return asset;
+}
+
+async function prepareRankedCharacter(player) {
+    const token = ++characterRenderToken;
+    const container = $(".pr-character");
+    const mains = getPlayerMains(player);
+    const main = mains[0];
+
+    container.empty();
+    container.removeData("preparedPlacement");
+
+    const asset = await buildRankedCharacterAsset(main);
+    if (!asset || token !== characterRenderToken) return null;
+
+    const characterElement = $("<div class='tsh_character ranked-pr-character' style='opacity: 0;'><div></div></div>");
+    container.append(characterElement);
+
+    const options = {
+        custom_zoom: 1,
+        custom_center: [0.5, 0.52],
+        scale_based_on_parent: true,
+    };
+
+    if (asset.asset.endsWith(".webm")) {
+        await CenterVideo(characterElement.children(0), asset, options);
     } else {
-        gsap.set("#tournament-results", {opacity: 1});
+        await CenterImage(characterElement.children(0), asset, options);
     }
-    
-    // Flag to track if the content switch timer is already set
-    let contentSwitchTimerSet = !window.ROTATE;
 
-    let startingAnimation = gsap
-        .timeline({ paused: true })
-        .to([".logo"], { duration: 0.8, top: 160 }, 0)
-        .to([".logo"], { duration: 0.8, scale: 0.4 }, 0)
-        .from(
-            [".tournament"],
-            { duration: 0.6, opacity: "0", ease: "power2.inOut" },
-            0.2,
-        )
-        .from(
-            [".match"],
-            { duration: 0.6, opacity: "0", ease: "power2.inOut" },
-            0.4,
-        )
-        .from(
-            [".score_container"],
-            { duration: 0.8, opacity: "0", ease: "power2.inOut" },
-            0,
-        )
-        .from(
-            [".best_of.container"],
-            { duration: 0.8, opacity: "0", ease: "power2.inOut" },
-            0,
-        )
-        .from(
-            [".vs1"],
-            { duration: 0.1, opacity: "0", scale: 10, ease: "in" },
-            1.2,
-        )
-        .from([".vs2"], { duration: 0.01, opacity: "0" }, 1.3)
-        .to([".vs2"], { opacity: 0, scale: 2, ease: "power2.out" }, 1.31)
-        .from([".p1.container"], { duration: 1, x: "-200px", ease: "out" }, 0)
-        .from([".p2.container"], { duration: 1, x: "200px", ease: "out" }, 0);
+    if (token !== characterRenderToken) return null;
 
-    // Function to transition from tournament results to fun facts
-    function switchToFunFacts() {
-        // For player 1
-        gsap.to("#tournament-results", { 
-            duration: 0.5, 
-            opacity: 0, 
-            x: window.PLAYER == 1 ? -100 : 100, 
-            ease: "power2.inOut",
-            onComplete: () => {
-                // $("#tournament-results").css("visibility", "hidden");
-                gsap.fromTo("#fun-facts", 
-                    { opacity: 0, x: window.PLAYER == 1 ? 100 : -100 },
-                    { duration: 0.5, opacity: 1, x: 0, ease: "power2.inOut" }
-                );
-            }
+    gsap.set(characterElement, {
+        autoAlpha: 0,
+        x: Number(window.PLAYER || 1) === 2 ? -90 : 90,
+        scale: 1.04,
+    });
+    container.data("preparedPlacement", player.placement);
+
+    return characterElement;
+}
+
+function getPreparedRankedCharacter(player) {
+    const container = $(".pr-character");
+    const characterElement = container.find(".ranked-pr-character");
+
+    if (characterElement.length && Number(container.data("preparedPlacement")) === Number(player.placement)) {
+        return characterElement;
+    }
+
+    return null;
+}
+
+function restartRankedCharacterMedia(characterElement) {
+    if (!characterElement) return;
+
+    $(characterElement)
+        .find("video")
+        .each((_, video) => {
+            video.pause();
+            video.currentTime = 0;
+            video.play().catch((error) => {
+                console.warn("Could not restart PR character video.", error);
+            });
         });
+}
+
+async function prewarmOpeningPlayer() {
+    const player = getCurrentPlayer();
+    if (!player) return null;
+
+    return prepareRankedCharacter(player).catch((error) => {
+        console.warn("Could not prewarm opening PR character layer.", error);
+        return null;
+    });
+}
+
+function renderPlayerCard(player, direction = "in") {
+    const twitter = renderTwitter(player);
+    const pronoun = _.get(player, "startgg.genderPronoun") || "";
+    const prefix = _.escape(getPlayerPrefix(player));
+    const gamerTag = _.escape(getPlayerGamerTag(player));
+
+    applyPlacementTheme(player);
+    renderRankBadge(player);
+
+    $(".rank-card").html(`
+        <div class="rank-card-bg"></div>
+        <div class="identity-column">
+            ${renderPfp(player)}
+            <div class="identity-copy">
+                ${prefix ? `<div class="player-prefix">${prefix}</div>` : ""}
+                <div class="player-tag"><div class="text">${gamerTag}</div></div>
+                <div class="player-meta">
+                    ${pronoun ? `<span>${pronoun}</span>` : ""}
+                    ${twitter}
+                </div>
+            </div>
+        </div>
+    `);
+
+    FitText($(".player-tag"));
+}
+
+async function buildRankedStockIcon(main) {
+    if (!Array.isArray(main) || !main[0]) return null;
+
+    const gameCodename = getCharacterGameCodename();
+    const skin = Number.isFinite(Number(main[1])) ? Number(main[1]) : 0;
+    const gameConfig = await loadJsonCached(`../../user_data/games/${gameCodename}/base_files/config.json`);
+    const character = gameConfig.character_to_codename?.[main[0]];
+    const codename = _.get(character, "codename");
+
+    if (!codename) {
+        console.warn(`No ${gameCodename} codename found for PR icon character "${main[0]}".`);
+        return null;
     }
 
-    // Function to transition from fun facts to tournament results
-    function switchToTournamentResults() {
-        // For player 1
-        gsap.to("#fun-facts", { 
-            duration: 0.5, 
-            opacity: 0, 
-            x: window.PLAYER == 1 ? 100 : -100, 
-            ease: "power2.inOut",
-            onComplete: () => {
-                // $("#fun-facts").css("visibility", "hidden");
-                gsap.fromTo("#tournament-results", 
-                    { opacity: 0, x: window.PLAYER == 1 ? -100 : 100 },
-                    { duration: 0.5, opacity: 1, x: 0, ease: "power2.inOut" }
-                );
-            }
-        });
+    const skinIds = [...new Set([skin, 0])];
+    for (const skinId of skinIds) {
+        const skinTexts = [`${skinId}`];
+        if (skinId < 10) skinTexts.unshift(`0${skinId}`);
+
+        for (const skinText of skinTexts) {
+            const path = `../../user_data/games/${gameCodename}/base_files/icon/chara_2_${codename}_${skinText}.png`;
+            if (await assetExists(path)) return path;
+        }
     }
 
-    Start = async (event) => {
-        startingAnimation.restart();
-    };
+    console.warn(`No stock icon found for PR character "${main[0]}" skin ${skin}.`);
+    return null;
+}
 
-    Update = async (event) => {
-        let data = event.data;
-        let oldData = event.oldData;
+async function renderLeaderboardKeyItem(player) {
+    const mains = getPlayerMains(player);
+    const icon = await buildRankedStockIcon(mains[0]);
+    const rankText = `${player.placement}${getNumberOrdinal(player.placement)}`;
+    const tag = _.escape(getPlayerGamerTag(player));
+    const sponsor = _.escape(getPlayerSponsor(player));
 
-        console.log("UPDATE -------------------");
-
-        let isTeams =
-            Object.keys(data.score[window.scoreboardNumber].team["1"].player)
-                .length > 1;
-
-        if (!isTeams) {
-            console.log("HEY LOOK HERE ---------------");
-            const teams = Object.values(
-                data.score[window.scoreboardNumber].team,
-            );
-            for (const [t, team] of teams.entries()) {
-                const players = Object.values(team.player);
-                for (const [p, player] of players.entries()) {
-                    SetInnerHtml(
-                        $(`.p${t + 1} .name`),
-                        `
-              <span>
-                  <div>
-                    <span class='sponsor'>
-                        ${player.team ? player.team : ""}
-                    </span>
-                    ${await Transcript(player.name)}
-                  </div>
-              </span>
-            `,
-                    );
-
-                    SetInnerHtml($(`.p${t + 1} .pronoun`), player.pronoun);
-
-                    SetInnerHtml(
-                        $(`.p${t + 1} > .sponsor_logo`),
-                        player.sponsor_logo
-                            ? `
-                <div class='sponsor_logo' style='background-image: url(../../${player.sponsor_logo})'></div>
-                `
-                            : "",
-                    );
-
-                    SetInnerHtml($(`.p${t + 1} .real_name`), player.real_name);
-
-                    SetInnerHtml(
-                        $(`.p${t + 1} .seed`),
-                        player.seed ? `Seed ${player.seed}` : "",
-                    );
-
-                    let characterNames = [];
-
-                    if (!window.ONLINE_AVATAR && !window.PLAYER_AVATAR) {
-                        for (const [p, player] of Object.values(
-                            team.player,
-                        ).entries()) {
-                            let characters = _.get(player, "character");
-                            for (const c of Object.values(characters)) {
-                                if (c.name) characterNames.push(c.name);
-                            }
-                        }
-                    }
-
-                    SetInnerHtml(
-                        $(`.p${t + 1} .character_name`),
-                        `
-                ${characterNames.join(" / ")}
-            `,
-                    );
-
-                    SetInnerHtml(
-                        $(`.p${t + 1} .twitter`),
-                        `
-              ${
-                  player.twitter
-                      ? `
-                  <div class="twitter_logo"></div>
-                  ${player.twitter}
-                  `
-                      : ""
-              }
-          `,
-                    );
-
-                    SetInnerHtml(
-                        $(`.p${t + 1} .flagcountry`),
-                        player.country.asset
-                            ? `
-              <div>
-                  <div class='flag' style='background-image: url(../../${player.country.asset});'>
-                      <div class="flagname">${player.country.code}</div>
-                  </div>
-              </div>`
-                            : "",
-                    );
-
-                    SetInnerHtml(
-                        $(`.p${t + 1} .flagstate`),
-                        player.state.asset
-                            ? `
-              <div>
-                  <div class='flag' style='background-image: url(../../${player.state.asset});'>
-                      <div class="flagname">${player.state.code}</div>
-                  </div>
-              </div>`
-                            : "",
-                    );
-
-                    let zIndexMultiplyier = 1;
-                    if (t == 1) zIndexMultiplyier = -1;
-
-                    if (!window.ONLINE_AVATAR && !window.PLAYER_AVATAR) {
-                        await CharacterDisplay(
-                            $(`.p${t + 1}.character`),
-                            {
-                                source: `score.${window.scoreboardNumber}.team.${t + 1}`,
-                                scale_based_on_parent: true,
-                                anim_out: {
-                                    x: -zIndexMultiplyier * 100 + "%",
-                                    stagger: 0.1,
-                                },
-                                anim_in: {
-                                    x: 0,
-                                    duration: 1,
-                                    ease: "expo.out",
-                                    autoAlpha: 1,
-                                    stagger: 0.2,
-                                },
-                            },
-                            event,
-                        );
-                    } else if (window.ONLINE_AVATAR) {
-                        SetInnerHtml(
-                            $(`.p${t + 1}.character`),
-                            `
-                <div class="player_avatar">
-                  <div style="background-image: url('${
-                      player.online_avatar
-                          ? player.online_avatar
-                          : "./person.svg"
-                  }');">
-                  </div>
-                </div>
-              `,
-                            {
-                                anim_out: {
-                                    x: -zIndexMultiplyier * 100 + "%",
-                                    stagger: 0.1,
-                                },
-                                anim_in: {
-                                    x: 0,
-                                    duration: 1,
-                                    ease: "expo.out",
-                                    autoAlpha: 1,
-                                    stagger: 0.2,
-                                },
-                            },
-                        );
-                    } else {
-                        SetInnerHtml(
-                            $(`.p${t + 1}.character`),
-                            `
-                <div class="player_avatar">
-                  <div style="background-image: url('${
-                      player.avatar ? "../../" + player.avatar : "./person.svg"
-                  }');">
-                  </div>
-                </div>
-              `,
-                            {
-                                anim_out: {
-                                    x: -zIndexMultiplyier * 100 + "%",
-                                    stagger: 0.1,
-                                },
-                                anim_in: {
-                                    x: 0,
-                                    duration: 1,
-                                    ease: "expo.out",
-                                    autoAlpha: 1,
-                                    stagger: 0.2,
-                                },
-                            },
-                        );
-                    }
+    return `
+        <article class="rank-key-item rank-${player.placement}">
+            <div class="rank-key-icon-shell">
+                ${
+                    icon
+                        ? `<img class="rank-key-icon" src="${icon}" alt="" />`
+                        : `<div class="rank-key-icon-fallback"></div>`
                 }
-            }
-
-            // ------- TOURNAMENT RESULTS -------------
-            let history =
-                data.score[window.scoreboardNumber].history_sets[window.PLAYER];
-            if (history) {
-                let results_html = `<div class ="info title">${config.display_titles ? "Recent Results" : " "}</div>`;
-
-                let className = `.results`;
-                let tl = gsap.timeline();
-
-                // Output
-                console.log("-- Output tournaments --");
-                console.log(data);
-                console.log(data.score[window.scoreboardNumber]);
-                console.log(data.score[window.scoreboardNumber].history_sets[window.PLAYER]);
-
-
-                function major_filter(tournament) {
-                    
-                    let tournament_contains_utk = tournament.tournament_name.toLowerCase().includes("utk");
-                    let tournament_contains_volan = tournament.tournament_name.toLowerCase().includes("volan");
-                    let tournament_contain_smokey = tournament.tournament_name.toLowerCase().includes("smokey");
-
-                    let knox_pr = tournament_contains_utk || tournament_contains_volan || tournament_contain_smokey;
-
-                    // Check if the tournament is not the current tournament
-                    let not_current = tournament.tournament_name != data.tournamentInfo.tournamentName;
-
-                    // Ensure it isn't a wifi tournament by removing wifi from the name
-                    let not_wifi = !tournament.tournament_name.toLowerCase().includes("wifi") 
-                    && !tournament.tournament_name.toLowerCase().includes("lan")
-                    && !tournament.tournament_name.toLowerCase().includes("sundown")
-                    && !tournament.event_name.toLowerCase().includes("online");
-
-                    // Check if the tournament has more than 25 entrants
-                    return knox_pr && not_current && not_wifi;
-                }
-
-                function not_current(tournament) {
-                    
-                    let tournament_contains_utk = tournament.tournament_name.toLowerCase().includes("utk");
-                    let tournament_contains_volan = tournament.tournament_name.toLowerCase().includes("volan");
-                    let tournament_contain_smokey = tournament.tournament_name.toLowerCase().includes("smokey");
-
-                    let knox_pr = tournament_contains_utk || tournament_contains_volan || tournament_contain_smokey;
-
-                    // Check if the tournament is not the current tournament
-                    let not_current = tournament.tournament_name != data.tournamentInfo.tournamentName;
-
-                    // Ensure it isn't a wifi tournament by removing wifi from the name
-                    let not_wifi = !tournament.tournament_name.toLowerCase().includes("wifi") 
-                    && !tournament.tournament_name.toLowerCase().includes("lan")
-                    && !tournament.tournament_name.toLowerCase().includes("sundown")
-                    && !tournament.event_name.toLowerCase().includes("online");
-
-
-                    return  knox_pr && not_current && not_wifi;
-                }
-
-
-                let tournaments = Object.values(
-                    data.score[window.scoreboardNumber].history_sets[window.PLAYER],
-                ).filter(major_filter);
-
-                let remainingTournaments = Object.values(
-                    data.score[window.scoreboardNumber].history_sets[window.PLAYER],
-                )
-                .filter(not_current)
-                .sort((a, b) => b.entrants - a.entrants); // Sort by largest entrants first
-
-                
-                // If tournaments are less than 3, then grab the next tournament to fill the gap
-                while (tournaments.length < TOURNAMENTS && remainingTournaments.length > 0) {
-                    console.log("Not enough tournaments, grabbing more");
-                    console.log(tournaments);
-
-                    // Find the largest tournament not already in the array
-                    let largestTournament = remainingTournaments.find(
-                        (tournament) =>
-                            !tournaments.some(
-                                (existing) =>
-                                    existing.tournament_name === tournament.tournament_name,
-                            ),
-                    );
-
-                    // Add the largest tournament to the array if it exists
-                    if (largestTournament) {
-                        tournaments.push(largestTournament);
-
-                        // Remove the added tournament from remainingTournaments
-                        remainingTournaments = remainingTournaments.filter(
-                            (tournament) =>
-                                tournament.tournament_name !== largestTournament.tournament_name,
-                        );
-                    } else {
-                        // Break the loop if no valid tournament is found to avoid infinite loop
-                        break;
-                    }
-                }
-
-                // Sort tournaments by date:
-                tournaments.sort((a, b) => {
-                    if (a.placement === b.placement) {
-                        let aDate = new Date(
-                            `${a.event_date_month} ${a.event_date_day}, ${a.event_date_year}`,
-                        );
-                        let bDate = new Date(
-                            `${b.event_date_month} ${b.event_date_day}, ${b.event_date_year}`,
-                        );
-                        return bDate - aDate; // Most recent first
-                    }
-                    return a.placement - b.placement; // Sort by placement
-                });
-
-                // if there are no tournaments.
-                if (tournaments.length == 0) {
-                    window.START_WITH_FACTS = true;
-                    window.ROTATE = false;
-                    contentSwitchTimerSet = true;
-                }
-
-                tournaments.slice(0, TOURNAMENTS)
-                .forEach((sets, s) => {
-                    results_html += `
-                    <div class="tournament${s + 1} tournament_container">
-                        <div class="tournament_container_inner">
-                            <div class="tournament_logo"></div>
-                            <div class="placement"></div>
-                            <div class="tournament_info">
-                                <div class="tournament_name"></div>
-                                <div class="event_name"></div>
-                            </div>
-                        </div>
-                    </div>`;
-                });
-                $(className).html(results_html);
-
-                for (const [s, tournament] of tournaments
-                .slice(0, TOURNAMENTS)
-                .entries()) {
-                    SetInnerHtml(
-                        $(
-                            `${className} .tournament${
-                            s + 1
-                            } .tournament_container_inner .tournament_info .tournament_name`,
-                        ),
-                        tournament.tournament_name,
-                    );
-                    SetInnerHtml(
-                        $(
-                            `${className} .tournament${
-                            s + 1
-                            } .tournament_container_inner .tournament_info .event_name`,
-                        ),
-                        tournament.event_name,
-                    );
-                    SetInnerHtml(
-                        $(
-                            `${className} .tournament${s + 1} .tournament_container_inner .tournament_logo`,
-                        ),
-                        `
-                            <span class="logo" style="background-image: url('${tournament.tournament_picture}')"></span>
-                        `,
-                    );
-                    SetInnerHtml(
-                        $(
-                            `${className} .tournament${s + 1} .tournament_container_inner .placement`,
-                        ),
-                        tournament.placement +
-                            `<span class="ordinal">${getNumberOrdinal(
-                            tournament.placement,
-                            )}</span><span class="num_entrants">/${tournament.entrants}</span>`,
-                    );
-                    tl.from(
-                        $(`.tournament${s + 1}`),
-                        { x: window.PLAYER == 1 ? 100 : -100, autoAlpha: 0, duration: 0.3 },
-                        0.2 + 0.2 * s,
-                    );
-                }
-                tl.resume();
-                
-                // ------- FUN FACTS -------------
-                
-                let info = data.score[1].team[window.PLAYER].player[1].custom_textbox;
-                
-                let info_class = "rainbow_text";
-
-                // If info has # at the start, we use rainbow_number
-                if (info && info[0] == "#") {
-                    info_class = "rainbow_number";
-                }
-
-                let facts_html = `<div class ="${info_class}"></div>`;
-                fetch("data/facts.json")
-                    .then((response) => response.json())
-                    .then((facts) => {
-                        // Populate player names with each player on the team
-                        var playerNames = [];
-                        Object.values(
-                            data.score[window.scoreboardNumber].team[window.PLAYER].player,
-                        ).forEach((player) => {
-                            console.log(player);
-                            playerNames.push(player.name);
-                        });
-
-                        // Populate player facts with each player's facts
-                        let playerFacts = [];
-                        playerNames.forEach((name) => {
-                            // get each player's facts
-                            let playerFact = facts[name];
-
-                            // add the player's facts to the list
-                            if (playerFact)
-                                playerFacts = playerFacts.concat(playerFact);
-                        });
-
-                        console.log(playerFacts);
-
-                        // If there are no facts for the player, use the default
-                        if (playerFacts.length == 0) playerFacts = facts["default"];
-
-                        // If there are more than 4 facts grab 4 randomly
-                        if (playerFacts.length > 3) {
-                            playerFacts = playerFacts
-                                .sort(() => Math.random() - 0.5)
-                                .slice(0, 3);
-                        // Otherwise if we have less than 3 facts, add random default facts so we have 3
-                        } else if (playerFacts.length < 3) {
-                            let seed = new Date().getDate();
-                            let defaultFacts = facts["default"];
-                            while (playerFacts.length < 3) {
-                                playerFacts.push(defaultFacts[Math.floor(Math.random() * defaultFacts.length)]);
-                            }
-
-                            // Now shuffle the facts
-                            playerFacts = playerFacts.sort(() => Math.random() - 0.5);
-                        // Otherwise just shuffle the facts
-                        } else {
-                            let seed = new Date().getDate();
-                            playerFacts = playerFacts.sort(
-                                () => Math.random() - 0.5,
-                            );
-                        }
-
-                        // Build the html for each fact
-                        playerFacts.forEach((fact, i) => {
-                            facts_html += `
-                                <div class="fact${i + 1} tournament_container">
-                                    <div class="tournament_container_inner">
-                                        <div class="fact_info">
-                                            <div class="fun_fact">${fact}</div>
-                                        </div>
-                                    </div>
-                                </div>`;
-                        });
-                        
-                        $(`.facts`).html(facts_html);
-
-                        // Build the internal html using info
-                        // for each ' ' in info make a br tag
-                        let info_html = info
-                            .split(" ")
-                            .map((word) => {
-                                if (word == "") {
-                                    return "";
-                                } else {
-                                    return `<span class="${info_class}">${word}</span>`;
-                                }
-                            })
-                            .join(" ");
-
-                        SetInnerHtml(
-                            $(`.facts .${info_class}`),
-                            info_html);
-
-
-                        // Animate the fun facts display
-                        let tl = gsap.timeline();
-                        playerFacts.forEach((fact, i) => {
-                            tl.from(
-                                $(`.fact${i + 1}`),
-                                { x: window.PLAYER == 1 ? 100 : -100, autoAlpha: 0, duration: 0.3 },
-                                0.2 + 0.2 * i,
-                            );
-                        });
-
-                        
-
-                        const $el = $(`.${info_class}`);
-                        // Meteor Stamp Animation
-                        tl.fromTo(
-                            $el,
-                            {
-                                y: 300, // rise from below screen
-                                autoAlpha: 0,
-                                scale: 0.8,
-                            },
-                            {
-                                y: -20, // rise up to just above landing point
-                                autoAlpha: 1,
-                                scale: 1.1,
-                                duration: 0.5,
-                                ease: "power4.out",
-                            },
-                            0.2 + 0.2 * playerFacts.length
-                        )
-                        .to(
-                            $el,
-                            {
-                                y: 0,
-                                scale: 0.95,
-                                duration: 0.1,
-                                ease: "power2.in",
-                            },
-                            "+=0"
-                        )
-                        .to(
-                            $el,
-                            {
-                                scale: 1,
-                                duration: 0.15,
-                                ease: "elastic.out(1, 0.4)",
-                            },
-                            "+=0"
-                        )
-                        .to(
-                            $el,
-                            {
-                                x: "+=3",
-                                y: "-=2",
-                                duration: 0.05,
-                                repeat: 3,
-                                yoyo: true,
-                                ease: "power1.inOut",
-                            },
-                            "-=0.1"
-                        );
-
-                        tl.resume();
-                
-                    });
-                
-                // Set up the transition timer only once
-                if (!contentSwitchTimerSet) {
-                    contentSwitchTimerSet = true;
-
-                    const cycleContent = (showFactsFirst) => {
-                        if (showFactsFirst) {
-                            switchToTournamentResults();
-                            setTimeout(() => cycleContent(false), FACTS_TRANSITION_DELAY * 1000);
-                        } else {
-                            switchToFunFacts();
-                            setTimeout(() => cycleContent(true), FACTS_TRANSITION_DELAY * 1000);
-                            
-                        }
-                    };
-
-                    setTimeout(() => cycleContent(window.START_WITH_FACTS), FACTS_TRANSITION_DELAY * 1000);
-                }
-            }
-            
-            //------ BRACKET RUN --------
-            let last_sets = data.score[window.scoreboardNumber].last_sets[window.PLAYER];
-            let oldLastSets = _.get(oldData, `score[${window.scoreboardNumber}].last_sets[${window.PLAYER}]`);
-            console.log("SETS", last_sets);
-            
-            if (JSON.stringify(last_sets) != JSON.stringify(oldLastSets)){
-                let sets_html = `<div class ="info title">${config.display_titles ? "Current Run" : " "}</div>` ;
-                Object.values(last_sets)
-                    .slice(0, SETS)
-                    .reverse()
-                    .forEach((set, s) => {
-                    let winner = set.player_score > set.oponent_score;
-
-                    // Enable DQ support
-                    let result = winner ? "W" : "L";
-                    if (set.player_score == -1) result = "DQ";
-
-                    sets_html += `
-                        <div class ="set${s + 1} set_container">
-                            <div class = "set_container_inner">
-                                <div class = "result_tag ${winner ? "winner" : ""}">${result}</div>
-                                <div class = "phase_match"></div>
-                                <div class = "set_score"></div>
-                                <div class = "name"></div>
-                            </div>
-                        </div>
-                    `;
-                });
-
-
-                if (Object.values(last_sets).length > 0) {
-
-                    $(".sets").html(sets_html);
-                }
-
-                let tl = gsap.timeline();
-                for (const [s, set] of Object.values(last_sets)
-                    .slice(0, SETS)
-                    .reverse()
-                    .entries()) {
-                    console.log(set);
-                    let phaseTexts = [];
-
-                    if (set.phase_id) phaseTexts.push(set.phase_id);
-                    
-                    SetInnerHtml($(`.sets .set${s + 1} .phase_match`), set.round_name);
-                    SetInnerHtml(
-                        $(`.sets .set${s + 1} .name`),
-                        `
-                            <div class = "versus">VS</div>
-                            ${await Transcript(set.oponent_name)}
-                            ${set.oponent_team ? `<span class="sponsor">${set.oponent_team}</span>` : ""}
-                        `,
-                    );
-                    let score_text = "" + set.player_score + " - " + (set.oponent_score >= 0 ? set.oponent_score : "DQ");
-                    SetInnerHtml(
-                        $(`.sets .set${s + 1} .set_score`),
-                        score_text,
-                    );
-                    tl.from(
-                        $(`.set${s + 1}`),
-                        { x: window.PLAYER == 1 ? 100 : -100, autoAlpha: 0, duration: 0.4 },
-                        0.2 + 0.2 * s,
-                    );
-                }
-                tl.resume();
-            }
-        } else {
-            const teams = Object.values(data.score[window.scoreboardNumber].team);
-            for (const [t, team] of teams.entries()) {
-                let teamName = team.teamName;
-
-                let names = [];
-                for (const [p, player] of Object.values(
-                    team.player,
-                ).entries()) {
-                    if (player && player.name) {
-                        names.push(await Transcript(player.name));
-                    }
-                }
-                let playerNames = names.join(" / ");
-
-                if (!team.teamName || team.teamName == "") {
-                    teamName = playerNames;
-                }
-
-                SetInnerHtml(
-                    $(`.p${t + 1} .name`),
-                    `
-                    <span>
-                        <div>
-                            ${teamName}
-                        </div>
-                    </span>
-                    `,
-                );
-                if (teamName != playerNames) {
-                    SetInnerHtml($(`.p${t + 1} .real_name`), playerNames);
-                } else {
-                    SetInnerHtml($(`.p${t + 1} .real_name`), "");
-                }
-
-                gsap.to($(`.p${t + 1} .losers_badge`), {
-                    autoAlpha: team.losers ? 1 : 0,
-                    overwrite: true,
-                    duration: 0.8,
-                });
-
-                SetInnerHtml($(`.p${t + 1} > .sponsor_logo`), "");
-
-                SetInnerHtml($(`.p${t + 1} .twitter`), ``);
-
-                SetInnerHtml($(`.p${t + 1} .flagcountry`), "");
-
-                SetInnerHtml($(`.p${t + 1} .flagstate`), "");
-
-                SetInnerHtml($(`.p${t + 1} .pronoun`), "");
-
-                SetInnerHtml(
-                    $(`.p${t + 1} .seed`),
-                    _.get(team, "player.1.seed")
-                        ? `Seed ${_.get(team, "player.1.seed")}`
-                        : "",
-                );
-
-                let characterNames = [];
-
-                if (!window.ONLINE_AVATAR && !window.PLAYER_AVATAR) {
-                    for (const [p, player] of Object.values(
-                        team.player,
-                    ).entries()) {
-                        let characters = _.get(player, "character");
-                        for (const c of Object.values(characters)) {
-                            if (c.name) characterNames.push(c.name);
-                        }
-                    }
-                }
-
-                SetInnerHtml(
-                    $(`.p${t + 1} .character_name`),
-                    `
-                      ${characterNames.join(" / ")}
-                    `,
-                );
-
-                let zIndexMultiplyier = 1;
-                if (t == 1) zIndexMultiplyier = -1;
-
-                if (!window.ONLINE_AVATAR && !window.PLAYER_AVATAR) {
-                    await CharacterDisplay(
-                        $(`.p${t + 1}.character`),
-                        {
-                            source: `score.${window.scoreboardNumber}.team.${t + 1}`,
-                            scale_based_on_parent: true,
-                            anim_out: {
-                                x: -zIndexMultiplyier * 100 + "%",
-                                stagger: 0.1,
-                            },
-                            anim_in: {
-                                x: 0,
-                                duration: 1,
-                                ease: "expo.out",
-                                autoAlpha: 1,
-                                stagger: 0.2,
-                            },
-                        },
-                        event,
-                    );
-                } else if (window.ONLINE_AVATAR) {
-                    let avatars_html = "";
-                    for (const [p, player] of Object.values(
-                        team.player,
-                    ).entries()) {
-                        if (player)
-                            avatars_html += `<div style="background-image: url('${
-                                player.online_avatar
-                                    ? player.online_avatar
-                                    : "./person.svg"
-                            }');"></div>`;
-                    }
-                    SetInnerHtml(
-                        $(`.p${t + 1}.character`),
-                        `
-                          <div class="player_avatar">
-                            ${avatars_html}
-                          </div>
-                        `,
-                        {
-                            anim_out: {
-                                x: -zIndexMultiplyier * 100 + "%",
-                                stagger: 0.1,
-                            },
-                            anim_in: {
-                                x: 0,
-                                duration: 1,
-                                ease: "expo.out",
-                                autoAlpha: 1,
-                                stagger: 0.2,
-                            },
-                        },
-                    );
-                } else {
-                    let avatars_html = "";
-                    for (const [p, player] of Object.values(
-                        team.player,
-                    ).entries()) {
-                        if (player)
-                            avatars_html += `<div style="background-image: url('${
-                                player.avatar
-                                    ? "../../" + player.avatar
-                                    : "./person.svg"
-                            }');"></div>`;
-                    }
-                    SetInnerHtml(
-                        $(`.p${t + 1}.character`),
-                        `
-                          <div class="player_avatar">
-                            ${avatars_html}
-                          </div>
-                        `,
-                        {
-                            anim_out: {
-                                x: -zIndexMultiplyier * 100 + "%",
-                                stagger: 0.1,
-                            },
-                            anim_in: {
-                                x: 0,
-                                duration: 1,
-                                ease: "expo.out",
-                                autoAlpha: 1,
-                                stagger: 0.2,
-                            },
-                        },
-                    );
-                }
-            }
-        }
-
-        SetInnerHtml(
-            $(`.p1 .score`),
-            String(data.score[window.scoreboardNumber].team["1"].score),
-        );
-        SetInnerHtml(
-            $(`.p2 .score`),
-            String(data.score[window.scoreboardNumber].team["2"].score),
-        );
-
-        let stage = null;
-
-        if (
-            _.get(data, `score.${window.scoreboardNumber}.stage_strike.selectedStage`)
-        ) {
-            let stageId = _.get(
-                data,
-                `score.${window.scoreboardNumber}.stage_strike.selectedStage`,
-            );
-
-            let allStages = _.get(data, "score.ruleset.neutralStages", []).concat(
-                _.get(data, "score.ruleset.counterpickStages", []),
-            );
-
-            stage = allStages.find((s) => s.codename == stageId);
-        }
-
-        if (
-            stage &&
-            _.get(
-                data,
-                `score.${window.scoreboardNumber}.stage_strike.selectedStage`,
-            ) !=
-                _.get(
-                    oldData,
-                    `score.${window.scoreboardNumber}.stage_strike.selectedStage`,
-                )
-        ) {
-            gsap.fromTo(
-                $(`.stage`),
-                { scale: 2 },
-                { scale: 1.2, duration: 0.8, ease: "power2.out" },
-            );
-        }
-
-        SetInnerHtml(
-            $(`.stage`),
-            stage
-                ? `
-                <div>
-                    <div class='' style='background-image: url(../../${stage.path});'>
+            </div>
+            <div class="rank-key-copy">
+                <div class="rank-key-mainline">
+                    <span class="rank-key-rank">${rankText}</span>
+                    <div class="rank-key-name-stack">
+                        ${sponsor ? `<div class="rank-key-sponsor">${sponsor}</div>` : ""}
+                        <span class="rank-key-tag"><span class="text">${tag}</span></span>
                     </div>
-                </div>`
-                : "",
+                </div>
+            </div>
+        </article>
+    `;
+}
+
+async function renderLeaderboard() {
+    const posterPlayers = rankedPlayers
+        .filter((player) => player.placement <= 10)
+        .sort((a, b) => a.placement - b.placement);
+    const keyItems = await Promise.all(posterPlayers.map(renderLeaderboardKeyItem));
+
+    $(".leaderboard-panel").html(`
+        <section class="collage-stage">
+            <img class="collage-image" src="${FINAL_COLLAGE_IMAGE}" alt="" />
+        </section>
+        <div class="collage-title">${FINAL_LEADERBOARD_TITLE}</div>
+        <div class="leaderboard-reveal-overlay" aria-hidden="true">
+            <div class="leaderboard-reveal-clouds"></div>
+            <div class="leaderboard-reveal-bolt bolt-left"></div>
+            <div class="leaderboard-reveal-bolt bolt-right"></div>
+            <div class="leaderboard-reveal-flash"></div>
+            <div class="leaderboard-reveal-sparks"></div>
+            <div class="leaderboard-reveal-haze"></div>
+        </div>
+        <section class="rank-key">
+            <div class="rank-key-items">
+                ${keyItems.join("")}
+            </div>
+        </section>
+    `);
+
+    requestAnimationFrame(() => {
+        $(".rank-key-tag").each((_, element) => FitText($(element)));
+    });
+}
+
+function showStreamSafeError(message) {
+    currentView = "error";
+    stopTeaserLoading();
+    gsap.set(".teaser-screen", { autoAlpha: 0, pointerEvents: "none" });
+    $(".rank-card").html(`
+        <div class="error-card">
+            <div class="rank-eyebrow">PR Presentation</div>
+            <div class="error-title">Ranking data unavailable</div>
+            <div class="error-message">${message}</div>
+        </div>
+    `);
+    gsap.set(".rank-card", { autoAlpha: 1 });
+    gsap.set(".ranking-plate, .character-aura", { autoAlpha: 0 });
+    gsap.set(".leaderboard-panel", { autoAlpha: 0, pointerEvents: "none" });
+}
+
+function setTeaserTip(text, animate = true) {
+    const tip = $(".teaser-tip-text");
+    if (!tip.length) return;
+
+    if (!animate) {
+        tip.text(text);
+        return;
+    }
+
+    gsap.to(tip, {
+        autoAlpha: 0,
+        y: -8,
+        duration: 0.22,
+        ease: "power2.in",
+        overwrite: true,
+        onComplete: () => {
+            tip.text(text);
+            gsap.fromTo(
+                tip,
+                { autoAlpha: 0, y: 10 },
+                { autoAlpha: 1, y: 0, duration: 0.28, ease: "power2.out", overwrite: true },
+            );
+        },
+    });
+}
+
+function cycleTeaserTip() {
+    if (TEASER_LOADING_TIPS.length === 0) return;
+    teaserTipIndex = (teaserTipIndex + 1) % TEASER_LOADING_TIPS.length;
+    setTeaserTip(TEASER_LOADING_TIPS[teaserTipIndex]);
+}
+
+function runTeaserLoadingCycle() {
+    const loadingFill = $(".teaser-loading-fill");
+    if (!loadingFill.length) return;
+
+    teaserLoadingTween = gsap.fromTo(
+        loadingFill,
+        { width: "0%" },
+        {
+            width: "100%",
+            duration: TEASER_TIP_INTERVAL_MS / 1000,
+            ease: "linear",
+            overwrite: true,
+            onComplete: () => {
+                cycleTeaserTip();
+                runTeaserLoadingCycle();
+            },
+        },
+    );
+}
+
+function startTeaserLoading() {
+    stopTeaserLoading();
+    teaserTipIndex = 0;
+    setTeaserTip(TEASER_LOADING_TIPS[teaserTipIndex] || "", false);
+    runTeaserLoadingCycle();
+}
+
+function stopTeaserLoading() {
+    if (teaserLoadingTween) {
+        teaserLoadingTween.kill();
+        teaserLoadingTween = null;
+    }
+}
+
+async function showTeaser() {
+    currentView = "teaser";
+    characterRenderToken += 1;
+
+    $(".rank-card, .rank-badge, .leaderboard-panel").empty();
+    gsap.set(".ranking-plate, .character-aura, .rank-card, .rank-badge, .leaderboard-panel, .pr-character .tsh_character", {
+        autoAlpha: 0,
+        pointerEvents: "none",
+        overwrite: true,
+    });
+
+    startTeaserLoading();
+
+    const teaser = $(".teaser-screen");
+    teaser.attr("aria-hidden", "false");
+    await gsap
+        .timeline()
+        .set(teaser, { autoAlpha: 1, pointerEvents: "auto", overwrite: true }, 0)
+        .fromTo(
+            ".teaser-panel",
+            { autoAlpha: 0, y: 34, scale: 0.985 },
+            { autoAlpha: 1, y: 0, scale: 1, duration: 0.66, ease: "expo.out", overwrite: true },
+            0.05,
+        )
+        .fromTo(
+            ".teaser-kicker, .teaser-title, .teaser-subtitle, .teaser-copy, .teaser-loading",
+            { autoAlpha: 0, y: 16 },
+            { autoAlpha: 1, y: 0, duration: 0.42, stagger: 0.07, ease: "power2.out", overwrite: true },
+            0.18,
         );
+}
+
+async function hideTeaser(dramatic = false) {
+    stopTeaserLoading();
+    const transition = dramatic ? buildTeaserRankTransition() : null;
+
+    $(".teaser-screen").attr("aria-hidden", "true");
+
+    if (dramatic) {
+        transition.addClass("is-active");
+        await gsap
+            .timeline()
+            .set(transition, { autoAlpha: 1, overwrite: true }, 0)
+            .to(
+                ".teaser-panel",
+                {
+                    autoAlpha: 0,
+                    y: -38,
+                    scale: 0.965,
+                    duration: 0.46,
+                    ease: "power3.inOut",
+                    overwrite: true,
+                },
+                0,
+            )
+            .to(
+                ".teaser-screen",
+                {
+                    autoAlpha: 0,
+                    scale: 1.035,
+                    duration: 0.72,
+                    ease: "power2.inOut",
+                    pointerEvents: "none",
+                    overwrite: true,
+                },
+                0.08,
+            );
+    } else {
+        await gsap.to(".teaser-screen", {
+            autoAlpha: 0,
+            scale: 1.012,
+            duration: 0.34,
+            ease: "power2.inOut",
+            pointerEvents: "none",
+            overwrite: true,
+        });
+    }
+
+    gsap.set(".teaser-screen", { scale: 1 });
+    return transition;
+}
+
+async function showPlayer(index, direction = "in") {
+    const player = rankedPlayers[index];
+    if (!player) return;
+
+    currentView = "player";
+    currentIndex = index;
+    gsap.set(".leaderboard-panel", { autoAlpha: 0, pointerEvents: "none" });
+    gsap.set(".rank-card, .rank-badge", { pointerEvents: "auto" });
+    renderPlayerCard(player, direction);
+    const isOpeningReveal = direction === "opening";
+
+    if (isOpeningReveal && openingCharacterPreloadPromise) {
+        await openingCharacterPreloadPromise;
+        openingCharacterPreloadPromise = null;
+    }
+
+    const characterElement =
+        getPreparedRankedCharacter(player) ||
+        (await prepareRankedCharacter(player).catch((error) => {
+            console.warn("Could not update PR ranked character layer.", error);
+            return null;
+        }));
+    if (isOpeningReveal) restartRankedCharacterMedia(characterElement);
+
+    gsap.set(".pfp-frame", { transformOrigin: "50% 50%" });
+
+    const isRankAdvance = direction === "advance";
+    const revealFromX = direction === "back" ? -80 : isOpeningReveal ? 126 : isRankAdvance ? 56 : 80;
+    const badgeFromX = direction === "back" ? -54 : isOpeningReveal ? 86 : isRankAdvance ? 38 : 54;
+    const baseCharacterFromX = isRankAdvance ? 68 : 90;
+    const characterDirection = Number(window.PLAYER || 1) === 2 ? -1 : 1;
+    const characterFromX = characterDirection * (isOpeningReveal ? 130 : baseCharacterFromX);
+    const revealTimeline = gsap
+        .timeline()
+        .fromTo(
+            ".ranking-plate",
+            { autoAlpha: 0, x: revealFromX, y: isOpeningReveal ? 64 : isRankAdvance ? 24 : 36, scaleX: isOpeningReveal ? 0.985 : 1 },
+            {
+                autoAlpha: 1,
+                x: 0,
+                y: 0,
+                scaleX: 1,
+                duration: isOpeningReveal ? 0.78 : isRankAdvance ? 0.58 : 0.46,
+                ease: "expo.out",
+                overwrite: true,
+            },
+            isOpeningReveal ? 0.08 : isRankAdvance ? 0.03 : 0,
+        )
+        .fromTo(
+            ".rank-card",
+            { autoAlpha: 0, y: isOpeningReveal ? 46 : isRankAdvance ? 22 : 28, scale: isOpeningReveal ? 0.985 : isRankAdvance ? 0.99 : 1 },
+            {
+                autoAlpha: 1,
+                y: 0,
+                scale: 1,
+                duration: isOpeningReveal ? 0.6 : isRankAdvance ? 0.5 : 0.42,
+                ease: "expo.out",
+                overwrite: true,
+            },
+            isOpeningReveal ? 0.32 : isRankAdvance ? 0.18 : 0.1,
+        )
+        .fromTo(
+            ".pfp-frame",
+            { scale: isOpeningReveal ? 0.76 : isRankAdvance ? 0.9 : 0.86 },
+            { scale: 1, duration: isOpeningReveal ? 0.38 : isRankAdvance ? 0.32 : 0.24, ease: "back.out(1.45)", overwrite: true },
+            isOpeningReveal ? 0.5 : isRankAdvance ? 0.26 : 0.18,
+        )
+        .fromTo(
+            ".rank-badge",
+            { autoAlpha: 0, x: badgeFromX, y: isOpeningReveal ? -22 : isRankAdvance ? -8 : 0, scale: isOpeningReveal ? 0.82 : isRankAdvance ? 0.9 : 0.92 },
+            {
+                autoAlpha: 1,
+                x: 0,
+                y: 0,
+                scale: 1,
+                duration: isOpeningReveal ? 0.64 : isRankAdvance ? 0.54 : 0.38,
+                ease: "back.out(1.18)",
+                overwrite: true,
+            },
+            isOpeningReveal ? 0.2 : isRankAdvance ? 0.08 : 0.05,
+        )
+        .fromTo(
+            ".character-aura",
+            { autoAlpha: 0, scale: isOpeningReveal ? 0.84 : isRankAdvance ? 0.9 : 0.92 },
+            { autoAlpha: 1, scale: 1, duration: isOpeningReveal ? 0.72 : isRankAdvance ? 0.58 : 0.5, ease: "expo.out", overwrite: true },
+            isOpeningReveal ? 0.18 : isRankAdvance ? 0.08 : 0.12,
+        );
+
+    if (characterElement) {
+        revealTimeline.fromTo(
+            characterElement || [],
+            { autoAlpha: 0, x: characterFromX, scale: isOpeningReveal ? 1.09 : isRankAdvance ? 1.035 : 1.04 },
+            { autoAlpha: 1, x: 0, scale: 1, duration: isOpeningReveal ? 0.86 : isRankAdvance ? 0.72 : 0.65, ease: "expo.out", overwrite: true },
+            isOpeningReveal ? 0.16 : isRankAdvance ? 0.06 : 0.08,
+        );
+    }
+
+    await revealTimeline;
+}
+
+async function showLeaderboard() {
+    currentView = "leaderboard";
+    characterRenderToken += 1;
+    const blackout = $("<div class='leaderboard-scene-blackout'></div>");
+    $(".pr-scene").append(blackout);
+
+    await gsap
+        .timeline()
+        .to(blackout, { autoAlpha: 1, duration: 0.34, ease: "power2.inOut" }, 0)
+        .to(
+            ".ranking-plate, .character-aura, .rank-card, .rank-badge, .pr-character .tsh_character",
+            {
+                autoAlpha: 0,
+                x: -80,
+                duration: 0.34,
+                ease: "power2.inOut",
+                overwrite: true,
+            },
+            0,
+        );
+
+    await renderLeaderboard();
+    const leaderboard = $(".leaderboard-panel");
+
+    leaderboard.removeClass("is-revealing");
+    gsap.set(leaderboard, { autoAlpha: 1, y: 0, scale: 1, pointerEvents: "auto", overwrite: true });
+    void leaderboard[0]?.offsetWidth;
+    leaderboard.addClass("is-revealing");
+    window.setTimeout(playThunderSfx, LEADERBOARD_FLASH_SFX_DELAY_MS);
+    gsap.to(blackout, {
+        autoAlpha: 0,
+        duration: 0.74,
+        delay: 0.12,
+        ease: "power2.inOut",
+        onComplete: () => blackout.remove(),
+    });
+    window.setTimeout(() => leaderboard.removeClass("is-revealing"), 2400);
+}
+
+async function advancePresentation() {
+    if (transitionLocked || currentView === "error") return;
+    transitionLocked = true;
+    document.body.dataset.transitioning = "true";
+
+    if (currentView === "teaser") {
+        const teaserTransition = await hideTeaser(true);
+        await showPlayer(currentIndex, "opening");
+        if (teaserTransition) {
+            gsap.to(teaserTransition, {
+                autoAlpha: 0,
+                duration: 0.44,
+                ease: "power2.out",
+                overwrite: true,
+                onComplete: () => teaserTransition.remove(),
+            });
+        }
+        transitionLocked = false;
+        document.body.dataset.transitioning = "false";
+        return;
+    }
+
+    if (currentView === "leaderboard") {
+        transitionLocked = false;
+        document.body.dataset.transitioning = "false";
+        return;
+    }
+
+    const nextIndex = currentIndex - 1;
+    if (nextIndex >= 0) {
+        await gsap
+            .timeline()
+            .to(
+                ".rank-card",
+                {
+                    autoAlpha: 0,
+                    y: 18,
+                    scale: 0.985,
+                    duration: 0.34,
+                    ease: "power2.inOut",
+                    overwrite: true,
+                },
+                0,
+            )
+            .to(
+                ".rank-badge",
+                {
+                    autoAlpha: 0,
+                    x: -38,
+                    y: 10,
+                    scale: 0.94,
+                    duration: 0.36,
+                    ease: "power2.inOut",
+                    overwrite: true,
+                },
+                0.02,
+            )
+            .to(
+                ".pr-character .tsh_character",
+                {
+                    autoAlpha: 0,
+                    x: -54,
+                    scale: 0.985,
+                    duration: 0.42,
+                    ease: "power2.inOut",
+                    overwrite: true,
+                },
+                0.03,
+            )
+            .to(
+                ".character-aura",
+                {
+                    autoAlpha: 0,
+                    scale: 0.94,
+                    duration: 0.38,
+                    ease: "power2.inOut",
+                    overwrite: true,
+                },
+                0.04,
+            )
+            .to(
+                ".ranking-plate",
+                {
+                    autoAlpha: 0,
+                    x: -46,
+                    y: 12,
+                    scaleX: 0.99,
+                    duration: 0.4,
+                    ease: "power2.inOut",
+                    overwrite: true,
+                },
+                0.06,
+            );
+        await showPlayer(nextIndex, "advance");
+    } else {
+        await showLeaderboard();
+    }
+
+    transitionLocked = false;
+    document.body.dataset.transitioning = "false";
+}
+
+LoadEverything().then(async () => {
+    assignDefault(config, tsh_settings || {});
+    assignDefault(config, window.config || {});
+
+    if (!window.PLAYER) window.PLAYER = 1;
+    document.body.classList.add(Number(window.PLAYER) === 2 ? "side-p2" : "side-p1");
+    getThunderAudio().load();
+
+    Start = async () => {
+        try {
+            const rankingData = await loadRankingJson(config.ranking_json || DEFAULT_RANKING_JSON);
+            rankedPlayers = sanitizeRankedPlayers(rankingData);
+
+            if (rankedPlayers.length === 0) {
+                showStreamSafeError("No ranked players with both placement and tag were found.");
+                return;
+            }
+
+            currentIndex = getStartingIndex(rankedPlayers);
+            await showTeaser();
+            openingCharacterPreloadPromise = prewarmOpeningPlayer();
+            transitionLocked = false;
+            document.body.dataset.transitioning = "false";
+        } catch (error) {
+            console.error(error);
+            showStreamSafeError("Check player_placements_startgg.json and reload the browser source.");
+        }
     };
+
+    Update = async () => {};
+
+    window.addEventListener("click", advancePresentation);
+    window.addEventListener("keydown", (event) => {
+        if (event.key === " " || event.key === "Enter" || event.key === "ArrowRight") {
+            advancePresentation();
+        }
+    });
 });

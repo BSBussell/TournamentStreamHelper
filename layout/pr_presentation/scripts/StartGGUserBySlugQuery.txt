@@ -1,0 +1,29 @@
+query UserBySlug($slug: String!) {
+  user(slug: $slug) {
+    id
+    slug
+    discriminator
+    name
+    genderPronoun
+    bio
+    location {
+      city
+      state
+      country
+    }
+    images {
+      url
+      type
+    }
+    authorizations {
+      type
+      externalUsername
+      url
+    }
+    player {
+      id
+      gamerTag
+      prefix
+    }
+  }
+}
