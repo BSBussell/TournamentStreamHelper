@@ -774,7 +774,7 @@ body::before {
         radial-gradient(ellipse at 50% 48%, rgba(255, 255, 255, var(--rank-inner-glow-opacity, 0.12)), transparent 22%),
         radial-gradient(ellipse at 50% 58%, var(--rank-accent-soft), transparent 58%);
     filter: blur(10px);
-    animation: rank-aura-charge 2.4s ease-in-out infinite;
+    animation: rank-aura-charge 2.05s ease-in-out infinite;
 }
 
 .side-p2 .rank-badge {
@@ -792,14 +792,19 @@ body::before {
     position: relative;
     width: max-content;
     font-size: 300px;
-    line-height: 0.9;
+    line-height: 1;
+    margin: -42px -86px -96px;
+    padding: 42px 86px 96px;
     color: var(--text-color);
     text-shadow:
-        0 0 4px rgba(255, 255, 255, 0.5),
-        0 0 var(--rank-inner-glow-size) rgba(255, 255, 255, var(--rank-inner-glow-opacity, 0.16)),
-        4px 6px 0 color-mix(in srgb, var(--rank-accent-dark) 72%, black 28%);
-    transform: translate3d(0, 0, 0);
-    will-change: filter, text-shadow, transform;
+        0 0 3px rgba(255, 255, 255, var(--rank-base-rim-opacity, 0.74)),
+        0 0 var(--rank-inner-glow-size) rgba(255, 255, 255, var(--rank-inner-glow-opacity, 0.24)),
+        0 0 var(--rank-glow-tight) color-mix(in srgb, var(--rank-accent-strong) var(--rank-glow-tight-mix, 62%), transparent),
+        0 0 var(--rank-glow-wide) color-mix(in srgb, var(--rank-accent) var(--rank-glow-wide-mix, 48%), transparent),
+        0 0 var(--rank-glow-extra-wide) color-mix(in srgb, var(--rank-accent-dark) var(--rank-glow-extra-wide-mix, 24%), transparent),
+        4px 6px 0 color-mix(in srgb, color-mix(in srgb, var(--rank-accent-dark) 72%, black 28%) var(--rank-hard-shadow-mix, 100%), transparent);
+    transform: translateZ(0);
+    will-change: filter, text-shadow;
     animation: rank-flicker var(--rank-flicker-duration) infinite ease-in-out;
 }
 
@@ -945,32 +950,32 @@ body::before {
 @keyframes rank-flicker {
     0% {
         filter: brightness(1) saturate(1);
-        transform: translate3d(0, 0, 0);
+        transform: translateZ(0);
     }
 
     18% {
         filter: brightness(var(--rank-flicker-low-brightness)) saturate(var(--rank-flicker-low-saturation));
-        transform: translate3d(0, -0.18px, 0);
+        transform: translateZ(0);
     }
 
     42% {
         filter: brightness(var(--rank-flicker-peak-brightness)) saturate(var(--rank-flicker-peak-saturation));
-        transform: translate3d(0, -0.36px, 0);
+        transform: translateZ(0);
     }
 
     58% {
         filter: brightness(var(--rank-flicker-settle-brightness)) saturate(var(--rank-flicker-settle-saturation));
-        transform: translate3d(0, -0.22px, 0);
+        transform: translateZ(0);
     }
 
     76% {
         filter: brightness(var(--rank-flicker-late-brightness)) saturate(var(--rank-flicker-late-saturation));
-        transform: translate3d(0, -0.14px, 0);
+        transform: translateZ(0);
     }
 
     100% {
         filter: brightness(1) saturate(1);
-        transform: translate3d(0, 0, 0);
+        transform: translateZ(0);
     }
 }
 
@@ -978,7 +983,7 @@ body::before {
     0%,
     100% {
         opacity: var(--rank-aura-rest-opacity, 0.38);
-        transform: scale(0.985);
+        transform: scale(0.97);
     }
 
     50% {

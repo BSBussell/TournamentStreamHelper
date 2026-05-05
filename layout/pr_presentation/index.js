@@ -3,7 +3,7 @@ const FALLBACK_PFP = "./person.svg";
 const FINAL_LEADERBOARD_TITLE = "Knoxville Spring 26 PR";
 const FINAL_COLLAGE_IMAGE = "./collage/characters-wreath.png";
 const THUNDER_SFX = "./sfx/thunder.mp3";
-const THUNDER_SFX_PLAYBACK_RATE = 1.12;
+const THUNDER_SFX_PLAYBACK_RATE = 1.42;
 const TEASER_TIP_INTERVAL_MS = 5200;
 const LEADERBOARD_FLASH_SFX_DELAY_MS = 990;
 const TEASER_LOADING_TIPS = [
@@ -21,6 +21,7 @@ const TEASER_LOADING_TIPS = [
 
 let rankedPlayers = [];
 let currentIndex = 0;
+let startingIndex = 0;
 let currentView = "teaser";
 let transitionLocked = true;
 let characterRenderToken = 0;
@@ -201,67 +202,99 @@ function getRankGlowSettings(placement) {
     const heat = getPlacementHeat(placement);
     const withMotionSettings = (settings) => ({
         ...settings,
-        extraWide: settings.wide * 1.24,
-        innerGlowSize: Math.max(2, settings.tight * 0.25),
-        flickerLowBrightness: 1 + settings.heat * 0.05,
-        flickerPeakBrightness: 1 + settings.heat * 0.12,
-        flickerSettleBrightness: 1 + settings.heat * 0.07,
-        flickerLateBrightness: 1 + settings.heat * 0.1,
-        flickerLowSaturation: 1 + settings.heat * 0.04,
-        flickerPeakSaturation: 1 + settings.heat * 0.08,
-        flickerSettleSaturation: 1 + settings.heat * 0.05,
-        flickerLateSaturation: 1 + settings.heat * 0.07,
-        auraHotScale: 1.01 + settings.heat * 0.035,
+        extraWide: settings.wide * 1.18,
+        innerGlowSize: Math.max(3, settings.tight * 0.42),
+        baseRimOpacity: settings.baseRimOpacity ?? 0.74,
+        glowTightMix: settings.glowTightMix ?? "62%",
+        glowWideMix: settings.glowWideMix ?? "48%",
+        glowExtraWideMix: settings.glowExtraWideMix ?? "24%",
+        hardShadowMix: settings.hardShadowMix ?? "100%",
+        flickerLowBrightness: 1 + settings.heat * 0.07,
+        flickerPeakBrightness: 1 + settings.heat * 0.16,
+        flickerSettleBrightness: 1 + settings.heat * 0.09,
+        flickerLateBrightness: 1 + settings.heat * 0.13,
+        flickerLowSaturation: 1 + settings.heat * 0.05,
+        flickerPeakSaturation: 1 + settings.heat * 0.11,
+        flickerSettleSaturation: 1 + settings.heat * 0.07,
+        flickerLateSaturation: 1 + settings.heat * 0.09,
+        auraHotScale: 1.02 + settings.heat * 0.055,
     });
+
+    if (placement >= 10) {
+        return withMotionSettings({
+            heat: 0,
+            tight: 0,
+            wide: 0,
+            auraOpacity: 0,
+            auraRestOpacity: 0,
+            innerGlowOpacity: 0,
+            chargeOpacity: 0,
+            baseRimOpacity: 0,
+            glowTightMix: "0%",
+            glowWideMix: "0%",
+            glowExtraWideMix: "0%",
+            hardShadowMix: "82%",
+            flickerDuration: "1.62s",
+        });
+    }
 
     if (placement <= 1) {
         return withMotionSettings({
             heat: 1,
-            tight: 12,
-            wide: 54,
-            auraOpacity: 0.46,
-            auraRestOpacity: 0.26,
-            innerGlowOpacity: 0.34,
-            chargeOpacity: 0.38,
-            flickerDuration: "1.16s",
+            tight: 22,
+            wide: 86,
+            auraOpacity: 0.68,
+            auraRestOpacity: 0.34,
+            innerGlowOpacity: 0.64,
+            chargeOpacity: 0.58,
+            glowTightMix: "78%",
+            glowWideMix: "64%",
+            glowExtraWideMix: "34%",
+            flickerDuration: "1.04s",
         });
     }
 
     if (placement === 2) {
         return withMotionSettings({
             heat: 0.78,
-            tight: 11,
-            wide: 46,
-            auraOpacity: 0.4,
-            auraRestOpacity: 0.23,
-            innerGlowOpacity: 0.28,
-            chargeOpacity: 0.32,
-            flickerDuration: "1.24s",
+            tight: 18,
+            wide: 68,
+            auraOpacity: 0.56,
+            auraRestOpacity: 0.3,
+            innerGlowOpacity: 0.5,
+            chargeOpacity: 0.46,
+            glowTightMix: "70%",
+            glowWideMix: "56%",
+            glowExtraWideMix: "30%",
+            flickerDuration: "1.14s",
         });
     }
 
     if (placement === 3) {
         return withMotionSettings({
             heat: 0.58,
-            tight: 10,
-            wide: 38,
-            auraOpacity: 0.36,
-            auraRestOpacity: 0.21,
-            innerGlowOpacity: 0.22,
-            chargeOpacity: 0.26,
-            flickerDuration: "1.32s",
+            tight: 15,
+            wide: 54,
+            auraOpacity: 0.48,
+            auraRestOpacity: 0.27,
+            innerGlowOpacity: 0.4,
+            chargeOpacity: 0.38,
+            glowTightMix: "66%",
+            glowWideMix: "52%",
+            glowExtraWideMix: "27%",
+            flickerDuration: "1.24s",
         });
     }
 
     return withMotionSettings({
         heat,
-        tight: 8 + heat * 10,
-        wide: 22 + heat * 42,
-        auraOpacity: 0.3 + heat * 0.24,
-        auraRestOpacity: 0.18 + heat * 0.12,
-        innerGlowOpacity: 0.08 + heat * 0.34,
-        chargeOpacity: 0.06 + heat * 0.36,
-        flickerDuration: `${1.62 - heat * 0.42}s`,
+        tight: 10 + heat * 16,
+        wide: 26 + heat * 58,
+        auraOpacity: 0.32 + heat * 0.34,
+        auraRestOpacity: 0.2 + heat * 0.16,
+        innerGlowOpacity: 0.12 + heat * 0.5,
+        chargeOpacity: 0.08 + heat * 0.48,
+        flickerDuration: `${1.62 - heat * 0.5}s`,
     });
 }
 
@@ -291,6 +324,7 @@ function playThunderSfx() {
     const audio = getThunderAudio();
     audio.pause();
     audio.currentTime = 0;
+    audio.playbackRate = THUNDER_SFX_PLAYBACK_RATE;
     audio.play().catch((error) => {
         console.warn("Could not play leaderboard thunder SFX.", error);
     });
@@ -323,6 +357,11 @@ function renderRankBadge(player) {
         "--rank-glow-wide": `${glow.wide}px`,
         "--rank-glow-extra-wide": `${glow.extraWide}px`,
         "--rank-inner-glow-size": `${glow.innerGlowSize}px`,
+        "--rank-base-rim-opacity": glow.baseRimOpacity,
+        "--rank-glow-tight-mix": glow.glowTightMix,
+        "--rank-glow-wide-mix": glow.glowWideMix,
+        "--rank-glow-extra-wide-mix": glow.glowExtraWideMix,
+        "--rank-hard-shadow-mix": glow.hardShadowMix,
         "--rank-aura-opacity": glow.auraOpacity,
         "--rank-aura-rest-opacity": glow.auraRestOpacity,
         "--rank-inner-glow-opacity": glow.innerGlowOpacity,
@@ -614,8 +653,7 @@ async function renderLeaderboard() {
         <div class="collage-title">${FINAL_LEADERBOARD_TITLE}</div>
         <div class="leaderboard-reveal-overlay" aria-hidden="true">
             <div class="leaderboard-reveal-clouds"></div>
-            <div class="leaderboard-reveal-bolt bolt-left"></div>
-            <div class="leaderboard-reveal-bolt bolt-right"></div>
+            
             <div class="leaderboard-reveal-flash"></div>
             <div class="leaderboard-reveal-sparks"></div>
             <div class="leaderboard-reveal-haze"></div>
@@ -823,16 +861,17 @@ async function showPlayer(index, direction = "in") {
     gsap.set(".pfp-frame", { transformOrigin: "50% 50%" });
 
     const isRankAdvance = direction === "advance";
-    const revealFromX = direction === "back" ? -80 : isOpeningReveal ? 126 : isRankAdvance ? 56 : 80;
-    const badgeFromX = direction === "back" ? -54 : isOpeningReveal ? 86 : isRankAdvance ? 38 : 54;
-    const baseCharacterFromX = isRankAdvance ? 68 : 90;
+    const isRankBack = direction === "back";
+    const revealFromX = isRankBack ? -80 : isOpeningReveal ? 126 : isRankAdvance ? 56 : 80;
+    const badgeFromX = isRankBack ? -54 : isOpeningReveal ? 86 : isRankAdvance ? 38 : 54;
+    const baseCharacterFromX = isRankBack ? -78 : isRankAdvance ? 68 : 90;
     const characterDirection = Number(window.PLAYER || 1) === 2 ? -1 : 1;
     const characterFromX = characterDirection * (isOpeningReveal ? 130 : baseCharacterFromX);
     const revealTimeline = gsap
         .timeline()
         .fromTo(
             ".ranking-plate",
-            { autoAlpha: 0, x: revealFromX, y: isOpeningReveal ? 64 : isRankAdvance ? 24 : 36, scaleX: isOpeningReveal ? 0.985 : 1 },
+            { autoAlpha: 0, x: revealFromX, y: isOpeningReveal ? 64 : isRankAdvance ? 24 : isRankBack ? 36 : 36, scaleX: isOpeningReveal ? 0.985 : 1 },
             {
                 autoAlpha: 1,
                 x: 0,
@@ -846,7 +885,7 @@ async function showPlayer(index, direction = "in") {
         )
         .fromTo(
             ".rank-card",
-            { autoAlpha: 0, y: isOpeningReveal ? 46 : isRankAdvance ? 22 : 28, scale: isOpeningReveal ? 0.985 : isRankAdvance ? 0.99 : 1 },
+            { autoAlpha: 0, y: isOpeningReveal ? 46 : isRankAdvance ? 22 : isRankBack ? 28 : 28, scale: isOpeningReveal ? 0.985 : isRankAdvance ? 0.99 : 1 },
             {
                 autoAlpha: 1,
                 y: 0,
@@ -865,7 +904,7 @@ async function showPlayer(index, direction = "in") {
         )
         .fromTo(
             ".rank-badge",
-            { autoAlpha: 0, x: badgeFromX, y: isOpeningReveal ? -22 : isRankAdvance ? -8 : 0, scale: isOpeningReveal ? 0.82 : isRankAdvance ? 0.9 : 0.92 },
+            { autoAlpha: 0, x: badgeFromX, y: isOpeningReveal ? -22 : isRankAdvance ? -8 : isRankBack ? 0 : 0, scale: isOpeningReveal ? 0.82 : isRankAdvance ? 0.9 : 0.92 },
             {
                 autoAlpha: 1,
                 x: 0,
@@ -921,7 +960,14 @@ async function showLeaderboard() {
     const leaderboard = $(".leaderboard-panel");
 
     leaderboard.removeClass("is-revealing");
-    gsap.set(leaderboard, { autoAlpha: 1, y: 0, scale: 1, pointerEvents: "auto", overwrite: true });
+    gsap.set(leaderboard, {
+        autoAlpha: 1,
+        x: 0,
+        y: 0,
+        scale: 1,
+        pointerEvents: "auto",
+        overwrite: true,
+    });
     void leaderboard[0]?.offsetWidth;
     leaderboard.addClass("is-revealing");
     window.setTimeout(playThunderSfx, LEADERBOARD_FLASH_SFX_DELAY_MS);
@@ -1037,6 +1083,124 @@ async function advancePresentation() {
     document.body.dataset.transitioning = "false";
 }
 
+// --- Reverse Presentation and click handler ---
+
+async function reversePresentation() {
+    if (transitionLocked || currentView === "error") return;
+
+    if (currentView === "teaser") {
+        return;
+    }
+
+    transitionLocked = true;
+    document.body.dataset.transitioning = "true";
+
+    if (currentView === "leaderboard") {
+        await gsap
+            .timeline()
+            .to(
+                ".leaderboard-panel",
+                {
+                    autoAlpha: 0,
+                    x: 80,
+                    scale: 0.985,
+                    duration: 0.42,
+                    ease: "power2.inOut",
+                    pointerEvents: "none",
+                    overwrite: true,
+                },
+                0,
+            );
+
+        await showPlayer(0, "back");
+        transitionLocked = false;
+        document.body.dataset.transitioning = "false";
+        return;
+    }
+
+    const previousIndex = currentIndex + 1;
+    if (previousIndex <= startingIndex && rankedPlayers[previousIndex]) {
+        await gsap
+            .timeline()
+            .to(
+                ".rank-card",
+                {
+                    autoAlpha: 0,
+                    y: 18,
+                    scale: 0.985,
+                    duration: 0.34,
+                    ease: "power2.inOut",
+                    overwrite: true,
+                },
+                0,
+            )
+            .to(
+                ".rank-badge",
+                {
+                    autoAlpha: 0,
+                    x: 38,
+                    y: 10,
+                    scale: 0.94,
+                    duration: 0.36,
+                    ease: "power2.inOut",
+                    overwrite: true,
+                },
+                0.02,
+            )
+            .to(
+                ".pr-character .tsh_character",
+                {
+                    autoAlpha: 0,
+                    x: 54,
+                    scale: 0.985,
+                    duration: 0.42,
+                    ease: "power2.inOut",
+                    overwrite: true,
+                },
+                0.03,
+            )
+            .to(
+                ".character-aura",
+                {
+                    autoAlpha: 0,
+                    scale: 0.94,
+                    duration: 0.38,
+                    ease: "power2.inOut",
+                    overwrite: true,
+                },
+                0.04,
+            )
+            .to(
+                ".ranking-plate",
+                {
+                    autoAlpha: 0,
+                    x: 46,
+                    y: 12,
+                    scaleX: 0.99,
+                    duration: 0.4,
+                    ease: "power2.inOut",
+                    overwrite: true,
+                },
+                0.06,
+            );
+
+        await showPlayer(previousIndex, "back");
+    }
+
+    transitionLocked = false;
+    document.body.dataset.transitioning = "false";
+}
+
+function handlePresentationClick(event) {
+    const clickIsOnRightHalf = event.clientX >= window.innerWidth / 2;
+
+    if (clickIsOnRightHalf) {
+        advancePresentation();
+    } else {
+        reversePresentation();
+    }
+}
+
 LoadEverything().then(async () => {
     assignDefault(config, tsh_settings || {});
     assignDefault(config, window.config || {});
@@ -1056,6 +1220,7 @@ LoadEverything().then(async () => {
             }
 
             currentIndex = getStartingIndex(rankedPlayers);
+            startingIndex = currentIndex;
             await showTeaser();
             openingCharacterPreloadPromise = prewarmOpeningPlayer();
             transitionLocked = false;
@@ -1068,10 +1233,14 @@ LoadEverything().then(async () => {
 
     Update = async () => {};
 
-    window.addEventListener("click", advancePresentation);
+    window.addEventListener("click", handlePresentationClick);
     window.addEventListener("keydown", (event) => {
         if (event.key === " " || event.key === "Enter" || event.key === "ArrowRight") {
             advancePresentation();
+        }
+
+        if (event.key === "ArrowLeft") {
+            reversePresentation();
         }
     });
 });
