@@ -6,6 +6,74 @@ let config = {
     display_titles: true,
 };
 
+const resolvedTextColors = new Map();
+
+function getReadableTextColor(backgroundColor) {
+    if (typeof backgroundColor !== "string" || backgroundColor.trim() === "") {
+        return null;
+    }
+
+    const cached = resolvedTextColors.get(backgroundColor);
+    if (cached) return cached;
+
+    const probe = document.createElement("span");
+    probe.style.color = backgroundColor;
+    if (!probe.style.color) return null;
+
+    probe.hidden = true;
+    document.body.append(probe);
+    const resolved = getComputedStyle(probe).color;
+    probe.remove();
+
+    const channels = resolved.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+    if (!channels) return null;
+
+    const red = Number(channels[1]) / 255;
+    const green = Number(channels[2]) / 255;
+    const blue = Number(channels[3]) / 255;
+    // Only surfaces visually close to white need dark text. Saturated colors
+    // such as orange retain pure white text even when their luminance is high.
+    const whiteDistance = Math.hypot(
+        255 - Number(channels[1]),
+        255 - Number(channels[2]),
+        255 - Number(channels[3]),
+    );
+    if (whiteDistance > 96) {
+        resolvedTextColors.set(backgroundColor, "#fff");
+        return "#fff";
+    }
+
+    const maximum = Math.max(red, green, blue);
+    const minimum = Math.min(red, green, blue);
+    const difference = maximum - minimum;
+    const lightness = (maximum + minimum) / 2;
+    const saturation = difference === 0
+        ? 0
+        : difference / (1 - Math.abs(2 * lightness - 1));
+    let hue = 0;
+    if (difference !== 0) {
+        if (maximum === red) hue = 60 * (((green - blue) / difference) % 6);
+        else if (maximum === green) hue = 60 * ((blue - red) / difference + 2);
+        else hue = 60 * ((red - green) / difference + 4);
+        if (hue < 0) hue += 360;
+    }
+
+    const textLightness = Math.min(0.14, Math.max(0.045, 1 - lightness));
+    const textSaturation = Math.min(saturation, 0.28);
+    const textColor = `hsl(${Math.round(hue)} ${Math.round(
+        textSaturation * 100,
+    )}% ${Math.round(textLightness * 100)}%)`;
+    resolvedTextColors.set(backgroundColor, textColor);
+    return textColor;
+}
+
+function updatePresentationTextColor(team) {
+    const textColor = getReadableTextColor(team?.color);
+    if (textColor) {
+        document.documentElement.style.setProperty("--text-color", textColor);
+    }
+}
+
 function getNumberOrdinal(n) {
     var s = ["th", "st", "nd", "rd"],
         v = n % 100;
@@ -133,6 +201,11 @@ LoadEverything().then(() => {
     Update = async (event) => {
         let data = event.data;
         let oldData = event.oldData;
+
+        const selectedTeam = data.score?.[window.scoreboardNumber]?.team?.[
+            window.PLAYER
+        ];
+        updatePresentationTextColor(selectedTeam);
 
         console.log("UPDATE -------------------");
 

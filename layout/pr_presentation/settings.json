@@ -1,4 +1,5 @@
 {
+    "location_mode": "map_prelude",
     "pages": [
         "p1.html",
         "p2.html"

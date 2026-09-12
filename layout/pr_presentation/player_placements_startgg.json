@@ -3,12 +3,19 @@
     {
       "placement": 1,
       "tag": "storm",
-      "reasons": [
-        "It's just storm, i mean, what did you expect",
-        "Still storm",
-        "Every one saw this one coming"
-      ],
+      "twitter": "@Storm54906945",
+      "pronouns": "he/him",
+      "area": "Knoxville",
       "startggAccount": "https://www.start.gg/user/4a608d6c",
+      "mains": {
+        "ssbu": [
+          [
+            "Pyra / Mythra",
+            1,
+            ""
+          ]
+        ]
+      },
       "startgg": {
         "userId": "1428610",
         "userSlug": "user/4a608d6c",
@@ -48,20 +55,24 @@
         "gamerTag": "storm",
         "prefix": "MODONLYLADDER"
       },
-      "mains": {
-        "ssbu": [
-          [
-            "Pyra / Mythra",
-            1,
-            ""
-          ]
-        ]
-      }
+      "location": "Knoxville, Tennessee"
     },
     {
       "placement": 2,
       "tag": "orex",
+      "twitter": "@Orex_Ortiz",
+      "pronouns": "he/him",
+      "area": "Knoxville",
       "startggAccount": "https://www.start.gg/user/d60e1899",
+      "mains": {
+        "ssbu": [
+          [
+            "Peach",
+            5,
+            ""
+          ]
+        ]
+      },
       "startgg": {
         "userId": "40237",
         "userSlug": "user/d60e1899",
@@ -96,20 +107,24 @@
         "gamerTag": "Orex",
         "prefix": "BtB"
       },
-      "mains": {
-        "ssbu": [
-          [
-            "Peach",
-            5,
-            ""
-          ]
-        ]
-      }
+      "location": "Knoxville, Tennessee"
     },
     {
       "placement": 3,
       "tag": "hammerbro",
+      "twitter": null,
+      "pronouns": "he/him",
+      "area": "Knoxville",
       "startggAccount": "https://www.start.gg/user/d08e89c5",
+      "mains": {
+        "ssbu": [
+          [
+            "Ice Climbers",
+            0,
+            ""
+          ]
+        ]
+      },
       "startgg": {
         "userId": "687260",
         "userSlug": "user/d08e89c5",
@@ -148,20 +163,71 @@
         "gamerTag": "HammerBro",
         "prefix": "UTK | DBQ"
       },
+      "location": "Knoxville, Tennessee"
+    },
+    {
+      "placement": 4,
+      "tag": "riddul",
+      "twitter": "@RiddulKong",
+      "pronouns": "he/him",
+      "area": "Chattanooga",
+      "startggAccount": "https://www.start.gg/user/7ba60bc5",
       "mains": {
         "ssbu": [
           [
-            "Ice Climbers",
+            "Diddy Kong",
+            7,
+            ""
+          ]
+        ]
+      },
+      "startgg": {
+        "userId": "886144",
+        "userSlug": "user/7ba60bc5",
+        "discriminator": "7ba60bc5",
+        "name": null,
+        "genderPronoun": "He/Him",
+        "bio": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "United States"
+        },
+        "images": [
+          {
+            "url": "https://images.start.gg/images/user/886144/image-737aa454bb3e712141e5b6c50ff05378.jpg?ehk=peStNtQV9qbmNvmjqfBaKqvEybP2NrgTl25sN07oHlg%3D&ehkOptimized=K5eG917ObJW%2FNvFpLxkxTYn8rO2avSQhGNH6Mz1DOEM%3D",
+            "type": "profile"
+          }
+        ],
+        "authorizations": [
+          {
+            "type": "DISCORD",
+            "externalUsername": "riddul",
+            "url": null
+          }
+        ],
+        "playerId": "1418775",
+        "gamerTag": "Riddul",
+        "prefix": ""
+      },
+      "location": "Chattanooga, Tennessee"
+    },
+    {
+      "placement": 5,
+      "tag": "lem0nade",
+      "twitter": "@Lem0nadeMM",
+      "pronouns": "he/him",
+      "area": "Knoxville",
+      "startggAccount": "https://www.start.gg/user/e60e8aea",
+      "mains": {
+        "ssbu": [
+          [
+            "Mega Man",
             0,
             ""
           ]
         ]
-      }
-    },
-    {
-      "placement": 4,
-      "tag": "lem0nade",
-      "startggAccount": "https://www.start.gg/user/e60e8aea",
+      },
       "startgg": {
         "userId": "442250",
         "userSlug": "user/e60e8aea",
@@ -205,20 +271,24 @@
         "gamerTag": "Lem0nade",
         "prefix": "WNL"
       },
+      "location": "Knoxville, Tennessee"
+    },
+    {
+      "placement": 6,
+      "tag": "hidalgo",
+      "twitter": "@hidalgo_ortiz1",
+      "pronouns": "he/him",
+      "area": "Knoxville",
+      "startggAccount": "https://www.start.gg/user/1b6ce1d0",
       "mains": {
         "ssbu": [
           [
-            "Pokémon Trainer",
-            4,
+            "Pichu",
+            2,
             ""
           ]
         ]
-      }
-    },
-    {
-      "placement": 5,
-      "tag": "hidalgo",
-      "startggAccount": "https://www.start.gg/user/1b6ce1d0",
+      },
       "startgg": {
         "userId": "652252",
         "userSlug": "user/1b6ce1d0",
@@ -253,437 +323,251 @@
         "gamerTag": "Hidalgo",
         "prefix": "TheCompany"
       },
-      "mains": {
-        "ssbu": [
-          [
-            "Pichu",
-            2,
-            ""
-          ]
-        ]
-      }
-    },
-    {
-      "placement": 6,
-      "tag": "hutchzilla",
-      "startggAccount": "https://www.start.gg/user/2dca0da6",
-      "startgg": {
-        "userId": "1555475",
-        "userSlug": "user/2dca0da6",
-        "discriminator": "2dca0da6",
-        "name": null,
-        "genderPronoun": "He/Him",
-        "bio": "",
-        "location": {
-          "city": "gallatin",
-          "state": "TN",
-          "country": "United States"
-        },
-        "images": [
-          {
-            "url": "https://images.start.gg/images/user/1555475/image-116042a1080559f5f722a919624a8625.jpg?ehk=ThmZk2P9Z8jaq84bLp1tWhvZIbwzNLcjLeP%2FmigBQBM%3D&ehkOptimized=m4zJD58O%2FfXvHjrjMbD1DhgHFbmc%2BwqXbi2IzWDeJ0Y%3D",
-            "type": "profile"
-          }
-        ],
-        "authorizations": [
-          {
-            "type": "DISCORD",
-            "externalUsername": "hutchzilla",
-            "url": null
-          },
-          {
-            "type": "TWITCH",
-            "externalUsername": "hutchzilla___",
-            "url": "https://twitch.tv/hutchzilla___"
-          }
-        ],
-        "playerId": "2371353",
-        "gamerTag": "Hutchzilla",
-        "prefix": "TNSPIDURZZ"
-      },
-      "mains": {
-        "ssbu": [
-          [
-            "Falco",
-            5,
-            ""
-          ]
-        ]
-      }
+      "location": "Knoxville, Tennessee"
     },
     {
       "placement": 7,
-      "tag": "ahribockanonnadem",
-      "startggAccount": "https://www.start.gg/user/011305fb",
-      "notes": "Pulled tag was spelled 'ahribockanonadem'; placement list had 'ahribockanonnadem'. Kept placement-list spelling as canonical.",
+      "tag": "ishy",
+      "twitter": "@themyriadtruths",
+      "pronouns": "any/all",
+      "area": "Tri-Cities",
+      "startggAccount": "https://www.start.gg/user/7000a65a",
+      "mains": {
+        "ssbu": [
+          [
+            "Pokémon Trainer",
+            0,
+            ""
+          ]
+        ]
+      },
       "startgg": {
-        "userId": "1480371",
-        "userSlug": "user/011305fb",
-        "discriminator": "011305fb",
+        "userId": "47321",
+        "userSlug": "user/7000a65a",
+        "discriminator": "7000a65a",
         "name": null,
-        "genderPronoun": null,
-        "bio": "",
+        "genderPronoun": "he/they",
+        "bio": "angel of delusion!",
         "location": {
-          "city": "Knox",
+          "city": "Bristol",
           "state": "TN",
           "country": "United States"
         },
         "images": [
           {
-            "url": "https://images.start.gg/images/user/1480371/image-e66a97c856f039f0e19bc13f48e34190.jpg",
+            "url": "https://images.start.gg/images/user/47321/image-912fe9ca1051f7af42f0c300052450c7.png",
             "type": "banner"
           },
           {
-            "url": "https://images.start.gg/images/user/1480371/image-329da7ba5e8cbbd55a8653b9de0cf920.jpg",
+            "url": "https://images.start.gg/images/user/47321/image-64f26cd064a24e84bb84ed75c2809d16.jpg",
             "type": "profile"
           }
         ],
         "authorizations": [
           {
             "type": "DISCORD",
-            "externalUsername": "monovanity",
+            "externalUsername": "persona2eternalpunishment",
             "url": null
           },
           {
             "type": "TWITCH",
-            "externalUsername": "monovanity",
-            "url": "https://twitch.tv/monovanity"
+            "externalUsername": "ishtariaAM",
+            "url": "https://twitch.tv/ishtariaAM"
+          },
+          {
+            "type": "TWITTER",
+            "externalUsername": "themyriadtruths",
+            "url": "https://twitter.com/themyriadtruths"
           }
         ],
-        "playerId": "2263984",
-        "gamerTag": "AhribockanonaD.E.M.",
-        "prefix": "z0id"
+        "playerId": "64572",
+        "gamerTag": "ishy",
+        "prefix": "BRAVO"
       },
-      "mains": {
-        "ssbu": [
-          [
-            "R.O.B.",
-            4,
-            ""
-          ]
-        ]
-      }
+      "location": "Tri-Cities, Tennessee"
     },
     {
       "placement": 8,
-      "tag": "soup",
-      "startggAccount": "https://www.start.gg/user/e5ff9334",
+      "tag": "korndog",
+      "twitter": "@KornDogSSB",
+      "pronouns": "he/him",
+      "area": "Tri-Cities",
+      "startggAccount": "https://www.start.gg/user/7128b0a0",
+      "mains": {
+        "ssbu": [
+          [
+            "King Dedede",
+            0,
+            ""
+          ]
+        ]
+      },
       "startgg": {
-        "userId": "623856",
-        "userSlug": "user/e5ff9334",
-        "discriminator": "e5ff9334",
+        "userId": "135753",
+        "userSlug": "user/7128b0a0",
+        "discriminator": "7128b0a0",
         "name": null,
         "genderPronoun": null,
-        "bio": null,
+        "bio": "I main Mii Swordfighter.",
         "location": {
-          "city": "Franklin",
+          "city": "Knoxville",
           "state": "TN",
           "country": "United States"
         },
         "images": [
           {
-            "url": "https://images.start.gg/images/user/623856/image-f3a5733fc4cb8c259983c5b2fff31d4d.jpg?ehk=8Ed%2BiZ1u2bdoIcSk7UPJKiw4CxLqDLmplbAxt3%2Fq220%3D&ehkOptimized=bRiCG5rVzl%2ByjkX3JsYIXGaWfv1V9pw1SgWC0B4UIYM%3D",
+            "url": "https://images.start.gg/images/user/135753/image-22806a00546b9921bce7d4afce5a6a01.png?ehk=0ECKq%2Fk9TqX3uVgPS80nyzEY6ZSdI9lXwhdhPXsMr5I%3D&ehkOptimized=XPA1CzYDEC%2BkdodrZBtiupouf1TbonYg%2BD6Nyp2yak8%3D",
+            "type": "banner"
+          },
+          {
+            "url": "https://images.start.gg/images/user/135753/image-c8452d557c24568a1d3cf304c0ba1498.png",
             "type": "profile"
           }
         ],
         "authorizations": [
           {
+            "type": "TWITTER",
+            "externalUsername": "KornDogSSB",
+            "url": "https://twitter.com/KornDogSSB"
+          },
+          {
             "type": "DISCORD",
-            "externalUsername": "soup__._._",
+            "externalUsername": "korndddog",
             "url": null
           },
           {
             "type": "TWITCH",
-            "externalUsername": "soupmiles",
-            "url": "https://twitch.tv/soupmiles"
+            "externalUsername": "KornDDDog",
+            "url": "https://twitch.tv/KornDDDog"
           }
         ],
-        "playerId": "987081",
-        "gamerTag": "soup",
-        "prefix": "z0id"
+        "playerId": "224510",
+        "gamerTag": "KornDog",
+        "prefix": "KornDog"
       },
-      "mains": {
-        "ssbu": [
-          [
-            "Bayonetta",
-            0,
-            ""
-          ]
-        ]
-      }
+      "location": "Tri-Cities, Tennessee"
     },
     {
       "placement": 9,
-      "tag": "big mama",
-      "startggAccount": "https://www.start.gg/user/fd6ae5cf",
-      "startgg": {
-        "userId": "1067746",
-        "userSlug": "user/fd6ae5cf",
-        "discriminator": "fd6ae5cf",
-        "name": null,
-        "genderPronoun": "He/him",
-        "bio": "",
-        "location": {
-          "city": "Knoxville",
-          "state": "TN",
-          "country": "United States"
-        },
-        "images": [
-          {
-            "url": "https://images.start.gg/images/user/1067746/image-40f11ec424a6845120ac6477252507e1.jpg?ehk=LE9Wk3beD8WvofXDfcsTMUjE54v7QSaHK%2FpmkFqTqd0%3D&ehkOptimized=NLYyGbWFBOdwa1CyXOZ2DNPrOgLZN4tc8DVjS4AE7w4%3D",
-            "type": "banner"
-          },
-          {
-            "url": "https://images.start.gg/images/user/1067746/image-fe221a996e4df89b8cf6145e69ccbb0f.png",
-            "type": "profile"
-          }
-        ],
-        "authorizations": [
-          {
-            "type": "DISCORD",
-            "externalUsername": "bigmamassb",
-            "url": null
-          },
-          {
-            "type": "TWITTER",
-            "externalUsername": "BigMamaSSBU",
-            "url": "https://twitter.com/BigMamaSSBU"
-          },
-          {
-            "type": "XBOX",
-            "externalUsername": "WinterSoldierTN",
-            "url": null
-          }
-        ],
-        "playerId": "1743499",
-        "gamerTag": "Big Mama",
-        "prefix": "TheCompany"
-      },
-      "mains": {
-        "ssbu": [
-          [
-            "Mewtwo",
-            6,
-            ""
-          ]
-        ]
-      }
-    },
-    {
-      "placement": 10,
-      "tag": "edsheerangaming",
-      "startggAccount": "https://www.start.gg/user/99a18e28",
-      "startgg": {
-        "userId": "2404674",
-        "userSlug": "user/99a18e28",
-        "discriminator": "99a18e28",
-        "name": null,
-        "genderPronoun": "They/Them",
-        "bio": "in the stu going ham",
-        "location": {
-          "city": "Can't say",
-          "state": null,
-          "country": "United States Minor Outlying Islands"
-        },
-        "images": [
-          {
-            "url": "https://images.start.gg/images/user/2404674/image-9d4277f253e688abcd39f8b33bee92cb.jpg?ehk=LKShEPRAYmKan6o9tmj8U%2BZzfMnx09FTs2u%2B1RzCQxI%3D&ehkOptimized=YmjT5T8l4lTl5EvarnXixhpda4UBKcsZkFr4fNdiuVM%3D",
-            "type": "profile"
-          },
-          {
-            "url": "https://images.start.gg/images/user/2404674/image-c19395f065b30914b2f8f83c61edd000.png?ehk=Dpwcu4%2BBG5XpqrLygH11MivTCXLGx7N%2BJ%2Fc11mMiq54%3D&ehkOptimized=mOTL03HGM%2BFE0p%2FkGo3pVw%2BicGjNNZMQrdKTOmc47Po%3D",
-            "type": "banner"
-          }
-        ],
-        "authorizations": [
-          {
-            "type": "DISCORD",
-            "externalUsername": "karrrrisa",
-            "url": null
-          }
-        ],
-        "playerId": "3740658",
-        "gamerTag": "EdSheeranGaming",
-        "prefix": "WNL"
-      },
-      "mains": {
-        "ssbu": [
-          [
-            "Isabelle",
-            0,
-            ""
-          ]
-        ]
-      }
-    },
-    {
-      "placement": null,
-      "tag": "Smoked sam",
-      "startggAccount": "https://www.start.gg/user/af602799",
-      "startgg": {
-        "userId": "961020",
-        "userSlug": "user/af602799",
-        "discriminator": "af602799",
-        "name": null,
-        "genderPronoun": "They/Them",
-        "bio": "Built this fire myself and now I’m smoking some fish on it yummmmmm",
-        "location": {
-          "city": "Franklin",
-          "state": "TN",
-          "country": "United States"
-        },
-        "images": [
-          {
-            "url": "https://images.start.gg/images/user/961020/image-a9d1ac4b6a32ebb29024bc3759864453.jpg?ehk=pNjEcqgVJBdUb4lfcbNeApfhnH%2B6bGc7kKVolNkFlXU%3D&ehkOptimized=ss2r5pl3ycA1caKPmCx5O0XMrjtuigRL1y3%2FH4ViL8o%3D",
-            "type": "banner"
-          },
-          {
-            "url": "https://images.start.gg/images/user/961020/image-d358a40825efba24dc31e47599d31e80.jpg",
-            "type": "profile"
-          }
-        ],
-        "authorizations": [
-          {
-            "type": "DISCORD",
-            "externalUsername": "smokedsam",
-            "url": null
-          },
-          {
-            "type": "TWITTER",
-            "externalUsername": "Smoked_Samin",
-            "url": "https://twitter.com/Smoked_Samin"
-          },
-          {
-            "type": "TWITCH",
-            "externalUsername": "smoked_sam",
-            "url": "https://twitch.tv/smoked_sam"
-          }
-        ],
-        "playerId": "1560318",
-        "gamerTag": "SmokedSam",
-        "prefix": "TheCompany"
-      },
-      "mains": {
-        "ssbu": [
-          [
-            "Wolf",
-            0,
-            ""
-          ],
-          [
-            "Cloud",
-            0,
-            ""
-          ]
-        ],
-        "roa2": [
-          [
-            "Forsburn",
-            17,
-            ""
-          ]
-        ]
-      }
-    },
-    {
-      "placement": null,
-      "tag": "schlumpedshoto",
-      "startggAccount": "https://www.start.gg/user/d81a8e82",
-      "startgg": {
-        "userId": "1450054",
-        "userSlug": "user/d81a8e82",
-        "discriminator": "d81a8e82",
-        "name": null,
-        "genderPronoun": null,
-        "bio": null,
-        "location": {
-          "city": "Corryton",
-          "state": "TN",
-          "country": "United States"
-        },
-        "images": [],
-        "authorizations": [
-          {
-            "type": "TWITCH",
-            "externalUsername": "shlumpedshoto",
-            "url": "https://twitch.tv/shlumpedshoto"
-          },
-          {
-            "type": "TWITTER",
-            "externalUsername": "shlumpedshoto",
-            "url": "https://twitter.com/shlumpedshoto"
-          },
-          {
-            "type": "DISCORD",
-            "externalUsername": "katnipeverqueef",
-            "url": null
-          }
-        ],
-        "playerId": "2223388",
-        "gamerTag": "ShlumpedShoto",
-        "prefix": null
-      },
-      "mains": {
-        "ssbu": [
-          [
-            "Ken",
-            4,
-            ""
-          ]
-        ]
-      }
-    },
-    {
-      "placement": null,
-      "tag": "John wilkes gooch",
-      "startggAccount": "https://www.start.gg/user/1d47a5fa",
-      "startgg": {
-        "userId": "1919461",
-        "userSlug": "user/1d47a5fa",
-        "discriminator": "1d47a5fa",
-        "name": null,
-        "genderPronoun": "they/them",
-        "bio": "“you can only lose 100% of your money gambling, while you can win infinite amounts of money” -ESAM",
-        "location": {
-          "city": "Knoxville",
-          "state": "TN",
-          "country": "United States"
-        },
-        "images": [
-          {
-            "url": "https://images.start.gg/images/user/1919461/image-1c4b952e858aa33a2d6e643094158ba2.jpg?ehk=k6woooBFUIFUdAJfiPvE%2F8sULSEZbhQuloaGJtlDSXA%3D&ehkOptimized=ktRE45HmiqsTIpkXpaAHs5h0T1gmPEkYX%2BTm1AMeGwc%3D",
-            "type": "banner"
-          },
-          {
-            "url": "https://images.start.gg/images/user/1919461/image-d5af081187954ac4eed3caac7f2d642c.jpg?ehk=ScpdA3NyYBYQkeAtUAob7zL%2BBXZ6LgBO4PYJKdmOim0%3D&ehkOptimized=nIAhwwnPdye1fARSkIfM7DmhHnqaya2QQwrs26gc3CE%3D",
-            "type": "profile"
-          }
-        ],
-        "authorizations": [
-          {
-            "type": "DISCORD",
-            "externalUsername": "kcaj_13",
-            "url": null
-          },
-          {
-            "type": "TWITCH",
-            "externalUsername": "kcaj_nos",
-            "url": "https://twitch.tv/kcaj_nos"
-          }
-        ],
-        "playerId": "2945620",
-        "gamerTag": "john wilkes gooch ^_^",
-        "prefix": "TNSPIDURZZ"
-      },
+      "tag": "samedwin",
+      "twitter": "@Samedwin_",
+      "pronouns": "he/him",
+      "area": "Tri-Cities",
+      "startggAccount": "https://www.start.gg/user/d3282578",
       "mains": {
         "ssbu": [
           [
             "Steve",
-            1,
+            0,
             ""
           ]
         ]
-      }
+      },
+      "startgg": {
+        "userId": "140842",
+        "userSlug": "user/d3282578",
+        "discriminator": "d3282578",
+        "name": null,
+        "genderPronoun": "He/Him",
+        "bio": "",
+        "location": {
+          "city": "Soddy Daisy",
+          "state": "TN",
+          "country": "United States"
+        },
+        "images": [
+          {
+            "url": "https://images.start.gg/images/user/140842/image-0867f0fc523af361bfb1420865e712f7.jpg?ehk=wLxz4AgL5XLkGLFD5yZja74nqSfsgQepRjUI1mY6D2Y%3D&ehkOptimized=lewJ2gyb3b9%2F6j5K5%2FgyG%2BkNzT45RuQZjYGKS7Ya5q8%3D",
+            "type": "banner"
+          },
+          {
+            "url": "https://images.start.gg/images/user/140842/image-3b59ec6abca81a89430454545b22dd50.png?ehk=X1YldFEzTHFqXH9Wg5F8DgSSoP3ScnfAKkI1Vu0l3Ek%3D&ehkOptimized=BFB0WoUQJPlSI58DVX31Uiybh6MlJvtJh9w35g6wz6o%3D",
+            "type": "profile"
+          }
+        ],
+        "authorizations": [
+          {
+            "type": "TWITTER",
+            "externalUsername": "Samedwin_",
+            "url": "https://twitter.com/Samedwin_"
+          },
+          {
+            "type": "TWITCH",
+            "externalUsername": "Samedwin",
+            "url": "https://twitch.tv/Samedwin"
+          },
+          {
+            "type": "DISCORD",
+            "externalUsername": "samedwin",
+            "url": null
+          }
+        ],
+        "playerId": "228065",
+        "gamerTag": "samedwin",
+        "prefix": "pp"
+      },
+      "location": "Tri-Cities, Tennessee"
+    },
+    {
+      "placement": 10,
+      "tag": "reiko",
+      "twitter": "@RCringefest",
+      "pronouns": "he/him",
+      "area": "Chattanooga",
+      "startggAccount": "https://www.start.gg/user/d5dd9220",
+      "mains": {
+        "ssbu": [
+          [
+            "Mario",
+            0,
+            ""
+          ]
+        ]
+      },
+      "startgg": {
+        "userId": "2028068",
+        "userSlug": "user/d5dd9220",
+        "discriminator": "d5dd9220",
+        "name": null,
+        "genderPronoun": null,
+        "bio": "How do you speedrun a match even faster?",
+        "location": {
+          "city": "Chattanooga",
+          "state": "TN",
+          "country": "United States"
+        },
+        "images": [
+          {
+            "url": "https://images.start.gg/images/user/2028068/image-8626f00f3d86cf4584b47c247c26ba91.png?ehk=V1O0ehNuI%2B4kOcRwjeE9GpGuWgGSO%2BTb3wOr4QkFLjQ%3D&ehkOptimized=Yu%2FoQFFqNM7kTga%2BER3ABdeEJpkFDFBa0xeButwvI5U%3D",
+            "type": "profile"
+          },
+          {
+            "url": "https://images.start.gg/images/user/2028068/image-de0348e1d282457f2eba505c17bd69fe.jpg?ehk=q%2FrX7FBUHTHotVERrDeW8Bwnbh6diTN18vilYy4Mj0s%3D&ehkOptimized=qHXtzn15NeRsKTcuoXvMwqHge0dsL8RtTvcrQavC9uA%3D",
+            "type": "banner"
+          }
+        ],
+        "authorizations": [
+          {
+            "type": "DISCORD",
+            "externalUsername": "mareiko",
+            "url": null
+          },
+          {
+            "type": "TWITCH",
+            "externalUsername": "Reikocringefest",
+            "url": "https://twitch.tv/Reikocringefest"
+          },
+          {
+            "type": "TWITTER",
+            "externalUsername": "RCringefest",
+            "url": "https://twitter.com/RCringefest"
+          }
+        ],
+        "playerId": "3135956",
+        "gamerTag": "Reiko",
+        "prefix": "UTC"
+      },
+      "location": "Chattanooga, Tennessee"
     }
   ]
 }

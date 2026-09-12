@@ -1,0 +1,212 @@
+:root {
+    /* Core layout tokens */
+    --pr-panel-width: 810px;
+    --pr-panel-height: 220px;
+    --pr-side-pad: 82px;
+    --pr-top-pad: auto;
+    --pr-character-left: 200px;
+    --pr-character-scale: 1.12;
+
+    /* Image assets */
+    --pr-stage-image: "./bg.png";
+    --pr-collage-image: "./collage/characters-wreath.png";
+
+    /* World palette */
+    --sky-blue: #6f8fc0;
+    --dusk-lavender: #9b91c9;
+    --horizon-rose: #d28ab5;
+    --mist-blue: #89a8c5;
+    --mountain-slate: #4d6570;
+    --deep-mountain: #263945;
+
+    /* Celestial obsidian materials */
+    --obsidian-950: #070b18;
+    --obsidian-900: #0b1024;
+    --obsidian-850: #111733;
+    --obsidian-800: #182044;
+
+    /* Divine accents */
+    --starlight: #fff7df;
+    --moon-gold: #e6d3a1;
+    --honey-gold: #c9a86a;
+    --old-gold: #8b6d3b;
+
+    /* Text + glow tokens */
+    --pr-text-main: #f5f7ff;
+    --pr-text-muted: #b9c6e8;
+    --pr-text-dim: #7f8daf;
+    --pr-glow-blue: rgba(116, 154, 255, 0.32);
+    --pr-glow-violet: rgba(197, 150, 255, 0.26);
+    --pr-glow-rose: rgba(236, 143, 190, 0.18);
+
+    /* Core UI assignments */
+    --pr-body-bg: transparent;
+    --pr-teaser-text: var(--pr-text-main);
+    --text-color: var(--pr-text-main);
+    --bg-color: rgba(12, 17, 38, 0.88);
+
+    /* Accent family */
+    --rank-accent: #9fb7dd;
+    --rank-accent-strong: #d9e6ff;
+    --rank-accent-dark: #3c4f73;
+    --rank-accent-soft: rgba(159, 183, 221, 0.2);
+
+    /* Placement accents (used by JS theme mapper)
+       #1 starlight, #2 moon silver, #3 astral violet, #4-10 sky steel */
+    --rank-accent-place-1: #d9c38f;
+    --rank-accent-strong-place-1: #fff7df;
+    --rank-accent-dark-place-1: #6f5833;
+    --rank-accent-soft-place-1: rgba(217, 195, 143, 0.23);
+
+    --rank-accent-place-2: #d9e6ff;
+    --rank-accent-strong-place-2: #f4f8ff;
+    --rank-accent-dark-place-2: #4c6288;
+    --rank-accent-soft-place-2: rgba(170, 195, 242, 0.2);
+
+    --rank-accent-place-3: #caa9eb;
+    --rank-accent-strong-place-3: #e2c7ff;
+    --rank-accent-dark-place-3: #5d4a82;
+    --rank-accent-soft-place-3: rgba(202, 169, 235, 0.22);
+
+    --rank-accent-place-6: #9fb7dd;
+    --rank-accent-strong-place-6: #c9d8f2;
+    --rank-accent-dark-place-6: #384d70;
+    --rank-accent-soft-place-6: rgba(159, 183, 221, 0.2);
+
+    /* Scene overlays */
+    --pr-body-overlay:
+        radial-gradient(circle at 22% 20%, color-mix(in srgb, var(--dusk-lavender) 28%, transparent), transparent 42%),
+        radial-gradient(circle at 78% 30%, color-mix(in srgb, var(--horizon-rose) 24%, transparent), transparent 46%),
+        radial-gradient(circle at 52% 76%, color-mix(in srgb, var(--mist-blue) 24%, transparent), transparent 44%),
+        linear-gradient(180deg, rgba(5, 8, 18, 0.22), rgba(7, 11, 24, 0.62));
+    --pr-stage-overlay:
+        linear-gradient(90deg, rgba(7, 11, 24, 0.42) 0%, rgba(14, 18, 34, 0.16) 44%, rgba(7, 11, 24, 0.38) 100%),
+        linear-gradient(180deg, rgba(7, 11, 24, 0.04) 0%, rgba(7, 11, 24, 0.2) 100%);
+    --pr-stage-image-opacity: 0.62;
+    --pr-scene-overlay:
+        radial-gradient(ellipse at 16% 36%, color-mix(in srgb, var(--pr-glow-violet) 85%, transparent), transparent 38%),
+        radial-gradient(ellipse at 74% 44%, color-mix(in srgb, var(--pr-glow-blue) 75%, transparent), transparent 42%),
+        linear-gradient(90deg, rgba(7, 11, 24, 0.58) 0%, rgba(7, 11, 24, 0.2) 35%, transparent 72%);
+
+    /* Stardust overlay */
+    --pr-star-dust-opacity: 0.04;
+    --pr-star-dust-image:
+        radial-gradient(circle, rgba(255, 255, 255, 0.42) 0 1px, transparent 1.5px),
+        radial-gradient(circle, rgba(232, 212, 135, 0.25) 0 1px, transparent 1.5px),
+        radial-gradient(circle, rgba(180, 200, 255, 0.28) 0 1px, transparent 1.5px);
+    --pr-star-dust-size: 90px 90px, 140px 140px, 210px 210px;
+    --pr-star-dust-position: 0 0, 24px 52px, 80px 18px;
+
+    /* Full-scene twinkle overlay (over top of all UI) */
+    --pr-twinkle-opacity: 0;
+    --pr-twinkle-image: none;
+    --pr-twinkle-size: auto;
+    --pr-twinkle-position: 0 0;
+    --pr-twinkle-duration: 6.4s;
+
+    /* Celestial panel material */
+    --pr-panel-bg-color: rgba(12, 17, 38, 0.88);
+    --pr-panel-bg-image:
+        radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.1), transparent 1px),
+        radial-gradient(circle at 78% 35%, rgba(217, 198, 255, 0.12), transparent 1px),
+        linear-gradient(180deg, rgba(17, 23, 51, 0.92), rgba(7, 11, 24, 0.96));
+    --pr-panel-border-color: rgba(224, 214, 255, 0.24);
+    --pr-panel-sheen-image:
+        linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.14) 0%,
+            rgba(255, 255, 255, 0.04) 18%,
+            rgba(255, 255, 255, 0) 50%
+        );
+    --pr-shadow:
+        0 0 24px rgba(126, 156, 255, 0.18),
+        0 0 64px rgba(7, 11, 24, 0.45),
+        inset 0 0 18px rgba(255, 255, 255, 0.035);
+    --pr-chip-bg: rgba(24, 32, 68, 0.72);
+    --pr-ranking-plate-bg:
+        linear-gradient(115deg, rgba(255, 255, 255, 0.12) 0%, transparent 22%),
+        linear-gradient(90deg, rgba(22, 33, 68, 0.98) 0%, rgba(33, 49, 95, 0.96) 58%, rgba(18, 28, 58, 0.98) 100%);
+    --pr-location-plate-knoxville-bg:
+        linear-gradient(115deg, rgba(255, 247, 223, 0.15) 0%, transparent 24%),
+        linear-gradient(90deg, rgba(78, 36, 20, 0.98) 0%, rgba(179, 82, 36, 0.96) 52%, rgba(222, 134, 65, 0.96) 100%);
+    --pr-location-plate-knoxville-start: rgba(78, 36, 20, 0.98);
+    --pr-location-plate-knoxville-mid: rgba(179, 82, 36, 0.96);
+    --pr-location-plate-knoxville-end: rgba(222, 134, 65, 0.96);
+    --pr-location-plate-chattanooga-bg:
+        linear-gradient(115deg, rgba(226, 255, 236, 0.13) 0%, transparent 24%),
+        linear-gradient(90deg, rgba(18, 55, 48, 0.98) 0%, rgba(55, 126, 86, 0.96) 55%, rgba(113, 177, 128, 0.94) 100%);
+    --pr-location-plate-chattanooga-start: rgba(18, 55, 48, 0.98);
+    --pr-location-plate-chattanooga-mid: rgba(55, 126, 86, 0.96);
+    --pr-location-plate-chattanooga-end: rgba(113, 177, 128, 0.94);
+    --pr-location-plate-tri-cities-bg:
+        linear-gradient(115deg, rgba(245, 250, 255, 0.14) 0%, transparent 24%),
+        linear-gradient(90deg, rgba(26, 48, 82, 0.98) 0%, rgba(67, 116, 166, 0.96) 54%, rgba(128, 171, 213, 0.94) 100%);
+    --pr-location-plate-tri-cities-start: rgba(26, 48, 82, 0.98);
+    --pr-location-plate-tri-cities-mid: rgba(67, 116, 166, 0.96);
+    --pr-location-plate-tri-cities-end: rgba(128, 171, 213, 0.94);
+
+    /* Teaser presentation */
+    --pr-teaser-kicker-color: #0f142a;
+    --pr-teaser-kicker-bg:
+        linear-gradient(90deg, color-mix(in srgb, var(--starlight) 80%, white 20%), color-mix(in srgb, var(--moon-gold) 76%, var(--dusk-lavender) 24%)),
+        radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.34), transparent 48%);
+    --pr-teaser-title-color: #f7f9ff;
+    --pr-teaser-subtitle-color: var(--moon-gold);
+    --pr-teaser-subtitle-line: linear-gradient(90deg, transparent, rgba(230, 211, 161, 0.62));
+    --pr-teaser-copy-color: rgba(226, 235, 255, 0.9);
+    --pr-teaser-tip-label-color: #10152e;
+    --pr-teaser-tip-label-bg: linear-gradient(180deg, #f8efd7, #c9a86a);
+    --pr-teaser-tip-text-color: rgba(235, 241, 255, 0.92);
+    --pr-teaser-loading-track-bg: rgba(255, 255, 255, 0.16);
+    --pr-teaser-title-shadow:
+        0 0 18px rgba(255, 255, 255, 0.26),
+        0 0 34px rgba(132, 168, 255, 0.24),
+        4px 5px 0 rgba(10, 14, 31, 0.88);
+    --pr-teaser-subtitle-shadow:
+        0 0 18px rgba(230, 211, 161, 0.28),
+        3px 3px 0 rgba(7, 11, 24, 0.66);
+    --pr-teaser-copy-shadow: 0 2px 0 rgba(7, 11, 24, 0.54);
+    --pr-teaser-tip-text-shadow:
+        0 2px 0 rgba(7, 11, 24, 0.58),
+        0 0 10px rgba(116, 154, 255, 0.18);
+    --pr-teaser-tip-label-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.34),
+        0 0 14px rgba(217, 195, 143, 0.2);
+
+    --pr-teaser-panel-bg:
+        radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.08), transparent 2px),
+        radial-gradient(circle at 82% 30%, rgba(232, 212, 135, 0.08), transparent 2px),
+        linear-gradient(180deg, rgba(24, 32, 68, 0.72), rgba(12, 17, 38, 0.88));
+    --pr-teaser-panel-border-color: rgba(218, 226, 255, 0.22);
+    --pr-teaser-panel-shadow:
+        0 0 32px rgba(116, 154, 255, 0.22),
+        0 0 64px rgba(7, 11, 24, 0.42),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+    --pr-teaser-loading-border-color: rgba(218, 226, 255, 0.16);
+    --pr-teaser-loading-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        0 0 12px rgba(116, 154, 255, 0.12);
+    --pr-teaser-loading-fill-bg: linear-gradient(90deg, var(--starlight), var(--rank-accent-place-2));
+
+    --pr-teaser-transition-clouds-bg:
+        radial-gradient(ellipse at 50% 36%, rgba(255, 247, 222, 0.2), transparent 24%),
+        radial-gradient(ellipse at 18% 24%, rgba(155, 145, 201, 0.2), transparent 34%),
+        radial-gradient(ellipse at 84% 18%, rgba(143, 171, 224, 0.16), transparent 32%),
+        linear-gradient(180deg, rgba(7, 11, 24, 0.3), rgba(7, 11, 24, 0.78));
+    --pr-teaser-transition-flash-bg:
+        radial-gradient(circle at 50% 45%, rgba(255, 255, 255, 0.92), rgba(230, 211, 161, 0.3) 16%, transparent 42%),
+        linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.66), transparent);
+    --pr-teaser-transition-streak-bg:
+        linear-gradient(103deg, transparent 0%, rgba(255, 255, 255, 0.08) 18%, rgba(214, 192, 146, 0.34) 48%, rgba(255, 255, 255, 0.16) 58%, transparent 100%);
+    --pr-teaser-transition-streak-filter: blur(2px) drop-shadow(0 0 28px rgba(214, 192, 146, 0.28));
+    --pr-teaser-transition-haze-bg:
+        radial-gradient(ellipse at 50% 78%, rgba(151, 170, 229, 0.2), transparent 46%),
+        linear-gradient(180deg, transparent 24%, rgba(7, 11, 24, 0.44) 100%);
+
+    --pr-teaser-embers-before-image:
+        radial-gradient(circle, rgba(255, 255, 255, 0.68) 0 1px, rgba(201, 216, 242, 0.26) 2px, transparent 4px),
+        radial-gradient(circle, rgba(214, 192, 146, 0.36) 0 1px, transparent 3px);
+    --pr-teaser-embers-after-image:
+        radial-gradient(circle, rgba(175, 197, 247, 0.56) 0 1px, rgba(120, 147, 209, 0.26) 2px, transparent 5px);
+}

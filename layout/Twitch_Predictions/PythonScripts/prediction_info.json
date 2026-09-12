@@ -1,20 +1,35 @@
 {
   "title": "Who will win Grand Finals?",
-  "status": "RESOLVED",
+  "status": "LOCKED",
   "outcomes": [
     {
       "title": "storm",
-      "channel_points": 0,
-      "users": 0,
-      "top_predictors": null
+      "channel_points": 1027,
+      "users": 2,
+      "top_predictors": [
+        {
+          "user_id": "505644504",
+          "user_login": "chillmonkey25",
+          "user_name": "chillmonkey25",
+          "channel_points_used": 527,
+          "channel_points_won": 0
+        },
+        {
+          "user_id": "209750209",
+          "user_login": "nubslyer",
+          "user_name": "nubslyer",
+          "channel_points_used": 500,
+          "channel_points_won": 0
+        }
+      ]
     },
     {
-      "title": "Orex",
-      "channel_points": 0,
+      "title": "HammerBro",
+      "channel_points": 1027,
       "users": 0,
       "top_predictors": null
     }
   ],
   "duration": 600,
-  "creation_time": "2026-04-22T02:21:24.102020304Z"
+  "creation_time": "2026-08-19T03:11:46.189554839Z"
 }

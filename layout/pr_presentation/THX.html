@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <script src="../include/globals.js"></script>
+        <link rel="stylesheet" href="../main.css" />
+        <link rel="stylesheet" href="https://use.typekit.net/etk2xhj.css" />
+        <link rel="stylesheet" href="./theme.css?v=1" />
+        <link rel="stylesheet" href="./index.css?v=33" />
+        <style>
+            body {
+                opacity: 1 !important;
+            }
+
+            .thanks-screen {
+                position: absolute;
+                inset: 0;
+                display: grid;
+                place-items: center;
+                overflow: hidden;
+                color: var(--pr-text-main);
+                isolation: isolate;
+            }
+
+            .thanks-screen::before,
+            .thanks-screen::after {
+                content: "";
+                position: absolute;
+                pointer-events: none;
+                mix-blend-mode: screen;
+            }
+
+            .thanks-screen::before {
+                inset: 7% 12%;
+                background:
+                    radial-gradient(ellipse at 50% 46%, rgba(255, 247, 223, 0.18), transparent 32%),
+                    radial-gradient(ellipse at 42% 50%, rgba(170, 196, 255, 0.18), transparent 44%),
+                    radial-gradient(ellipse at 60% 58%, rgba(202, 169, 235, 0.12), transparent 46%);
+                filter: blur(22px);
+                opacity: 0.78;
+                animation: thanks-bloom 7s ease-in-out infinite;
+            }
+
+            .thanks-screen::after {
+                inset: 0;
+                background-image:
+                    radial-gradient(circle, rgba(255, 255, 255, 0.74) 0 1px, transparent 1.8px),
+                    radial-gradient(circle, rgba(232, 219, 176, 0.46) 0 1px, transparent 1.7px),
+                    radial-gradient(circle, rgba(170, 196, 255, 0.4) 0 1px, transparent 1.8px);
+                background-size: 112px 82px, 170px 126px, 238px 164px;
+                background-position: 18px 22px, 72px 18px, 36px 92px;
+                filter: drop-shadow(0 0 7px rgba(255, 255, 255, 0.22));
+                opacity: 0.32;
+                animation: thanks-stars 6.5s ease-in-out infinite alternate;
+            }
+
+            .thanks-collage-aura {
+                position: absolute;
+                right: -4%;
+                bottom: -9%;
+                width: 58%;
+                height: 78%;
+                pointer-events: none;
+                background-image: url(var(--pr-collage-image));
+                background-repeat: no-repeat;
+                background-size: contain;
+                background-position: right bottom;
+                filter:
+                    saturate(1.08)
+                    contrast(1.02)
+                    brightness(0.9)
+                    drop-shadow(0 0 38px rgba(170, 196, 255, 0.18))
+                    drop-shadow(0 0 72px rgba(255, 247, 223, 0.12));
+                opacity: 0.28;
+                transform: rotate(-2deg);
+            }
+
+            .thanks-panel {
+                position: relative;
+                z-index: 2;
+                width: 1120px;
+                max-width: 82%;
+                padding: 64px 82px 72px;
+                box-sizing: border-box;
+                text-align: center;
+                background:
+                    linear-gradient(90deg, rgba(214, 230, 255, 0.2), transparent 18%, transparent 82%, rgba(83, 104, 148, 0.2)),
+                    radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.18), transparent 48%),
+                    linear-gradient(105deg, rgba(73, 87, 126, 0.78), rgba(10, 14, 34, 0.88) 38%, rgba(4, 6, 18, 0.92) 100%);
+                border: 1px solid rgba(210, 224, 255, 0.5);
+                border-top-color: rgba(232, 219, 176, 0.74);
+                clip-path: polygon(28px 0, calc(100% - 28px) 0, 100% 50%, calc(100% - 28px) 100%, 28px 100%, 0 50%);
+                box-shadow:
+                    0 28px 46px rgba(0, 0, 0, 0.42),
+                    0 0 34px rgba(170, 196, 255, 0.16),
+                    0 0 58px rgba(232, 219, 176, 0.1),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+                    inset 0 0 34px rgba(132, 162, 229, 0.14);
+            }
+
+            .thanks-panel::before,
+            .thanks-panel::after {
+                content: "";
+                position: absolute;
+                left: 78px;
+                right: 78px;
+                height: 8px;
+                pointer-events: none;
+                background:
+                    radial-gradient(circle at 0% 50%, rgba(232, 219, 176, 0.9) 0 2px, transparent 3px),
+                    radial-gradient(circle at 100% 50%, rgba(232, 219, 176, 0.9) 0 2px, transparent 3px),
+                    linear-gradient(90deg, transparent, rgba(232, 219, 176, 0.72), rgba(232, 219, 176, 0.18), transparent);
+                filter: drop-shadow(0 0 10px rgba(232, 219, 176, 0.28));
+            }
+
+            .thanks-panel::before {
+                top: 32px;
+            }
+
+            .thanks-panel::after {
+                bottom: 34px;
+            }
+
+            .thanks-kicker {
+                width: fit-content;
+                margin: 0 auto 24px;
+                padding: 9px 24px 8px;
+                color: #10152e;
+                font-family: "Roboto Condensed", var(--font);
+                font-size: 25px;
+                font-weight: 900;
+                line-height: 1;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                background: linear-gradient(90deg, color-mix(in srgb, var(--starlight) 86%, white 14%), color-mix(in srgb, var(--moon-gold) 70%, var(--starlight) 30%));
+                clip-path: polygon(15px 0, calc(100% - 15px) 0, 100% 50%, calc(100% - 15px) 100%, 15px 100%, 0 50%);
+                box-shadow:
+                    inset 0 1px 0 rgba(255, 255, 255, 0.48),
+                    0 0 22px color-mix(in srgb, var(--moon-gold) 32%, transparent),
+                    0 6px 16px rgba(7, 11, 24, 0.36);
+            }
+
+            .thanks-title {
+                margin: 0;
+                color: #fffdf5;
+                font-family: "cinzel", "Roboto Condensed", var(--font);
+                font-size: 106px;
+                font-weight: 900;
+                line-height: 0.9;
+                text-transform: uppercase;
+                text-shadow:
+                    0 0 16px rgba(255, 255, 255, 0.52),
+                    0 0 42px rgba(170, 196, 255, 0.38),
+                    5px 6px 0 rgba(8, 12, 28, 0.9);
+            }
+
+            .thanks-subtitle {
+                margin-top: 28px;
+                color: rgba(255, 248, 218, 0.94);
+                font-family: "Cormorant Garamond", var(--font);
+                font-size: 42px;
+                font-weight: 900;
+                line-height: 1;
+                letter-spacing: 0.03em;
+                text-shadow:
+                    0 0 14px rgba(255, 247, 223, 0.24),
+                    0 2px 0 rgba(0, 0, 0, 0.58);
+            }
+
+            .thanks-footer {
+                display: flex;
+                justify-content: center;
+                gap: 18px;
+                margin-top: 34px;
+            }
+
+            .thanks-chip {
+                display: inline-flex;
+                align-items: center;
+                padding: 9px 18px 10px;
+                border: 1px solid rgba(238, 246, 255, 0.42);
+                border-radius: 999px;
+                color: rgba(255, 250, 232, 0.94);
+                background:
+                    linear-gradient(90deg, rgba(255, 255, 255, 0.1), transparent),
+                    rgba(7, 11, 24, 0.5);
+                box-shadow:
+                    0 0 10px rgba(170, 196, 255, 0.14),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+                font-family: "Cormorant Garamond", var(--font);
+                font-size: 25px;
+                font-weight: 900;
+                line-height: 1;
+                letter-spacing: 0.05em;
+                text-transform: uppercase;
+            }
+
+            @keyframes thanks-bloom {
+                0%, 100% {
+                    opacity: 0.58;
+                    transform: scale(0.985);
+                }
+
+                50% {
+                    opacity: 0.84;
+                    transform: scale(1.02);
+                }
+            }
+
+            @keyframes thanks-stars {
+                0% {
+                    opacity: 0.2;
+                    transform: translate3d(0, 0, 0);
+                }
+
+                48% {
+                    opacity: 0.42;
+                }
+
+                100% {
+                    opacity: 0.3;
+                    transform: translate3d(12px, -7px, 0);
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="stage"></div>
+        <main class="pr-scene">
+            <section class="thanks-screen" aria-label="Thanks for watching">
+                <div class="thanks-collage-aura" aria-hidden="true"></div>
+                <section class="thanks-panel">
+                    <div class="thanks-kicker">East TN Spring 2026 PR</div>
+                    <h1 class="thanks-title">Thanks for Watching</h1>
+                    <div class="thanks-subtitle">See y'all next season.</div>
+                </section>
+            </section>
+        </main>
+    </body>
+</html>

@@ -1,23 +1,11 @@
 const DEFAULT_RANKING_JSON = "./player_placements_startgg.json";
 const FALLBACK_PFP = "./person.svg";
-const FINAL_LEADERBOARD_TITLE = "Knoxville Spring 26 PR";
-const FINAL_COLLAGE_IMAGE = "./collage/characters-wreath.png";
-const THUNDER_SFX = "./sfx/thunder.mp3";
-const THUNDER_SFX_PLAYBACK_RATE = 1.42;
-const TEASER_TIP_INTERVAL_MS = 5200;
-const LEADERBOARD_FLASH_SFX_DELAY_MS = 990;
-const TEASER_LOADING_TIPS = [
-    "Could be convinced to open a prediction for PR placements.",
-    "Rigging the PR stats.",
-    "Starting PR discourse again.",
-    "Ignoring PR elligibility rules.",
-    "Gaslighting the PR committee.",
-    "GateKeeping the PR committee.",
-    "GirlBossing the PR committee.",
-    "DDOS attacking braacket to make everyones life miserable.",
-    "Wondering why the PR scene crashed OBS.",
-    "Scheming to abolish PR and replace it with a more woke alternative.",
-];
+const FINAL_LEADERBOARD_TITLE_LINES = ["East TN PR", "Spring 2026"];
+const FINAL_REVEAL_SFX = "./sfx/magicThud.mp3";
+const FINAL_REVEAL_SFX_PLAYBACK_RATE = 1;
+const FINAL_REVEAL_SFX_DELAY_MS = 520;
+const TEASER_COUNTDOWN_TARGET_HOUR = 18;
+const TEASER_COUNTDOWN_TARGET_MINUTE = 10;
 
 let rankedPlayers = [];
 let currentIndex = 0;
@@ -25,9 +13,12 @@ let startingIndex = 0;
 let currentView = "teaser";
 let transitionLocked = true;
 let characterRenderToken = 0;
-let teaserTipIndex = 0;
-let teaserLoadingTween = null;
-let thunderAudio = null;
+let teaserCountdownTimer = null;
+let teaserCountdownTarget = null;
+let teaserRegionMapShown = false;
+let teaserRegionMapTransitioning = false;
+let teaserRegionMapPrepared = false;
+let finalRevealAudio = null;
 let openingCharacterPreloadPromise = null;
 const jsonCache = {};
 
@@ -36,6 +27,26 @@ let config = {
     start_placement: 10,
     character_asset_pack: "webm",
     character_game: "ssbu",
+    location_mode: "off",
+};
+
+const LOCATION_MODES_WITH_REGION_COLOR = new Set(["region_color", "map_prelude"]);
+const LOCATION_PRELUDE_REGIONS = {
+    "tri-cities": {
+        label: "Tri-Cities",
+        x: "82.8%",
+        y: "22.5%",
+    },
+    knoxville: {
+        label: "Knoxville",
+        x: "65.8%",
+        y: "43.5%",
+    },
+    chattanooga: {
+        label: "Chattanooga",
+        x: "55.0%",
+        y: "82.5%",
+    },
 };
 
 function getNumberOrdinal(n) {
@@ -137,6 +148,51 @@ function getPlayerGamerTag(player) {
     return _.get(player, "startgg.gamerTag") || player.tag || "";
 }
 
+function normalizeLocationRegion(value) {
+    return String(value || "")
+        .trim()
+        .toLowerCase()
+        .replace(/[\s_]+/g, "-");
+}
+
+function getPlayerLocationRegion(player) {
+    const rawLocation = player.location || player.area || _.get(player, "startgg.location.city") || "";
+    const normalized = normalizeLocationRegion(rawLocation);
+
+    if (normalized.includes("tri-cities") || normalized.includes("tricities") || normalized.includes("tricot")) {
+        return "tri-cities";
+    }
+
+    if (normalized.includes("knoxville")) {
+        return "knoxville";
+    }
+
+    if (normalized.includes("chattanooga")) {
+        return "chattanooga";
+    }
+
+    return "";
+}
+
+function getPlayerLocationLabel(player) {
+    const region = getPlayerLocationRegion(player);
+    const labels = Object.fromEntries(Object.entries(LOCATION_PRELUDE_REGIONS).map(([key, value]) => [key, value.label]));
+
+    return labels[region] || "";
+}
+
+function getLocationMode() {
+    return config.location_mode || config.locationMode || "off";
+}
+
+function locationRegionColorEnabled() {
+    return LOCATION_MODES_WITH_REGION_COLOR.has(getLocationMode());
+}
+
+function locationMapPreludeEnabled() {
+    return getLocationMode() === "map_prelude";
+}
+
 function getPlayerPrefix(player) {
     return _.get(player, "startgg.prefix") || "";
 }
@@ -154,48 +210,59 @@ function getPlacementHeat(placement) {
 }
 
 function getPlacementTheme(placement) {
+    const fromCss = (suffix, fallback) => {
+        const raw = getComputedStyle(document.documentElement).getPropertyValue(suffix).trim();
+        return raw || fallback;
+    };
+
     if (placement <= 1) {
         return {
-            accent: "#f6a900",
-            strong: "#ffe78a",
-            dark: "#8a4d00",
-            soft: "rgba(255, 184, 28, 0.22)",
+            accent: fromCss("--rank-accent-place-1", "#f6a900"),
+            strong: fromCss("--rank-accent-strong-place-1", "#ffe78a"),
+            dark: fromCss("--rank-accent-dark-place-1", "#8a4d00"),
+            soft: fromCss("--rank-accent-soft-place-1", "rgba(255, 184, 28, 0.22)"),
         };
     }
 
     if (placement === 2) {
         return {
-            accent: "#b8cfe8",
-            strong: "#edf7ff",
-            dark: "#4a6075",
-            soft: "rgba(154, 193, 230, 0.18)",
+            accent: fromCss("--rank-accent-place-2", "#b8cfe8"),
+            strong: fromCss("--rank-accent-strong-place-2", "#edf7ff"),
+            dark: fromCss("--rank-accent-dark-place-2", "#4a6075"),
+            soft: fromCss("--rank-accent-soft-place-2", "rgba(154, 193, 230, 0.18)"),
         };
     }
 
     if (placement === 3) {
         return {
-            accent: "#c87532",
-            strong: "#ffd09a",
-            dark: "#6d2f10",
-            soft: "rgba(210, 112, 42, 0.3)",
+            accent: fromCss("--rank-accent-place-3", "#c87532"),
+            strong: fromCss("--rank-accent-strong-place-3", "#ffd09a"),
+            dark: fromCss("--rank-accent-dark-place-3", "#6d2f10"),
+            soft: fromCss("--rank-accent-soft-place-3", "rgba(210, 112, 42, 0.3)"),
         };
     }
 
     if (placement <= 6) {
         return {
-            accent: "#ff9d1b",
-            strong: "#ffe06a",
-            dark: "#9b3900",
-            soft: "rgba(255, 150, 24, 0.3)",
+            accent: fromCss("--rank-accent-place-6", "#ff9d1b"),
+            strong: fromCss("--rank-accent-strong-place-6", "#ffe06a"),
+            dark: fromCss("--rank-accent-dark-place-6", "#9b3900"),
+            soft: fromCss("--rank-accent-soft-place-6", "rgba(255, 150, 24, 0.3)"),
         };
     }
 
     return {
-        accent: "#ff7418",
-        strong: "#ffc247",
-        dark: "#8f2500",
-        soft: "rgba(255, 103, 16, 0.28)",
+        accent: fromCss("--rank-accent", "#ff7418"),
+        strong: fromCss("--rank-accent-strong", "#ffc247"),
+        dark: fromCss("--rank-accent-dark", "#8f2500"),
+        soft: fromCss("--rank-accent-soft", "rgba(255, 103, 16, 0.28)"),
     };
+}
+
+function getThemeCollageImage() {
+    const value = getComputedStyle(document.documentElement).getPropertyValue("--pr-collage-image").trim();
+    if (!value) return "./collage/characters-wreath.png";
+    return value.replace(/^['"]|['"]$/g, "");
 }
 
 function getRankGlowSettings(placement) {
@@ -222,18 +289,18 @@ function getRankGlowSettings(placement) {
 
     if (placement >= 10) {
         return withMotionSettings({
-            heat: 0,
-            tight: 0,
-            wide: 0,
-            auraOpacity: 0,
-            auraRestOpacity: 0,
-            innerGlowOpacity: 0,
-            chargeOpacity: 0,
-            baseRimOpacity: 0,
-            glowTightMix: "0%",
-            glowWideMix: "0%",
-            glowExtraWideMix: "0%",
-            hardShadowMix: "82%",
+            heat: 0.08,
+            tight: 7,
+            wide: 16,
+            auraOpacity: 0.2,
+            auraRestOpacity: 0.1,
+            innerGlowOpacity: 0.12,
+            chargeOpacity: 0.22,
+            baseRimOpacity: 0.46,
+            glowTightMix: "28%",
+            glowWideMix: "22%",
+            glowExtraWideMix: "12%",
+            hardShadowMix: "88%",
             flickerDuration: "1.62s",
         });
     }
@@ -298,35 +365,115 @@ function getRankGlowSettings(placement) {
     });
 }
 
-function applyPlacementTheme(player) {
+function applyPlacementTheme(player, animate = false) {
     const theme = getPlacementTheme(player.placement);
-
-    $(".pr-scene").css({
+    const target = ".pr-scene";
+    const variables = {
         "--rank-accent": theme.accent,
         "--rank-accent-strong": theme.strong,
         "--rank-accent-dark": theme.dark,
         "--rank-accent-soft": theme.soft,
-    });
-}
+    };
 
-function getThunderAudio() {
-    if (!thunderAudio) {
-        thunderAudio = new Audio(THUNDER_SFX);
-        thunderAudio.preload = "auto";
-        thunderAudio.volume = 0.9;
-        thunderAudio.playbackRate = THUNDER_SFX_PLAYBACK_RATE;
+    if (animate) {
+        gsap.to(target, {
+            ...variables,
+            duration: 0.58,
+            ease: "power2.inOut",
+            overwrite: "auto",
+        });
+        return;
     }
 
-    return thunderAudio;
+    gsap.set(target, variables);
 }
 
-function playThunderSfx() {
-    const audio = getThunderAudio();
+function getCssVariable(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
+function applyLocationPlateTheme(player, animate = false) {
+    const scene = document.querySelector(".pr-scene");
+    if (!scene) return;
+
+    if (!locationRegionColorEnabled()) {
+        scene.classList.remove("location-mode-region-color");
+        scene.style.removeProperty("--pr-active-ranking-plate-bg");
+        scene.style.removeProperty("--pr-location-plate-start");
+        scene.style.removeProperty("--pr-location-plate-mid");
+        scene.style.removeProperty("--pr-location-plate-end");
+        return;
+    }
+
+    const region = getPlayerLocationRegion(player);
+    const variablesByRegion = {
+        "tri-cities": {
+            start: "--pr-location-plate-tri-cities-start",
+            mid: "--pr-location-plate-tri-cities-mid",
+            end: "--pr-location-plate-tri-cities-end",
+        },
+        knoxville: {
+            start: "--pr-location-plate-knoxville-start",
+            mid: "--pr-location-plate-knoxville-mid",
+            end: "--pr-location-plate-knoxville-end",
+        },
+        chattanooga: {
+            start: "--pr-location-plate-chattanooga-start",
+            mid: "--pr-location-plate-chattanooga-mid",
+            end: "--pr-location-plate-chattanooga-end",
+        },
+    };
+    const regionVariables = variablesByRegion[region];
+
+    if (!regionVariables) {
+        scene.classList.remove("location-mode-region-color");
+        scene.style.removeProperty("--pr-active-ranking-plate-bg");
+        scene.style.removeProperty("--pr-location-plate-start");
+        scene.style.removeProperty("--pr-location-plate-mid");
+        scene.style.removeProperty("--pr-location-plate-end");
+        return;
+    }
+
+    scene.classList.add("location-mode-region-color");
+    scene.style.removeProperty("--pr-active-ranking-plate-bg");
+
+    const variables = {
+        "--pr-location-plate-start": getCssVariable(regionVariables.start),
+        "--pr-location-plate-mid": getCssVariable(regionVariables.mid),
+        "--pr-location-plate-end": getCssVariable(regionVariables.end),
+    };
+
+    if (animate) {
+        gsap.to(scene, {
+            ...variables,
+            duration: 0.58,
+            ease: "power2.inOut",
+            overwrite: "auto",
+        });
+        return;
+    }
+
+    gsap.set(scene, variables);
+}
+
+function getFinalRevealAudio() {
+    if (!finalRevealAudio) {
+        finalRevealAudio = new Audio(FINAL_REVEAL_SFX);
+        finalRevealAudio.preload = "auto";
+        finalRevealAudio.volume = 0.92;
+        finalRevealAudio.playbackRate = FINAL_REVEAL_SFX_PLAYBACK_RATE;
+    }
+
+    return finalRevealAudio;
+}
+
+function playFinalRevealSfx() {
+    const audio = getFinalRevealAudio();
     audio.pause();
     audio.currentTime = 0;
-    audio.playbackRate = THUNDER_SFX_PLAYBACK_RATE;
+    audio.playbackRate = FINAL_REVEAL_SFX_PLAYBACK_RATE;
     audio.play().catch((error) => {
-        console.warn("Could not play leaderboard thunder SFX.", error);
+        console.warn("Could not play leaderboard reveal SFX.", error);
     });
 }
 
@@ -348,7 +495,7 @@ function renderRankBadge(player) {
     const badge = $(".rank-badge");
 
     badge.html(`
-        <div class="rank-number">#${player.placement}</div>
+        <div class="rank-number"><span class="rank-number-hash">#</span><span class="rank-number-value">${player.placement}</span></div>
     `);
 
     badge.css({
@@ -560,8 +707,12 @@ function renderPlayerCard(player, direction = "in") {
     const pronoun = _.get(player, "startgg.genderPronoun") || "";
     const prefix = _.escape(getPlayerPrefix(player));
     const gamerTag = _.escape(getPlayerGamerTag(player));
+    const locationLabel = _.escape(getPlayerLocationLabel(player));
+    const showLocation = getLocationMode() !== "off" && locationLabel;
+    const shouldAnimateTheme = direction === "advance" || direction === "back";
 
-    applyPlacementTheme(player);
+    applyPlacementTheme(player, shouldAnimateTheme);
+    applyLocationPlateTheme(player, shouldAnimateTheme);
     renderRankBadge(player);
 
     $(".rank-card").html(`
@@ -573,6 +724,7 @@ function renderPlayerCard(player, direction = "in") {
                 <div class="player-tag"><div class="text">${gamerTag}</div></div>
                 <div class="player-meta">
                     ${pronoun ? `<span>${pronoun}</span>` : ""}
+                    ${showLocation ? `<span class="player-location">${locationLabel}</span>` : ""}
                     ${twitter}
                 </div>
             </div>
@@ -612,32 +764,118 @@ async function buildRankedStockIcon(main) {
 }
 
 async function renderLeaderboardKeyItem(player) {
+    const rankText = `${player.placement}`;
+    const tag = _.escape(getPlayerGamerTag(player));
+    const locationLabel = _.escape(getPlayerLocationLabel(player));
+    const locationRegion = getPlayerLocationRegion(player);
     const mains = getPlayerMains(player);
     const icon = await buildRankedStockIcon(mains[0]);
-    const rankText = `${player.placement}${getNumberOrdinal(player.placement)}`;
-    const tag = _.escape(getPlayerGamerTag(player));
-    const sponsor = _.escape(getPlayerSponsor(player));
 
     return `
         <article class="rank-key-item rank-${player.placement}">
-            <div class="rank-key-icon-shell">
+            <span class="rank-key-rank">${rankText}</span>
+            <span class="rank-key-icon-shell">
                 ${
                     icon
                         ? `<img class="rank-key-icon" src="${icon}" alt="" />`
-                        : `<div class="rank-key-icon-fallback"></div>`
+                        : `<span class="rank-key-icon-fallback"></span>`
                 }
-            </div>
-            <div class="rank-key-copy">
-                <div class="rank-key-mainline">
-                    <span class="rank-key-rank">${rankText}</span>
-                    <div class="rank-key-name-stack">
-                        ${sponsor ? `<div class="rank-key-sponsor">${sponsor}</div>` : ""}
-                        <span class="rank-key-tag"><span class="text">${tag}</span></span>
+            </span>
+            <span class="rank-key-copy">
+                <span class="rank-key-tag"><span class="text">${tag}</span></span>
+                ${locationLabel ? `<span class="rank-key-location rank-key-location-${locationRegion}">${locationLabel}</span>` : ""}
+            </span>
+        </article>
+    `;
+}
+
+async function buildLocationPreludeIcon(player) {
+    const mains = getPlayerMains(player);
+    const icon = await buildRankedStockIcon(mains[0]).catch((error) => {
+        console.warn("Could not build PR location prelude icon.", error);
+        return null;
+    });
+
+    return icon || player.pfp || FALLBACK_PFP;
+}
+
+async function showLocationMapPrelude(player, direction = "advance") {
+    if (!locationMapPreludeEnabled()) return;
+
+    const region = getPlayerLocationRegion(player);
+    const regionConfig = LOCATION_PRELUDE_REGIONS[region];
+    if (!regionConfig) return;
+
+    const icon = _.escape(await buildLocationPreludeIcon(player));
+    const label = _.escape(regionConfig.label);
+    const rankText = `#${player.placement}`;
+    const prelude = $(`
+        <section class="location-prelude location-prelude-${region}" style="--location-pin-x: ${regionConfig.x}; --location-pin-y: ${regionConfig.y};" aria-hidden="true">
+            <div class="location-prelude-glow"></div>
+            <div class="location-map-shell">
+                <div class="location-map-art">
+                    <div class="location-map-orbits"></div>
+                    <div class="location-map-outline"></div>
+                    <div class="location-map-nebula"></div>
+                    <div class="location-map-stars"></div>
+                    <div class="location-map-border"></div>
+                    <div class="location-map-pin" style="--location-pin-x: ${regionConfig.x}; --location-pin-y: ${regionConfig.y};">
+                        <span class="location-map-pulse pulse-one"></span>
+                        <span class="location-map-pulse pulse-two"></span>
+                        <span class="location-map-icon-shell">
+                            <img class="location-map-icon" src="${icon}" alt="" />
+                        </span>
                     </div>
                 </div>
             </div>
-        </article>
-    `;
+            <div class="location-prelude-copy">
+                <div class="location-prelude-kicker">${rankText} Hailing from:</div>
+                <div class="location-prelude-region">${label}</div>
+            </div>
+        </section>
+    `);
+
+    $(".pr-scene").append(prelude);
+    applyLocationPlateTheme(player, true);
+
+    const travelX = direction === "back" ? -36 : 36;
+    await gsap
+        .timeline()
+        .set(prelude, { autoAlpha: 1, pointerEvents: "none", overwrite: true }, 0)
+        .fromTo(prelude, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.22, ease: "power2.out" }, 0)
+        .fromTo(
+            prelude.find(".location-map-shell"),
+            { autoAlpha: 0, x: travelX, scale: 0.965 },
+            { autoAlpha: 1, x: 0, scale: 1, duration: 0.42, ease: "expo.out" },
+            0.04,
+        )
+        .fromTo(
+            prelude.find(".location-map-orbits, .location-map-outline, .location-map-nebula, .location-map-stars, .location-map-border"),
+            { autoAlpha: 0 },
+            { autoAlpha: 1, duration: 0.32, stagger: 0.04, ease: "power2.out" },
+            0.12,
+        )
+        .fromTo(
+            prelude.find(".location-map-pin"),
+            { autoAlpha: 0, scale: 0.22, filter: "blur(12px) brightness(1.8)" },
+            { autoAlpha: 1, scale: 1, filter: "blur(0px) brightness(1)", duration: 0.54, ease: "expo.out" },
+            1.08,
+        )
+        .fromTo(
+            prelude.find(".location-map-pulse"),
+            { autoAlpha: 0, scale: 0.35 },
+            { autoAlpha: 1, scale: 1, duration: 0.34, stagger: 0.12, ease: "power2.out" },
+            1.02,
+        )
+        .fromTo(
+            prelude.find(".location-prelude-kicker, .location-prelude-region"),
+            { autoAlpha: 0, y: 18 },
+            { autoAlpha: 1, y: 0, duration: 0.28, stagger: 0.06, ease: "power2.out" },
+            0.42,
+        )
+        .to(prelude, { autoAlpha: 0, scale: 1.025, duration: 0.48, ease: "power2.inOut" }, 4.15);
+
+    prelude.remove();
 }
 
 async function renderLeaderboard() {
@@ -647,10 +885,18 @@ async function renderLeaderboard() {
     const keyItems = await Promise.all(posterPlayers.map(renderLeaderboardKeyItem));
 
     $(".leaderboard-panel").html(`
-        <section class="collage-stage">
-            <img class="collage-image" src="${FINAL_COLLAGE_IMAGE}" alt="" />
+        <div class="leaderboard-final-title">
+            <span class="leaderboard-final-title-primary">${FINAL_LEADERBOARD_TITLE_LINES[0]}</span>
+            <span class="leaderboard-final-title-secondary">${FINAL_LEADERBOARD_TITLE_LINES[1]}</span>
+        </div>
+        <section class="rank-key" aria-label="Top 10 rankings">
+            <div class="rank-key-items">
+                ${keyItems.join("")}
+            </div>
         </section>
-        <div class="collage-title">${FINAL_LEADERBOARD_TITLE}</div>
+        <section class="collage-stage">
+            <img class="collage-image" src="${getThemeCollageImage()}" alt="" />
+        </section>
         <div class="leaderboard-reveal-overlay" aria-hidden="true">
             <div class="leaderboard-reveal-clouds"></div>
             
@@ -658,11 +904,6 @@ async function renderLeaderboard() {
             <div class="leaderboard-reveal-sparks"></div>
             <div class="leaderboard-reveal-haze"></div>
         </div>
-        <section class="rank-key">
-            <div class="rank-key-items">
-                ${keyItems.join("")}
-            </div>
-        </section>
     `);
 
     requestAnimationFrame(() => {
@@ -686,75 +927,156 @@ function showStreamSafeError(message) {
     gsap.set(".leaderboard-panel", { autoAlpha: 0, pointerEvents: "none" });
 }
 
-function setTeaserTip(text, animate = true) {
-    const tip = $(".teaser-tip-text");
-    if (!tip.length) return;
+function getNextTeaserCountdownTarget(now = new Date()) {
+    const target = new Date(now);
+    target.setHours(TEASER_COUNTDOWN_TARGET_HOUR, TEASER_COUNTDOWN_TARGET_MINUTE, 0, 0);
+    if (now >= target) target.setDate(target.getDate() + 1);
+    return target;
+}
 
-    if (!animate) {
-        tip.text(text);
-        return;
+function formatTeaserCountdown(msRemaining) {
+    const totalSeconds = Math.max(0, Math.floor(msRemaining / 1000));
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+}
+
+function updateTeaserCountdown() {
+    const value = $(".teaser-countdown-value");
+    if (!value.length) return;
+
+    const now = new Date();
+    if (!teaserCountdownTarget) {
+        teaserCountdownTarget = getNextTeaserCountdownTarget(now);
     }
 
-    gsap.to(tip, {
-        autoAlpha: 0,
-        y: -8,
-        duration: 0.22,
-        ease: "power2.in",
-        overwrite: true,
-        onComplete: () => {
-            tip.text(text);
-            gsap.fromTo(
-                tip,
-                { autoAlpha: 0, y: 10 },
-                { autoAlpha: 1, y: 0, duration: 0.28, ease: "power2.out", overwrite: true },
-            );
-        },
-    });
-}
+    const msRemaining = teaserCountdownTarget.getTime() - now.getTime();
+    value.text(formatTeaserCountdown(msRemaining));
 
-function cycleTeaserTip() {
-    if (TEASER_LOADING_TIPS.length === 0) return;
-    teaserTipIndex = (teaserTipIndex + 1) % TEASER_LOADING_TIPS.length;
-    setTeaserTip(TEASER_LOADING_TIPS[teaserTipIndex]);
-}
-
-function runTeaserLoadingCycle() {
-    const loadingFill = $(".teaser-loading-fill");
-    if (!loadingFill.length) return;
-
-    teaserLoadingTween = gsap.fromTo(
-        loadingFill,
-        { width: "0%" },
-        {
-            width: "100%",
-            duration: TEASER_TIP_INTERVAL_MS / 1000,
-            ease: "linear",
-            overwrite: true,
-            onComplete: () => {
-                cycleTeaserTip();
-                runTeaserLoadingCycle();
-            },
-        },
-    );
+    if (msRemaining <= 0) {
+        void showTeaserRegionMap();
+    }
 }
 
 function startTeaserLoading() {
     stopTeaserLoading();
-    teaserTipIndex = 0;
-    setTeaserTip(TEASER_LOADING_TIPS[teaserTipIndex] || "", false);
-    runTeaserLoadingCycle();
+    teaserCountdownTarget = getNextTeaserCountdownTarget(new Date());
+    updateTeaserCountdown();
+    teaserCountdownTimer = window.setInterval(updateTeaserCountdown, 1000);
 }
 
 function stopTeaserLoading() {
-    if (teaserLoadingTween) {
-        teaserLoadingTween.kill();
-        teaserLoadingTween = null;
+    if (teaserCountdownTimer) {
+        window.clearInterval(teaserCountdownTimer);
+        teaserCountdownTimer = null;
     }
+}
+
+function renderTeaserRegionMap() {
+    const nodes = Object.entries(LOCATION_PRELUDE_REGIONS)
+        .map(
+            ([region, config]) => `
+                <div class="teaser-region-node teaser-region-node-${region}" style="--location-pin-x: ${config.x}; --location-pin-y: ${config.y};">
+                    <span class="teaser-region-node-pulse"></span>
+                    <span class="teaser-region-node-core"></span>
+                </div>
+            `,
+        )
+        .join("");
+
+    return `
+        <section class="teaser-region-map" aria-label="East Tennessee PR sub-regions">
+            <div class="location-map-shell">
+                <div class="location-map-art">
+                    <div class="location-map-orbits"></div>
+                    <div class="location-map-outline"></div>
+                    <div class="location-map-nebula"></div>
+                    <div class="location-map-stars"></div>
+                    <div class="location-map-border"></div>
+                    ${nodes}
+                </div>
+            </div>
+        </section>
+    `;
+}
+
+function prepareTeaserRegionMap() {
+    const teaser = $(".teaser-screen");
+    if (!teaser.length) return;
+
+    if (!$(".teaser-region-map").length) {
+        teaser.append(renderTeaserRegionMap());
+    }
+
+    const map = $(".teaser-region-map");
+    gsap.set(map, {
+        autoAlpha: 0,
+        scale: 0.94,
+        force3D: true,
+        pointerEvents: "none",
+        overwrite: true,
+    });
+    gsap.set(".teaser-region-map .location-map-shell, .teaser-region-map .location-map-art, .teaser-region-node", {
+        force3D: true,
+        overwrite: true,
+    });
+
+    // Force the SVG mask and map layers to rasterize before the reveal click/countdown edge.
+    void map[0]?.offsetWidth;
+    teaserRegionMapPrepared = true;
+}
+
+async function showTeaserRegionMap() {
+    if (teaserRegionMapShown || teaserRegionMapTransitioning) return;
+
+    const teaser = $(".teaser-screen");
+    if (!teaser.length) return;
+
+    teaserRegionMapTransitioning = true;
+    stopTeaserLoading();
+
+    if (!teaserRegionMapPrepared || !$(".teaser-region-map").length) prepareTeaserRegionMap();
+
+    await gsap
+        .timeline()
+        .to(".teaser-panel > :not(.teaser-region-map)", {
+            autoAlpha: 0,
+            y: -12,
+            duration: 0.42,
+            ease: "power2.inOut",
+            pointerEvents: "none",
+            overwrite: true,
+        }, 0)
+        .fromTo(
+            ".teaser-region-map",
+            { autoAlpha: 0, scale: 0.94 },
+            { autoAlpha: 1, scale: 1, duration: 0.74, ease: "expo.out", force3D: true, overwrite: true },
+            0.22,
+        )
+        .fromTo(
+            ".teaser-region-map .location-map-orbits, .teaser-region-map .location-map-outline, .teaser-region-map .location-map-nebula, .teaser-region-map .location-map-stars, .teaser-region-map .location-map-border",
+            { autoAlpha: 0 },
+            { autoAlpha: 1, duration: 0.46, stagger: 0.05, ease: "power2.out", overwrite: true },
+            0.34,
+        )
+        .fromTo(
+            ".teaser-region-node",
+            { autoAlpha: 0, scale: 0.35 },
+            { autoAlpha: 1, scale: 1, duration: 0.36, stagger: 0.1, ease: "back.out(1.4)", force3D: true, overwrite: true },
+            0.86,
+        );
+
+    teaserRegionMapShown = true;
+    teaserRegionMapTransitioning = false;
 }
 
 async function showTeaser() {
     currentView = "teaser";
     characterRenderToken += 1;
+    teaserRegionMapShown = false;
+    teaserRegionMapTransitioning = false;
+    teaserRegionMapPrepared = false;
 
     $(".rank-card, .rank-badge, .leaderboard-panel").empty();
     gsap.set(".ranking-plate, .character-aura, .rank-card, .rank-badge, .leaderboard-panel, .pr-character .tsh_character", {
@@ -767,6 +1089,7 @@ async function showTeaser() {
 
     const teaser = $(".teaser-screen");
     teaser.attr("aria-hidden", "false");
+    prepareTeaserRegionMap();
     await gsap
         .timeline()
         .set(teaser, { autoAlpha: 1, pointerEvents: "auto", overwrite: true }, 0)
@@ -777,7 +1100,7 @@ async function showTeaser() {
             0.05,
         )
         .fromTo(
-            ".teaser-kicker, .teaser-title, .teaser-subtitle, .teaser-copy, .teaser-loading",
+            ".teaser-kicker, .teaser-title, .teaser-subtitle, .teaser-copy, .teaser-countdown",
             { autoAlpha: 0, y: 16 },
             { autoAlpha: 1, y: 0, duration: 0.42, stagger: 0.07, ease: "power2.out", overwrite: true },
             0.18,
@@ -867,9 +1190,19 @@ async function showPlayer(index, direction = "in") {
     const baseCharacterFromX = isRankBack ? -78 : isRankAdvance ? 68 : 90;
     const characterDirection = Number(window.PLAYER || 1) === 2 ? -1 : 1;
     const characterFromX = characterDirection * (isOpeningReveal ? 130 : baseCharacterFromX);
-    const revealTimeline = gsap
-        .timeline()
-        .fromTo(
+
+    if (isRankAdvance) {
+        gsap.set(".ranking-plate", { autoAlpha: 1, x: 0, y: 0, scaleX: 1, overwrite: true });
+    }
+
+    if (isRankBack) {
+        gsap.set(".ranking-plate", { autoAlpha: 1, x: 0, y: 0, scaleX: 1, overwrite: true });
+    }
+
+    const revealTimeline = gsap.timeline();
+
+    if (!isRankAdvance && !isRankBack) {
+        revealTimeline.fromTo(
             ".ranking-plate",
             { autoAlpha: 0, x: revealFromX, y: isOpeningReveal ? 64 : isRankAdvance ? 24 : isRankBack ? 36 : 36, scaleX: isOpeningReveal ? 0.985 : 1 },
             {
@@ -882,19 +1215,38 @@ async function showPlayer(index, direction = "in") {
                 overwrite: true,
             },
             isOpeningReveal ? 0.08 : isRankAdvance ? 0.03 : 0,
+        );
+    }
+
+    revealTimeline
+        .to(
+            ".ranking-plate",
+            {
+                "--plate-raised-edge": "0%",
+                duration: isRankAdvance || isRankBack ? 0.58 : 0.01,
+                ease: "power3.out",
+                overwrite: "auto",
+            },
+            0,
         )
         .fromTo(
             ".rank-card",
-            { autoAlpha: 0, y: isOpeningReveal ? 46 : isRankAdvance ? 22 : isRankBack ? 28 : 28, scale: isOpeningReveal ? 0.985 : isRankAdvance ? 0.99 : 1 },
+            {
+                autoAlpha: 0,
+                x: isRankAdvance ? 72 : isRankBack ? -72 : 0,
+                y: isOpeningReveal ? 46 : isRankAdvance || isRankBack ? 4 : 28,
+                scale: isOpeningReveal ? 0.985 : isRankAdvance || isRankBack ? 0.995 : 1,
+            },
             {
                 autoAlpha: 1,
+                x: 0,
                 y: 0,
                 scale: 1,
-                duration: isOpeningReveal ? 0.6 : isRankAdvance ? 0.5 : 0.42,
-                ease: "expo.out",
+                duration: isOpeningReveal ? 0.6 : isRankAdvance || isRankBack ? 0.52 : 0.42,
+                ease: isRankAdvance || isRankBack ? "power3.out" : "expo.out",
                 overwrite: true,
             },
-            isOpeningReveal ? 0.32 : isRankAdvance ? 0.18 : 0.1,
+            isOpeningReveal ? 0.32 : isRankAdvance || isRankBack ? 0.08 : 0.1,
         )
         .fromTo(
             ".pfp-frame",
@@ -904,23 +1256,23 @@ async function showPlayer(index, direction = "in") {
         )
         .fromTo(
             ".rank-badge",
-            { autoAlpha: 0, x: badgeFromX, y: isOpeningReveal ? -22 : isRankAdvance ? -8 : isRankBack ? 0 : 0, scale: isOpeningReveal ? 0.82 : isRankAdvance ? 0.9 : 0.92 },
+            { autoAlpha: 0, x: isRankAdvance ? 62 : isRankBack ? -62 : badgeFromX, y: isOpeningReveal ? -22 : 0, scale: isOpeningReveal ? 0.82 : isRankAdvance || isRankBack ? 0.94 : 0.92 },
             {
                 autoAlpha: 1,
                 x: 0,
                 y: 0,
                 scale: 1,
-                duration: isOpeningReveal ? 0.64 : isRankAdvance ? 0.54 : 0.38,
-                ease: "back.out(1.18)",
+                duration: isOpeningReveal ? 0.64 : isRankAdvance || isRankBack ? 0.54 : 0.38,
+                ease: isRankAdvance || isRankBack ? "power3.out" : "back.out(1.18)",
                 overwrite: true,
             },
-            isOpeningReveal ? 0.2 : isRankAdvance ? 0.08 : 0.05,
+            isOpeningReveal ? 0.2 : isRankAdvance || isRankBack ? 0.02 : 0.05,
         )
         .fromTo(
             ".character-aura",
-            { autoAlpha: 0, scale: isOpeningReveal ? 0.84 : isRankAdvance ? 0.9 : 0.92 },
-            { autoAlpha: 1, scale: 1, duration: isOpeningReveal ? 0.72 : isRankAdvance ? 0.58 : 0.5, ease: "expo.out", overwrite: true },
-            isOpeningReveal ? 0.18 : isRankAdvance ? 0.08 : 0.12,
+            { autoAlpha: 0, x: isRankAdvance ? 48 : isRankBack ? -48 : 0, scale: isOpeningReveal ? 0.84 : isRankAdvance || isRankBack ? 0.96 : 0.92 },
+            { autoAlpha: 1, x: 0, scale: 1, duration: isOpeningReveal ? 0.72 : isRankAdvance || isRankBack ? 0.58 : 0.5, ease: "expo.out", overwrite: true },
+            isOpeningReveal ? 0.18 : isRankAdvance || isRankBack ? 0.08 : 0.12,
         );
 
     if (characterElement) {
@@ -970,7 +1322,7 @@ async function showLeaderboard() {
     });
     void leaderboard[0]?.offsetWidth;
     leaderboard.addClass("is-revealing");
-    window.setTimeout(playThunderSfx, LEADERBOARD_FLASH_SFX_DELAY_MS);
+    window.setTimeout(playFinalRevealSfx, FINAL_REVEAL_SFX_DELAY_MS);
     gsap.to(blackout, {
         autoAlpha: 0,
         duration: 0.74,
@@ -981,6 +1333,28 @@ async function showLeaderboard() {
     window.setTimeout(() => leaderboard.removeClass("is-revealing"), 2400);
 }
 
+async function showLeaderboardInstant() {
+    currentView = "leaderboard";
+    characterRenderToken += 1;
+    stopTeaserLoading();
+
+    gsap.set(".teaser-screen, .ranking-plate, .character-aura, .rank-card, .rank-badge, .pr-character .tsh_character", {
+        autoAlpha: 0,
+        pointerEvents: "none",
+        overwrite: true,
+    });
+
+    await renderLeaderboard();
+    gsap.set(".leaderboard-panel", {
+        autoAlpha: 1,
+        x: 0,
+        y: 0,
+        scale: 1,
+        pointerEvents: "auto",
+        overwrite: true,
+    });
+}
+
 async function advancePresentation() {
     if (transitionLocked || currentView === "error") return;
     transitionLocked = true;
@@ -988,16 +1362,17 @@ async function advancePresentation() {
 
     if (currentView === "teaser") {
         const teaserTransition = await hideTeaser(true);
-        await showPlayer(currentIndex, "opening");
         if (teaserTransition) {
-            gsap.to(teaserTransition, {
+            await gsap.to(teaserTransition, {
                 autoAlpha: 0,
-                duration: 0.44,
+                duration: 0.24,
                 ease: "power2.out",
                 overwrite: true,
                 onComplete: () => teaserTransition.remove(),
             });
         }
+        await showLocationMapPrelude(rankedPlayers[currentIndex], "opening");
+        await showPlayer(currentIndex, "opening");
         transitionLocked = false;
         document.body.dataset.transitioning = "false";
         return;
@@ -1017,10 +1392,11 @@ async function advancePresentation() {
                 ".rank-card",
                 {
                     autoAlpha: 0,
-                    y: 18,
-                    scale: 0.985,
-                    duration: 0.34,
-                    ease: "power2.inOut",
+                    x: -72,
+                    y: 0,
+                    scale: 0.995,
+                    duration: 0.36,
+                    ease: "power3.inOut",
                     overwrite: true,
                 },
                 0,
@@ -1029,11 +1405,11 @@ async function advancePresentation() {
                 ".rank-badge",
                 {
                     autoAlpha: 0,
-                    x: -38,
-                    y: 10,
-                    scale: 0.94,
+                    x: -62,
+                    y: 0,
+                    scale: 0.96,
                     duration: 0.36,
-                    ease: "power2.inOut",
+                    ease: "power3.inOut",
                     overwrite: true,
                 },
                 0.02,
@@ -1054,9 +1430,10 @@ async function advancePresentation() {
                 ".character-aura",
                 {
                     autoAlpha: 0,
-                    scale: 0.94,
+                    x: -42,
+                    scale: 0.98,
                     duration: 0.38,
-                    ease: "power2.inOut",
+                    ease: "power3.inOut",
                     overwrite: true,
                 },
                 0.04,
@@ -1064,16 +1441,18 @@ async function advancePresentation() {
             .to(
                 ".ranking-plate",
                 {
-                    autoAlpha: 0,
-                    x: -46,
-                    y: 12,
-                    scaleX: 0.99,
-                    duration: 0.4,
-                    ease: "power2.inOut",
-                    overwrite: true,
+                    autoAlpha: 1,
+                    x: 0,
+                    y: 0,
+                    scaleX: 1,
+                    "--plate-raised-edge": "21%",
+                    duration: 0.38,
+                    ease: "power3.inOut",
+                    overwrite: "auto",
                 },
-                0.06,
+                0.02,
             );
+        await showLocationMapPrelude(rankedPlayers[nextIndex], "advance");
         await showPlayer(nextIndex, "advance");
     } else {
         await showLeaderboard();
@@ -1126,10 +1505,11 @@ async function reversePresentation() {
                 ".rank-card",
                 {
                     autoAlpha: 0,
-                    y: 18,
-                    scale: 0.985,
-                    duration: 0.34,
-                    ease: "power2.inOut",
+                    x: 72,
+                    y: 0,
+                    scale: 0.995,
+                    duration: 0.36,
+                    ease: "power3.inOut",
                     overwrite: true,
                 },
                 0,
@@ -1139,10 +1519,10 @@ async function reversePresentation() {
                 {
                     autoAlpha: 0,
                     x: 38,
-                    y: 10,
-                    scale: 0.94,
+                    y: 0,
+                    scale: 0.96,
                     duration: 0.36,
-                    ease: "power2.inOut",
+                    ease: "power3.inOut",
                     overwrite: true,
                 },
                 0.02,
@@ -1163,9 +1543,10 @@ async function reversePresentation() {
                 ".character-aura",
                 {
                     autoAlpha: 0,
-                    scale: 0.94,
+                    x: 42,
+                    scale: 0.98,
                     duration: 0.38,
-                    ease: "power2.inOut",
+                    ease: "power3.inOut",
                     overwrite: true,
                 },
                 0.04,
@@ -1173,17 +1554,19 @@ async function reversePresentation() {
             .to(
                 ".ranking-plate",
                 {
-                    autoAlpha: 0,
-                    x: 46,
-                    y: 12,
-                    scaleX: 0.99,
-                    duration: 0.4,
-                    ease: "power2.inOut",
-                    overwrite: true,
+                    autoAlpha: 1,
+                    x: 0,
+                    y: 0,
+                    scaleX: 1,
+                    "--plate-raised-edge": "21%",
+                    duration: 0.38,
+                    ease: "power3.inOut",
+                    overwrite: "auto",
                 },
-                0.06,
+                0.02,
             );
 
+        await showLocationMapPrelude(rankedPlayers[previousIndex], "back");
         await showPlayer(previousIndex, "back");
     }
 
@@ -1192,6 +1575,11 @@ async function reversePresentation() {
 }
 
 function handlePresentationClick(event) {
+    if (currentView === "teaser" && !teaserRegionMapShown) {
+        void showTeaserRegionMap();
+        return;
+    }
+
     const clickIsOnRightHalf = event.clientX >= window.innerWidth / 2;
 
     if (clickIsOnRightHalf) {
@@ -1207,7 +1595,7 @@ LoadEverything().then(async () => {
 
     if (!window.PLAYER) window.PLAYER = 1;
     document.body.classList.add(Number(window.PLAYER) === 2 ? "side-p2" : "side-p1");
-    getThunderAudio().load();
+    getFinalRevealAudio().load();
 
     Start = async () => {
         try {
@@ -1221,6 +1609,14 @@ LoadEverything().then(async () => {
 
             currentIndex = getStartingIndex(rankedPlayers);
             startingIndex = currentIndex;
+
+            if (window.PR_PRESENTATION_START_VIEW === "leaderboard") {
+                await showLeaderboardInstant();
+                transitionLocked = false;
+                document.body.dataset.transitioning = "false";
+                return;
+            }
+
             await showTeaser();
             openingCharacterPreloadPromise = prewarmOpeningPlayer();
             transitionLocked = false;

@@ -1,4 +1,3 @@
-/* Tournament Starting Soon Overlay */
 * {
     margin: 0;
     padding: 0;
@@ -8,352 +7,226 @@
 body {
     width: 1920px;
     height: 1080px;
-    font-family: var(--font, "NotoSans", sans-serif);
-    background: transparent;
     overflow: hidden;
     position: relative;
-}
-
-.text {
-    height: auto !important;
-}
-
-/* Background iframe - fullscreen */
-.background-iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    border: none;
-}
-
-/* Dark blur overlay */
-.blur-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    z-index: 2;
+    background: transparent;
+    font-family: var(--font, "NotoSans", sans-serif);
 }
 
 .overlay-container {
+    position: relative;
+    z-index: 1;
+    display: grid;
     width: 100%;
     height: 100%;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-    /* Remove the previous background gradient since we have the iframe now */
+    place-items: center;
+    pointer-events: none;
 }
 
+.floating-hexagons {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    pointer-events: none;
+}
+
+.floating-hexagons span {
+    position: absolute;
+    background: var(--p1-score-color);
+    clip-path: polygon(25% 6.7%, 75% 6.7%, 100% 50%, 75% 93.3%, 25% 93.3%, 0 50%);
+    filter: drop-shadow(0 11px 14px rgba(0, 0, 0, 0.3));
+}
+
+.floating-hexagons span:nth-child(1) { top: 66px; left: 132px; width: 190px; height: 220px; opacity: 0.19; transform: rotate(-12deg); }
+.floating-hexagons span:nth-child(2) { top: 276px; left: 34px; width: 112px; height: 130px; opacity: 0.14; transform: rotate(17deg); }
+.floating-hexagons span:nth-child(3) { top: 84px; right: 180px; width: 150px; height: 174px; background: var(--p2-score-color); opacity: 0.19; transform: rotate(15deg); }
+.floating-hexagons span:nth-child(4) { right: 48px; bottom: 98px; width: 224px; height: 258px; background: var(--p2-score-color); opacity: 0.16; transform: rotate(-10deg); }
+.floating-hexagons span:nth-child(5) { bottom: 88px; left: 138px; width: 160px; height: 185px; opacity: 0.16; transform: rotate(11deg); }
+.floating-hexagons span:nth-child(6) { top: 464px; left: 282px; width: 98px; height: 114px; background: var(--p2-score-color); opacity: 0.17; transform: rotate(-17deg); }
+.floating-hexagons span:nth-child(7) { top: 360px; right: 168px; width: 116px; height: 134px; opacity: 0.14; transform: rotate(8deg); }
+.floating-hexagons span:nth-child(8) { bottom: 54px; left: 502px; width: 92px; height: 106px; background: var(--p2-score-color); opacity: 0.12; transform: rotate(-8deg); }
+
 .main-content {
-    text-align: center;
-    z-index: 10;
     position: relative;
-    max-width: 1400px;
-    width: 100%;
-    padding: 60px;
+    z-index: 1;
     display: flex;
+    width: 100%;
+    max-width: 1220px;
+    padding: 0 64px 52px;
     flex-direction: column;
     align-items: center;
-    gap: 40px;
+    gap: 35px;
+    text-align: center;
 }
 
 .title-section {
     display: flex;
+    width: 100%;
     flex-direction: column;
     align-items: center;
-    gap: 15px;
-    width: 100%;
+    gap: 17px;
+}
+
+.eyebrow,
+.main-title {
+    opacity: 0;
+}
+
+.eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding-left: 0.32em;
+    color: color-mix(in srgb, var(--p1-score-color) 74%, white 26%);
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    text-shadow: 0 3px 12px rgba(0, 0, 0, 0.72);
+}
+
+.eyebrow::before,
+.eyebrow::after {
+    width: 40px;
+    height: 2px;
+    background: currentColor;
+    box-shadow: 0 0 12px currentColor;
+    content: "";
 }
 
 .main-title {
-    font-size: 4.8rem;
+    max-width: 1150px;
+    padding-left: 0.075em;
+    color: color-mix(in srgb, var(--p1-score-color) 76%, white 24%);
+    font-size: clamp(4.3rem, 6vw, 7rem);
     font-weight: 900;
-    color: var(--text-color);
+    line-height: 0.98;
+    letter-spacing: 0.075em;
+    overflow-wrap: break-word;
+    text-align: center;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    text-shadow: 0 4px 0 rgba(0, 0, 0, 0.3);
-    opacity: 0;
-    white-space: nowrap;
-    overflow: visible;
+    text-shadow: 0 5px 0 rgba(0, 0, 0, 0.55),
+        0 15px 34px rgba(0, 0, 0, 0.78),
+        0 0 22px color-mix(in srgb, var(--p1-score-color) 35%, transparent);
 }
 
 .event-name {
-    font-size: 2.2rem;
-    font-weight: 400;
-    color: var(--p1-score-color);
-    font-style: bold;
-    letter-spacing: 0.05em;
-    text-shadow: 0 2px 0 rgba(0, 0, 0, 0.3);
+    padding-left: 0.13em;
+    color: var(--text-color);
+    font-size: clamp(2rem, 2.9vw, 3.25rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: 0.13em;
     opacity: 0;
+    text-align: center;
+    text-transform: uppercase;
+    text-shadow: 0 5px 0 rgba(0, 0, 0, 0.5), 0 13px 26px rgba(0, 0, 0, 0.74);
 }
 
 .countdown-section {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: 6px;
 }
 
 .starting-label {
-    font-size: 1.8rem;
-    font-weight: 600;
-    color: var(--text-color);
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
+    padding-left: 0.16em;
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
     opacity: 0;
+    text-transform: uppercase;
+    text-shadow: 0 4px 14px rgba(0, 0, 0, 0.82);
 }
 
 .big-timer {
-    font-size: 8rem;
-    font-weight: 200;
-    margin-top: 50px;
-    font-family: "Karmatic Arcade";
-    color: var(--p1-score-color);
+    margin-top: 8px;
+    padding-left: 0.05em;
+    color: var(--text-color);
+    font-family: "Karmatic Arcade", var(--font, sans-serif);
+    font-size: clamp(6.2rem, 8vw, 9.5rem);
+    font-weight: 400;
     letter-spacing: 0.05em;
-    text-shadow: 0 4px 0 rgba(0, 0, 0, 0.3);
     opacity: 0;
+    text-shadow: 0 6px 0 rgba(0, 0, 0, 0.54), 0 18px 32px rgba(0, 0, 0, 0.76);
 }
 
 .loading-section {
     display: flex;
+    width: min(100%, 560px);
     flex-direction: column;
     align-items: center;
-    gap: 20px;
-    width: 100%;
-    max-width: 600px;
+    gap: 13px;
 }
 
 .loading-bar {
     width: 100%;
-    height: 8px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
+    height: 6px;
     overflow: hidden;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.35);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.38);
     opacity: 0;
 }
 
 .loading-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--text-color), var(--p1-score-color));
-    border-radius: 4px;
     width: 0%;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--p1-score-color), var(--p2-score-color));
+    box-shadow: 0 0 12px var(--p1-score-color);
 }
 
 .loading-text {
-    font-size: 1.4rem;
-    font-weight: 600;
-    color: var(--text-color);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    padding-left: 0.1em;
+    color: rgba(255, 255, 255, 0.86);
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
     opacity: 0;
+    text-transform: uppercase;
+    text-shadow: 0 3px 12px rgba(0, 0, 0, 0.78);
 }
 
+/* The follow prompt is intentionally the only filled surface in the scene. */
 .follow-button {
     position: fixed;
-    bottom: 30px;
-    right: -500px;
-    background: var(--p1-score-color);
-    border-radius: var(--border-radius);
-    padding: 20px 30px;
-    box-shadow: 0 6px 0 var(--p1-score-bg-color-dark);
-    cursor: pointer;
-    transition: transform 0.2s ease;
-    z-index: 20;
-    max-width: 450px;
+    right: -560px;
+    bottom: 44px;
+    z-index: 2;
     display: flex;
+    max-width: 490px;
+    padding: 15px 22px 16px;
     align-items: center;
     gap: 12px;
-}
-
-.follow-button:hover {
-    transform: translateY(-2px);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: var(--border-radius);
+    background: linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--p1-score-color) 84%, white 16%) 0%,
+        var(--p1-score-color) 100%
+    );
+    box-shadow: 0 6px 0 var(--p1-score-bg-color-dark),
+        0 18px 28px rgba(0, 0, 0, 0.34);
 }
 
 .follow-text {
-    font-size: 1.2rem;
-    font-weight: 600;
     color: var(--text-color);
+    font-size: 0.95rem;
+    font-weight: 800;
+    letter-spacing: 0.075em;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
 }
 
 .follow-icon {
-    font-size: 2.2rem;
     flex-shrink: 0;
     background: linear-gradient(135deg, white 0%, var(--p2-score-color) 100%);
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
     background-clip: text;
+    color: transparent;
+    font-size: 1.7rem;
     font-weight: bold;
-}
-
-/* Background decorative elements */
-.background-elements {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 1;
-}
-
-.bg-circle {
-    position: absolute;
-    border-radius: 50%;
-    opacity: 0;
-    animation: float 6s ease-in-out infinite;
-}
-
-.bg-circle-1 {
-    width: 300px;
-    height: 300px;
-    background: var(--p2-score-color);
-    top: 10%;
-    left: 15%;
-    animation-delay: 0s;
-    display: none;
-}
-
-.bg-circle-2 {
-    width: 200px;
-    height: 200px;
-    background: var(--p1-score-color);
-    bottom: 20%;
-    right: 20%;
-    animation-delay: 2s;
-    display: none;
-}
-
-.bg-circle-3 {
-    width: 150px;
-    height: 150px;
-    background: var(--p2-score-color);
-    top: 60%;
-    left: 5%;
-    animation-delay: 4s;
-    display: none;
-}
-
-@keyframes float {
-    0%, 100% {
-        transform: translateY(0px) rotate(0deg);
-    }
-    50% {
-        transform: translateY(-20px) rotate(5deg);
-    }
-}
-
-/* Animal Crossing wave animation */
-@keyframes wave {
-    0%, 100% {
-        transform: translateY(0px);
-    }
-    50% {
-        transform: translateY(-20px);
-    }
-}
-
-.wave-text {
-    display: inline-block;
-}
-
-.wave-text span {
-    display: inline-block;
-    animation: wave 2.6s ease-in-out infinite;
-}
-
-.wave-text span:nth-child(1) { animation-delay: 0s; }
-.wave-text span:nth-child(2) { animation-delay: 0.1s; }
-.wave-text span:nth-child(3) { animation-delay: 0.2s; }
-.wave-text span:nth-child(4) { animation-delay: 0.3s; }
-.wave-text span:nth-child(5) { animation-delay: 0.4s; }
-.wave-text span:nth-child(6) { animation-delay: 0.5s; }
-.wave-text span:nth-child(7) { animation-delay: 0.6s; }
-.wave-text span:nth-child(8) { animation-delay: 0.7s; }
-.wave-text span:nth-child(9) { animation-delay: 0.8s; }
-.wave-text span:nth-child(10) { animation-delay: 0.9s; }
-.wave-text span:nth-child(11) { animation-delay: 1.0s; }
-.wave-text span:nth-child(12) { animation-delay: 1.1s; }
-.wave-text span:nth-child(13) { animation-delay: 1.2s; }
-.wave-text span:nth-child(14) { animation-delay: 1.3s; }
-.wave-text span:nth-child(15) { animation-delay: 1.4s; }
-.wave-text span:nth-child(16) { animation-delay: 1.5s; }
-.wave-text span:nth-child(17) { animation-delay: 1.6s; }
-.wave-text span:nth-child(18) { animation-delay: 1.7s; }
-.wave-text span:nth-child(19) { animation-delay: 1.8s; }
-.wave-text span:nth-child(20) { animation-delay: 1.9s; }
-.wave-text span:nth-child(n+21) { animation-delay: 2.0s; }
-
-/* Responsive adjustments for different screen sizes */
-@media (max-width: 1600px) {
-    .main-title {
-        font-size: 4rem;
-    }
-    
-    .event-name {
-        font-size: 2rem;
-    }
-    
-    .starting-label {
-        font-size: 1.6rem;
-    }
-    
-    .big-timer {
-        font-size: 7rem;
-    }
-    
-    .loading-text {
-        font-size: 1.2rem;
-    }
-}
-
-@media (max-width: 1200px) {
-    .main-content {
-        padding: 40px;
-        gap: 30px;
-    }
-    
-    .main-title {
-        font-size: 3.5rem;
-    }
-    
-    .event-name {
-        font-size: 1.8rem;
-    }
-    
-    .starting-label {
-        font-size: 1.4rem;
-    }
-    
-    .big-timer {
-        font-size: 6rem;
-    }
-    
-    .loading-section {
-        max-width: 500px;
-    }
-    
-    .follow-button {
-        padding: 18px 25px;
-        max-width: 380px;
-        right: -420px;
-    }
-    
-    .follow-text {
-        font-size: 1.1rem;
-    }
-    
-    .follow-icon {
-        font-size: 1.8rem;
-    }
+    -webkit-text-fill-color: transparent;
 }

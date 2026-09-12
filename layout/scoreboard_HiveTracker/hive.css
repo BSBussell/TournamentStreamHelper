@@ -1,0 +1,176 @@
+/* A visual layer on the unmodified JinTracker stylesheet and controller.
+   Colors follow the same shared variables and runtime team-color updates. */
+.p1.container {
+    --hive-color: var(--p1-score-bg-color);
+    --hive-panel-shadow: var(--p1-score-bg-color-dark);
+    --hive-shadow-x: 2.5px;
+    --hive-shadow-y: 2.5px;
+}
+.p2.container {
+    --hive-color: var(--p2-score-bg-color);
+    --hive-panel-shadow: var(--p2-score-bg-color-dark);
+    --hive-shadow-x: -2.5px;
+    --hive-shadow-y: 2.5px;
+}
+
+/* HiveTracker-only team palette. Edit these two values without changing the
+   shared theme or any other layout. Set the switch to 0 to use TSH team colors. */
+:root {
+    --hive-use-custom-score-colors: 1;
+    --hive-p1-score-bg-color: #ff9500;
+    --hive-p2-score-bg-color: #dcdcdc;
+
+    --p1-score-bg-color: var(--hive-p1-score-bg-color);
+    --p2-score-bg-color: var(--hive-p2-score-bg-color);
+    --p1-score-bg-color-dark: color-mix(in srgb, var(--p1-score-bg-color) 60%, black 40%);
+    --p2-score-bg-color-dark: color-mix(in srgb, var(--p2-score-bg-color) 60%, black 40%);
+}
+
+.p1.container, .p2.container {
+    overflow: visible;
+    top: 50px;
+    border-radius: var(--border-radius);
+    z-index: 1;
+}
+.p1.container > .border,
+.p2.container > .border { border-radius: var(--border-radius); }
+
+/* The parent stays overflow-visible for the raised hex shadow, so round the
+   exposed score-end blocks directly instead of relying on parent clipping. */
+.p1.container .score_container {
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+}
+.p2.container .score_container {
+    border-radius: var(--border-radius) 0 0 var(--border-radius);
+}
+
+/* Lower the scoreboard assembly together, leaving camera borders in place. */
+.logo { top: 31px; }
+.p1.chips, .p2.chips, .p1.under_chips, .p2.under_chips { top: 16px; }
+.topleft_container { top: 50px; }
+.info.chips { top: 114.5px; }
+.score_boxes { top: 126px; }
+
+/* The hex breaks through the existing slanted outer edge, while the original
+   placeholder continues reserving the same name/character space. */
+.p1.container .edge, .p2.container .edge {
+    width: 98px;
+    height: 84px;
+    top: -20px;
+    overflow: visible;
+    background: transparent;
+    clip-path: none;
+    isolation: isolate;
+    z-index: 2;
+}
+.p1.container .edge { left: -30px; transform: skew(-20deg); }
+.p2.container .edge { right: -30px; transform: skew(20deg); }
+.container .edge::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    /* Kept in lockstep with JinTracker's .container surface gradient. */
+    background-color: var(--hive-color);
+    background-image: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.08) 0%,
+        rgba(255, 255, 255, 0.02) 38%,
+        rgba(0, 0, 0, 0.08) 100%
+    );
+    -webkit-mask: url("./rounded-hex.svg") center / 100% 100% no-repeat;
+    mask: url("./rounded-hex.svg") center / 100% 100% no-repeat;
+}
+.hive-shadow-layer {
+    position: absolute;
+    top: 50px;
+    width: 488px;
+    height: 53px;
+    overflow: visible;
+    pointer-events: none;
+    z-index: 0;
+}
+.hive-shadow-p1 {
+    left: 410px;
+    transform: skew(20deg);
+}
+.hive-shadow-p2 {
+    right: 410px;
+    transform: skew(-20deg);
+}
+.hive-shadow-layer .hive-shadow {
+    position: absolute;
+    top: -20px;
+    width: 98px;
+    height: 84px;
+}
+.hive-shadow-p1 .hive-shadow {
+    left: -30px;
+    fill: var(--p1-score-bg-color-dark);
+    transform: skew(-20deg) translate(0px, 2.5px) scale(1.1);
+}
+.hive-shadow-p2 .hive-shadow {
+    right: -30px;
+    fill: var(--p2-score-bg-color-dark);
+    transform: skew(20deg) translate(0px, 2.5px) scale(1.1);
+}
+.container .edge .character_container {
+    /* Scale the outer hex as one unit; unequal width/height inset values make
+       the inner facets drift away from the rim. */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    transform: scale(.84);
+    transform-origin: center;
+    z-index: 1;
+    background-color: #050505;
+    background-image: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.08) 0%,
+        rgba(255, 255, 255, 0.03) 34%,
+        rgba(0, 0, 0, 0.12) 100%
+    );
+    -webkit-mask: url("./rounded-hex.svg") center / 100% 100% no-repeat;
+    mask: url("./rounded-hex.svg") center / 100% 100% no-repeat;
+}
+.container .edge .tsh-center-image {
+    transform: scale(.92);
+    /* Stock icons are only 64px source art. This adds perceived edge clarity
+       without pixelating or pretending to generate new image detail. */
+    filter: contrast(1.14) saturate(1.08) brightness(1.03)
+        drop-shadow(0 1px 0 rgba(0, 0, 0, .9))
+        drop-shadow(0 2px 2px rgba(0, 0, 0, .8));
+    image-rendering: -webkit-optimize-contrast;
+}
+/* JinTracker colors this generated character layer with the player color.
+   The portrait well owns the black surface; the team color belongs to its rim. */
+.p1.container .edge .tsh_character,
+.p2.container .edge .tsh_character {
+    background: transparent;
+}
+.container .edge .tsh_character > div {
+    background-color: transparent;
+}
+.container .placeholder { background: transparent; }
+.container:has(.character_container:not(.unhidden)) .edge,
+.container:not(:has(.placeholder)) .edge { visibility: hidden; }
+.p1.container:has(.character_container:not(.unhidden)) + .hive-shadow-layer,
+.p2.container:has(.character_container:not(.unhidden)) + .hive-shadow-layer,
+.p1.container:not(:has(.placeholder)) + .hive-shadow-layer,
+.p2.container:not(:has(.placeholder)) + .hive-shadow-layer { visibility: hidden; }
+
+/* The colored hex surface itself forms the frame. The old SVG linework made
+   it look unrelated to the original panels' surface treatment. */
+.hive-frame { display: none; }
+
+/* Local double strokes and small wax-cell details, not a background strip. */
+.hive-trim { position: absolute; top: -8px; left: 0; width: 488px; height: 70px; overflow: visible; pointer-events: none; z-index: 3; }
+.p2 .hive-trim { transform: scaleX(-1); }
+/* .honey-line { fill: none; stroke: color-mix(in srgb, var(--hive-color) 70%, white); stroke-width: 1; opacity: .8; } */
+/* .honey-cell { fill: var(--hive-color); stroke: color-mix(in srgb, var(--hive-color) 55%, white); stroke-width: 1; } */
+/* .honey-drip { fill: none; stroke: var(--hive-color); stroke-width: 2; stroke-linecap: round; } */
+/* .container:has(.character_container:not(.unhidden)) .honey-cell, */
+/* .container:has(.character_container:not(.unhidden)) .honey-drip, */
+/* .container:not(:has(.placeholder)) .honey-cell, */
+/* .container:not(:has(.placeholder)) .honey-drip { display: none; } */

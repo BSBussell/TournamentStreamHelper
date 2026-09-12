@@ -6,7 +6,6 @@ const TIMING_CONFIG = {
     toasterInterval: 15000,       // How often toaster appears (30 seconds)
     toasterDisplayTime: 5000,     // How long toaster stays visible (5 seconds)
     loadingBarDuration: 10000,    // Loading bar animation duration (10 seconds, matches status cycle)
-    blurIntensifyDuration: 3000,  // How long to intensify blur after countdown
     countdownTestDuration: 30000  // Default countdown time for testing (30 seconds)
 };
 
@@ -89,22 +88,6 @@ function updateCountdown() {
 }
 
 let countdownInterval;
-
-// Function to wrap text in spans for wave animation
-function wrapTextForWave(text) {
-    return text.split('').map(char => {
-        // Preserve spaces but still wrap them
-        if (char === ' ') {
-            return '<span>&nbsp;</span>';
-        }
-        return `<span>${char}</span>`;
-    }).join('');
-}
-
-// Function to apply wave effect to element
-function applyWaveText(element, text) {
-    element.innerHTML = `<div class="wave-text">${wrapTextForWave(text)}</div>`;
-}
 
 // Animation cycle for status messages
 const originalStatusMessages = [
@@ -239,15 +222,17 @@ LoadEverything().then(() => {
     // Create entrance animation timeline
     entranceAnimation = gsap
         .timeline({ paused: true })
-        .set([".main-title", ".event-name", ".starting-label", ".big-timer", ".loading-text"], { opacity: 0 }, 0) // Hide all text elements
-        .call(() => updateTournamentInfo(), null, 0.1) // Update content after clearing
-        .to([".main-title"], { duration: 0.8, y: 0, opacity: 1, ease: "power2.out" }, 0.2)
-        .to([".event-name"], { duration: 0.6, opacity: 1, ease: "power2.out" }, 0.4)
-        .to([".starting-label"], { duration: 0.6, opacity: 1, ease: "power2.out" }, 0.8)
-        .to([".big-timer"], { duration: 0.8, opacity: 1, ease: "power2.out" }, 1.0)
-        .to([".loading-bar"], { duration: 0.6, opacity: 1, ease: "power2.out" }, 1.2)
-        .to([".loading-text"], { duration: 0.4, opacity: 1, ease: "power2.out" }, 1.4)
-        .to([".bg-circle"], { duration: 1, scale: 1, opacity: 0.1, ease: "power2.out", stagger: 0.2 }, 0.6);
+        .set([".eyebrow", ".main-title", ".event-name", ".starting-label", ".big-timer", ".loading-bar", ".loading-text"], { opacity: 0 }, 0)
+        .set(".main-content", { y: 28 }, 0)
+        .call(() => updateTournamentInfo(), null, 0.1)
+        .to(".main-content", { duration: 1.1, y: 0, ease: "power3.out" }, 0.12)
+        .to(".eyebrow", { duration: 0.45, opacity: 1, ease: "power2.out" }, 0.2)
+        .to(".main-title", { duration: 0.8, opacity: 1, ease: "power2.out" }, 0.35)
+        .to(".event-name", { duration: 0.55, opacity: 1, ease: "power2.out" }, 0.72)
+        .to(".starting-label", { duration: 0.45, opacity: 1, ease: "power2.out" }, 1.02)
+        .to(".big-timer", { duration: 0.65, opacity: 1, ease: "power2.out" }, 1.15)
+        .to(".loading-bar", { duration: 0.4, opacity: 1, ease: "power2.out" }, 1.35)
+        .to(".loading-text", { duration: 0.35, opacity: 1, ease: "power2.out" }, 1.5);
 
     // Initialize status message cycling with synced loading bar
     statusInterval = setInterval(cycleStatusMessage, TIMING_CONFIG.statusCycleInterval);
@@ -338,17 +323,17 @@ LoadEverything().then(() => {
 });
 
 function updateTournamentInfo() {
-    // Update tournament name in the main heading with wave effect
+    // Keep the type stable; the OBS background supplies the scene motion.
     const titleElement = document.getElementById('main-title');
     if (titleElement && config.tournament_name) {
-        applyWaveText(titleElement, config.tournament_name);
+        titleElement.textContent = config.tournament_name;
     }
 
     // Update event name (no wave effect)
     const eventElement = document.getElementById('event-name');
     if (eventElement) {
         const displayEvent = config.event_name || "Event Name";
-        SetInnerHtml($(eventElement), `- ${displayEvent} -`);
+        eventElement.textContent = displayEvent;
     }
 
     // Initialize loading text with first message
@@ -407,7 +392,7 @@ function cycleStatusMessage() {
     }
 }
 
-// Animation when timer hits zero - fade out then blur intensification
+// Animation when timer hits zero.
 function triggerFadeOutAnimation() {
     // Stop status message cycling
     if (statusInterval) {
@@ -423,26 +408,16 @@ function triggerFadeOutAnimation() {
 
     // Ensure elements exist before animating
     const overlayContainer = document.querySelector(".overlay-container");
-    const blurOverlay = document.querySelector(".blur-overlay");
-    
-    if (!overlayContainer || !blurOverlay) {
-        console.warn("Animation elements not found, skipping fade out");
+    if (!overlayContainer) {
+        console.warn("Overlay container not found, skipping fade out");
         return;
     }
 
-    // Create fade out animation followed by blur intensification
-    const fadeOutAnimation = gsap
-        .timeline()
-        .to(overlayContainer, {
-            duration: 2,
-            opacity: 0,
-            ease: "power2.inOut"
-        }, 0)
-        .to(blurOverlay, {
-            duration: TIMING_CONFIG.blurIntensifyDuration / 1000, // Convert to seconds
-            backdropFilter: "blur(50px)",
-            ease: "power2.inOut"
-        }, 2); // Start blur after fade completes
+    gsap.to(overlayContainer, {
+        duration: 2,
+        opacity: 0,
+        ease: "power2.inOut",
+    });
 }
 
 // Toaster animation for follow button
@@ -459,7 +434,7 @@ function showFollowToaster() {
     // Slide in from the right
     gsap.to(toaster, {
         duration: 0.5,
-        right: "30px",
+        right: "44px",
         ease: "power2.out",
         onComplete: () => {
             // Stay visible for configured time, then slide out
@@ -467,7 +442,7 @@ function showFollowToaster() {
                 if (toaster) { // Ensure element still exists
                     gsap.to(toaster, {
                         duration: 0.5,
-                        right: "-500px",
+                        right: "-560px",
                         ease: "power2.in"
                     });
                 }
