@@ -116,7 +116,7 @@ LoadEverything().then(() => {
     );
 
   Start = async () => {
-    startingAnimation.restart();
+    TSHPlayEntrance(startingAnimation);
   };
 
   Update = async (event) => {
@@ -280,14 +280,18 @@ LoadEverything().then(() => {
     // I do not want the colorInBoxes function to be running forever, but it does not seem to update
     // the color of the boxes by executing once or multiple times using a for loop for some reason.
     // setInterval works, so I am using it to repeat the colorInBoxes function 10 times.
-    let counter = 0;
-    const i = setInterval(function () {
+    if (!TSHShouldAnimate("update")) {
       colorInBoxes();
-      counter++;
-      if (counter == 10) {
-        clearInterval(i);
-      }
-    }, 100);
+    } else {
+      let counter = 0;
+      const i = setInterval(function () {
+        colorInBoxes();
+        counter++;
+        if (counter == 10) {
+          clearInterval(i);
+        }
+      }, 100);
+    }
   };
 
   /**

@@ -6,6 +6,41 @@ const useHiveCustomScoreColors = () =>
         .getPropertyValue("--hive-use-custom-score-colors")
         .trim() !== "0";
 
+const HIVE_DEFAULT_PORTRAIT = "./player-placeholder.svg";
+
+function hasCharacterPortrait(player) {
+    return Object.values(player?.character || {}).some(
+        (character) =>
+            character?.name && Object.keys(character.assets || {}).length > 0,
+    );
+}
+
+function updateHivePortraitFallback(player, playerNumber) {
+    const edge = document.querySelector(
+        `.p${playerNumber}.container .edge`,
+    );
+    const image = edge?.querySelector(".fallback-portrait-image");
+
+    if (!edge || !image) return;
+
+    const hasCharacter = hasCharacterPortrait(player);
+    const portraitSource = player?.online_avatar
+        ? player.online_avatar
+        : player?.avatar
+          ? `../../${player.avatar}`
+          : HIVE_DEFAULT_PORTRAIT;
+    const isProfilePortrait = portraitSource !== HIVE_DEFAULT_PORTRAIT;
+
+    edge.classList.toggle("has-character", hasCharacter);
+    edge.classList.toggle("has-profile-portrait", isProfilePortrait);
+    image.onerror = () => {
+        image.onerror = null;
+        edge.classList.remove("has-profile-portrait");
+        image.src = HIVE_DEFAULT_PORTRAIT;
+    };
+    image.src = portraitSource;
+}
+
 LoadEverything().then(() => {
     gsap.config({ nullTargetWarn: false, trialWarn: false });
 
@@ -125,8 +160,7 @@ LoadEverything().then(() => {
         );
 
     Start = async () => {
-        startingAnimation.timeScale(0.5);
-        startingAnimation.restart();
+        TSHPlayEntrance(startingAnimation, 0.5);
     };
 
     Update = async (event) => {
@@ -143,25 +177,7 @@ LoadEverything().then(() => {
             ].entries()) {
                 for (const [p, player] of [team.player["1"]].entries()) {
                     if (player) {
-                        if (
-                            Object.keys(player.character).length > 0 &&
-                            player.character[1].name
-                        ) {
-                            SetInnerHtml(
-                                $(
-                                    `.p${t + 1}.container .placeholder_container`,
-                                ),
-                                `<div class='placeholder'></div>`,
-                            );
-                        } else {
-                            SetInnerHtml($(`.p${t + 1} .placeholder`), "");
-                            SetInnerHtml(
-                                $(
-                                    `.p${t + 1}.container .placeholder_container`,
-                                ),
-                                "",
-                            );
-                        }
+                        updateHivePortraitFallback(player, t + 1);
 
                         SetInnerHtml(
                             $(`.p${t + 1}.container .sponsor_icon`),
@@ -305,6 +321,8 @@ LoadEverything().then(() => {
                         .querySelector(`.p${t + 1}.character_container`)
                         .classList.remove("unhidden");
 
+                    updateHivePortraitFallback(null, t + 1);
+
                     document
                         .querySelector(`.p${t + 1}.bg`)
                         .classList.remove("unhidden");
@@ -315,10 +333,6 @@ LoadEverything().then(() => {
                     SetInnerHtml($(`.p${t + 1} .seed`), "");
                     SetInnerHtml($(`.p${t + 1} .flagcountry`), "");
                     SetInnerHtml($(`.p${t + 1} .pronoun`), "");
-                    SetInnerHtml(
-                        $(`.p${t + 1}.container .placeholder_container`),
-                        "",
-                    );
                     SetInnerHtml($(`.p${t + 1}.container .sponsor_icon`), "");
                     SetInnerHtml($(`.p${t + 1} .score`), String(team.score));
                     UpdateColorAlternate(player, t);
@@ -374,14 +388,18 @@ LoadEverything().then(() => {
         // I do not want the colorInBoxes function to be running forever, but it does not seem to update
         // the color of the boxes by executing once or multiple times using a for loop for some reason.
         // setInterval works, so I am using it to repeat the colorInBoxes function 10 times.
-        let counter = 0;
-        const i = setInterval(function () {
+        if (!TSHShouldAnimate("update")) {
             colorInBoxes();
-            counter++;
-            if (counter == 10) {
-                clearInterval(i);
-            }
-        }, 100);
+        } else {
+            let counter = 0;
+            const i = setInterval(function () {
+                colorInBoxes();
+                counter++;
+                if (counter == 10) {
+                    clearInterval(i);
+                }
+            }, 100);
+        }
     };
 
     /**

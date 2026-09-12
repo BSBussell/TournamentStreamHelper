@@ -122,7 +122,8 @@ LoadEverything().then(() => {
     }
     
     // Flag to track if the content switch timer is already set
-    let contentSwitchTimerSet = !window.ROTATE;
+    let contentSwitchTimerSet =
+        !window.ROTATE || TSHPerformance.skip_content_rotation;
 
     let startingAnimation = gsap
         .timeline({ paused: true })
@@ -160,6 +161,12 @@ LoadEverything().then(() => {
 
     // Function to transition from tournament results to fun facts
     function switchToFunFacts() {
+        if (!TSHShouldAnimate("update")) {
+            gsap.set("#tournament-results", { opacity: 0, x: 0 });
+            gsap.set("#fun-facts", { opacity: 1, x: 0 });
+            return;
+        }
+
         // For player 1
         gsap.to("#tournament-results", { 
             duration: 0.5, 
@@ -178,6 +185,12 @@ LoadEverything().then(() => {
 
     // Function to transition from fun facts to tournament results
     function switchToTournamentResults() {
+        if (!TSHShouldAnimate("update")) {
+            gsap.set("#fun-facts", { opacity: 0, x: 0 });
+            gsap.set("#tournament-results", { opacity: 1, x: 0 });
+            return;
+        }
+
         // For player 1
         gsap.to("#fun-facts", { 
             duration: 0.5, 
@@ -195,7 +208,7 @@ LoadEverything().then(() => {
     }
 
     Start = async (event) => {
-        startingAnimation.restart();
+        TSHPlayEntrance(startingAnimation);
     };
 
     Update = async (event) => {
@@ -624,20 +637,23 @@ LoadEverything().then(() => {
                         
                         $(`.facts`).html(facts_html);
 
-                        // Animate the fun facts display
-                        let tl = gsap.timeline();
-                        playerFacts.forEach((fact, i) => {
-                            tl.from(
-                                $(`.fact${i + 1}`),
-                                { x: window.PLAYER == 1 ? 100 : -100, autoAlpha: 0, duration: 0.3 },
-                                0.2 + 0.2 * i,
-                            );
-                        });
-                        tl.resume();
+                        if (TSHShouldAnimate("update")) {
+                            let tl = gsap.timeline();
+                            playerFacts.forEach((fact, i) => {
+                                tl.from(
+                                    $(`.fact${i + 1}`),
+                                    { x: window.PLAYER == 1 ? 100 : -100, autoAlpha: 0, duration: 0.3 },
+                                    0.2 + 0.2 * i,
+                                );
+                            });
+                            tl.resume();
+                        } else {
+                            gsap.set(".tournament_container", { autoAlpha: 1, x: 0 });
+                        }
                     });
                 
                 // Set up the transition timer only once
-                if (!contentSwitchTimerSet) {
+                if (!contentSwitchTimerSet && !TSHPerformance.skip_content_rotation) {
                     contentSwitchTimerSet = true;
 
                     const cycleContent = (showFactsFirst) => {
@@ -690,7 +706,7 @@ LoadEverything().then(() => {
                     $(".sets").html(sets_html);
                 }
 
-                let tl = gsap.timeline();
+                let tl = TSHShouldAnimate("update") ? gsap.timeline() : null;
                 for (const [s, set] of Object.values(last_sets)
                     .slice(0, SETS)
                     .reverse()
@@ -714,13 +730,16 @@ LoadEverything().then(() => {
                         $(`.sets .set${s + 1} .set_score`),
                         score_text,
                     );
-                    tl.from(
-                        $(`.set${s + 1}`),
-                        { x: window.PLAYER == 1 ? 100 : -100, autoAlpha: 0, duration: 0.4 },
-                        0.2 + 0.2 * s,
-                    );
+                    if (tl) {
+                        tl.from(
+                            $(`.set${s + 1}`),
+                            { x: window.PLAYER == 1 ? 100 : -100, autoAlpha: 0, duration: 0.4 },
+                            0.2 + 0.2 * s,
+                        );
+                    }
                 }
-                tl.resume();
+                if (tl) tl.resume();
+                else gsap.set(".set_container", { autoAlpha: 1, x: 0 });
             }
         } else {
             const teams = Object.values(data.score[window.scoreboardNumber].team);
@@ -757,7 +776,7 @@ LoadEverything().then(() => {
                     SetInnerHtml($(`.p${t + 1} .real_name`), "");
                 }
 
-                gsap.to($(`.p${t + 1} .losers_badge`), {
+                TSHAnimateTo($(`.p${t + 1} .losers_badge`), {
                     autoAlpha: team.losers ? 1 : 0,
                     overwrite: true,
                     duration: 0.8,
@@ -930,7 +949,7 @@ LoadEverything().then(() => {
                     `score.${window.scoreboardNumber}.stage_strike.selectedStage`,
                 )
         ) {
-            gsap.fromTo(
+            TSHAnimateFromTo(
                 $(`.stage`),
                 { scale: 2 },
                 { scale: 1.2, duration: 0.8, ease: "power2.out" },

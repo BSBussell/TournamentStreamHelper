@@ -14,5 +14,35 @@
     "mode": "normal",
     "romajiSystem": "nippon"
   },
-  "automatic_theme": false
+  "automatic_theme": false,
+  "performance": {
+    "preset": "minimal",
+        "overrides": {
+          "skip_entrance_animations": false
+        },
+    "_documentation": {
+      "purpose": "Choose a preset, then add only the individual switches you want under overrides. Local layout/settings.json values override this global file.",
+      "preset": {
+        "quality": "Preserves the existing layout behavior.",
+        "balanced": "Keeps the presentation while deferring Japanese transcription and reducing file-poll work when the browser document is hidden.",
+        "stable": "Balanced plus immediate entrance and data-update states; avoids animation timing during live operation.",
+        "minimal": "Stable plus no rotating content panels and no image-readiness gate before revealing the source. Use when scene activation is the priority."
+      },
+      "overrides": {
+        "skip_entrance_animations": "Immediately apply every supported layout entrance timeline's final state.",
+        "skip_update_animations": "Immediately apply supported text, character, and layout update states instead of fading or moving them.",
+        "skip_content_rotation": "Keep rotating presentation content on its initial panel.",
+        "skip_asset_readiness_wait": "Reveal the browser source without waiting for all images to report ready; assets can appear a moment later.",
+        "skip_bracket_connector_animations": "For Bee Bracket, render connector lines and set visibility in their resolved state instead of building SVG line-draw timelines.",
+        "lazy_japanese_transcription": "Load and initialize the Japanese transcription dictionary only when Japanese text is actually encountered.",
+        "reduce_hidden_source_work": "For file-based sources only, reduce program-state polling from 64ms to 1000ms while the browser document reports itself hidden."
+      },
+      "example": {
+        "preset": "balanced",
+        "overrides": {
+          "skip_entrance_animations": true
+        }
+      }
+    }
+  }
 }

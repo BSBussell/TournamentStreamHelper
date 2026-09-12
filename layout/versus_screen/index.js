@@ -27,8 +27,7 @@ LoadEverything().then(() => {
     .from([".p2.container"], { duration: 1, x: "100px", ease: "out" }, 0);
 
   Start = async (event) => {
-    startingAnimation.timeScale(2);
-    startingAnimation.restart();
+    TSHPlayEntrance(startingAnimation, 2);
   };
 
   Update = async (event) => {
@@ -132,7 +131,7 @@ LoadEverything().then(() => {
             `,
           );
 
-          gsap.to($(`.p${t + 1} .losers_badge`), {
+          TSHAnimateTo($(`.p${t + 1} .losers_badge`), {
             autoAlpha: team.losers ? 1 : 0,
             overwrite: true,
             duration: 0.8,
@@ -259,7 +258,7 @@ LoadEverything().then(() => {
           SetInnerHtml($(`.p${t + 1} .real_name`), "");
         }
 
-        gsap.to($(`.p${t + 1} .losers_badge`), {
+        TSHAnimateTo($(`.p${t + 1} .losers_badge`), {
           autoAlpha: team.losers ? 1 : 0,
           overwrite: true,
           duration: 0.8,
@@ -447,7 +446,7 @@ LoadEverything().then(() => {
           `score.${window.scoreboardNumber}.stage_strike.selectedStage`,
         )
     ) {
-      gsap.fromTo(
+      TSHAnimateFromTo(
         $(`.stage`),
         { scale: 1.6 },
         { scale: 1.2, duration: 0.6, ease: "power2.out" },

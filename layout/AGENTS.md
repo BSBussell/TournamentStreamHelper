@@ -13,7 +13,7 @@
 
 ## Important Layout Boundaries
 
-- `scoreboard_HiveTracker` is a direct copy of JinTracker with an added `hive.css` and decorative portrait-frame SVGs in `index.html`. Preserve the shared colors, base controller, typography, logo, and placement; all hive accents use the existing P1/P2 CSS variables. See root `AGENTS.md` for inherited caveats and verification scope.
+- `scoreboard_HiveTracker` is a direct copy of JinTracker with an added `hive.css` and decorative portrait-frame SVGs in `index.html`. Preserve the shared colors, base controller, typography, logo, and placement; all hive accents use the existing P1/P2 CSS variables. Portrait hexes are always present: `index.js` uses a selected stock icon first, then `online_avatar`, then local `avatar`, and finally `player-placeholder.svg`. See root `AGENTS.md` for inherited caveats and verification scope.
 
 - `scoreboard_JinTracker`, `versus_screen`, `player_presentation_revamp`, and `bracket` are classic overlay layouts driven by the TSH-style runtime and shared text/character helpers.
 - `pr_presentation` carries a manually curated `player_placements_startgg.json` for presentation data. Its scene reads rank, start.gg gamer tag/prefix, account/profile image metadata, and local `mains` from that JSON instead of active TSH player identity fields. It now loads into a stream-safe teaser state first; the first click enters the configured starting placement, currently #10, and subsequent clicks advance toward #1 before showing the full leaderboard. Individual reveal screens resolve the current player’s JSON `mains` against `user_data/games/<game>/base_files/config.json` and default to the `webm` asset pack so the single-player motion treatment stays intact. The final leaderboard no longer builds a character collage from placement presets; it uses `layout/pr_presentation/collage/characters.png` as the top 85% poster image and renders a bottom 15% stock-icon character key from each player’s first local main.
@@ -28,6 +28,14 @@
 - `player_presentation_revamp` rotates between results/facts panels in JS and uses separate bottom-set cards; surface treatment changes should avoid affecting those opacity/slide transitions.
 - `player_presentation_revamp/index.js` resolves the selected player's `team.color` on every update and updates the existing global `--text-color` token. It uses a color-distance test to switch to a muted, hue-matched off-black only for backgrounds genuinely close to white; all other backgrounds receive pure white. This deliberately covers the player card, results/facts panels, and run cards together; a missing or unparseable team color preserves the configured token.
 - The smaller player presentation package lives in `player_presentation_mini/`; it is not a reduced HTML variant inside `player_presentation_revamp/`.
+
+## Performance Controls
+
+- Shared layout performance settings live in [`settings.json`](/Users/bbussell/Documents/UltTO/TournamentStreamHelper/layout/settings.json) under `performance`. The JSON includes its own `_documentation` object describing every preset and override; keep that documentation synchronized with the resolver in `include/globals.js`.
+- Use `performance.preset` for a named baseline (`quality`, `balanced`, `stable`, or `minimal`) and `performance.overrides` for explicit per-feature choices. A layout can add its own `performance` object in its local `settings.json`; local values win through the existing settings merge.
+- `quality` preserves animation behavior. `balanced` only changes under-the-hood startup/hidden-source work. `stable` settles supported entrance and update animations immediately. `minimal` additionally stops Player Presentation Revamp panel rotation and bypasses the image-readiness reveal gate.
+- Layout code should call `TSHPlayEntrance()` for initial GSAP timelines and `TSHAnimateTo()` / `TSHAnimateFromTo()` for update animations. These helpers preserve normal mode and apply the final state when the relevant override is enabled; do not add per-layout copies of the preset logic.
+- `SetInnerHtml()` and `CharacterDisplay()` honor `skip_update_animations` centrally. Bee Bracket additionally honors `skip_bracket_connector_animations` by calculating and applying its existing `hidden` / `displayed` / `done` state directly, avoiding SVG path measurement and per-set timeline construction. Top 8's single-insert markup construction is an always-on equivalent-visual cleanup, not a toggle.
 
 ## Verification Reality
 

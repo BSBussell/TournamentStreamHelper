@@ -10,6 +10,99 @@ var oldData = {};
 // where the local settings have priority over global ones
 var tsh_settings = {};
 
+// Resolved once settings are available. Layouts should use the helper functions
+// below instead of reading settings directly so presets and local overrides work
+// consistently everywhere.
+var TSHPerformance = {
+  preset: "quality",
+  skip_entrance_animations: false,
+  skip_update_animations: false,
+  skip_content_rotation: false,
+  skip_asset_readiness_wait: false,
+  skip_bracket_connector_animations: false,
+  lazy_japanese_transcription: false,
+  reduce_hidden_source_work: false,
+};
+
+const TSH_PERFORMANCE_PRESETS = {
+  quality: {},
+  balanced: {
+    lazy_japanese_transcription: true,
+    reduce_hidden_source_work: true,
+  },
+  stable: {
+    lazy_japanese_transcription: true,
+    reduce_hidden_source_work: true,
+    skip_entrance_animations: true,
+    skip_update_animations: true,
+    skip_bracket_connector_animations: true,
+  },
+  minimal: {
+    lazy_japanese_transcription: true,
+    reduce_hidden_source_work: true,
+    skip_entrance_animations: true,
+    skip_update_animations: true,
+    skip_bracket_connector_animations: true,
+    skip_content_rotation: true,
+    skip_asset_readiness_wait: true,
+  },
+};
+
+function ResolvePerformanceSettings() {
+  const rawSettings = tsh_settings.performance || {};
+  const preset = Object.prototype.hasOwnProperty.call(
+    TSH_PERFORMANCE_PRESETS,
+    rawSettings.preset,
+  )
+    ? rawSettings.preset
+    : "quality";
+
+  TSHPerformance = {
+    ...TSHPerformance,
+    ...TSH_PERFORMANCE_PRESETS[preset],
+    ...(rawSettings.overrides || {}),
+    preset,
+  };
+  window.TSHPerformance = TSHPerformance;
+}
+
+function TSHShouldAnimate(kind) {
+  if (kind === "entrance") return !TSHPerformance.skip_entrance_animations;
+  if (kind === "update") return !TSHPerformance.skip_update_animations;
+  return true;
+}
+
+// Play an entrance timeline normally, or commit it to its final visual state.
+// GSAP's end state is important here: layouts must not flash their hidden
+// `from()` values when an entrance is intentionally skipped.
+function TSHPlayEntrance(timeline, timeScale = 1) {
+  if (!timeline) return;
+
+  if (!TSHShouldAnimate("entrance")) {
+    timeline.progress(1).pause();
+    return;
+  }
+
+  timeline.timeScale(timeScale);
+  timeline.restart();
+}
+
+function TSHAnimateTo(target, vars) {
+  if (!TSHShouldAnimate("update")) {
+    gsap.killTweensOf(target);
+    return gsap.set(target, vars);
+  }
+  return gsap.to(target, vars);
+}
+
+function TSHAnimateFromTo(target, fromVars, toVars) {
+  if (!TSHShouldAnimate("update")) {
+    gsap.killTweensOf(target);
+    return gsap.set(target, toVars);
+  }
+  return gsap.fromTo(target, fromVars, toVars);
+}
+
 // This is called once after initialization. Layouts should reimplement this function.
 var Start = async () => {
   console.log("Start(): Implement me");
@@ -29,14 +122,24 @@ async function UpdateWrapper(event) {
   if (gsap.globalTimeline.timeScale() == 0) {
     gsap.globalTimeline.timeScale(1);
     window.requestAnimationFrame(() => {
-      $(document).waitForImages(() => {
-        $("body").fadeTo(1, 1, () => {
-          console.log("Start()")
+      const start = () => {
+        console.log("Start()");
+        setPlayerScoreColors(data);
+        Start();
+      };
 
-          setPlayerScoreColors(data);
-          Start();
-        });
-      });
+      // A skipped entrance must be visible in its settled state immediately.
+      if (!TSHShouldAnimate("entrance")) {
+        $("body").stop(true, true).css("opacity", 1);
+        start();
+      } else {
+        const revealAndStart = () => $("body").fadeTo(1, 1, start);
+        if (TSHPerformance.skip_asset_readiness_wait) {
+          revealAndStart();
+        } else {
+          $(document).waitForImages(revealAndStart);
+        }
+      }
     });
   }
 }
@@ -145,8 +248,6 @@ async function LoadEverything() {
     "gsap.min.js",
     "he.js",
     "lodash.min.js",
-    "kuroshiro.min.js",
-    "kuroshiro-analyzer-kuromoji.min.js",
     "jquery.waitforimages.min.js",
     "color-thief.min.js",
     "assetUtils.js",
@@ -169,13 +270,7 @@ async function LoadEverything() {
     const script = scripts[i];
     const src = libPath + script;
     try {
-      await new Promise((resolve, reject) => {
-        const scriptElement = document.createElement("script");
-        scriptElement.src = src;
-        scriptElement.onload = resolve;
-        scriptElement.onerror = reject;
-        document.head.appendChild(scriptElement);
-      });
+      await LoadScript(src);
       console.log(`Loaded script: ${src}`);
     } catch (error) {
       console.error(`Error loading script: ${src}`, error);
@@ -191,17 +286,18 @@ async function LoadEverything() {
 // Initialize libraries
 async function InitAll() {
   await LoadSettings();
+  ResolvePerformanceSettings();
 
   if (tsh_settings.automatic_theme) {
     GetLogoColors();
   }
 
-  await LoadKuroshiro();
+  if (!TSHPerformance.lazy_japanese_transcription) {
+    await LoadKuroshiro();
+  }
 
   if(window.location.protocol === 'file:' || window.location.host === 'absolute') {
-    setInterval(async () => {
-      await UpdateData();
-    }, 64);
+    StartFileDataPolling();
   } else {
     // Call program_state.json load just in case it takes
     // a bit to start the websocket
@@ -217,6 +313,27 @@ async function InitAll() {
     document.addEventListener("tsh_update", UpdateWrapper);
     gsap.globalTimeline.timeScale(0);
   })
+}
+
+function LoadScript(src) {
+  return new Promise((resolve, reject) => {
+    const scriptElement = document.createElement("script");
+    scriptElement.src = src;
+    scriptElement.onload = resolve;
+    scriptElement.onerror = reject;
+    document.head.appendChild(scriptElement);
+  });
+}
+
+function StartFileDataPolling() {
+  const poll = async () => {
+    const sourceIsHidden = document.hidden && TSHPerformance.reduce_hidden_source_work;
+    if (!sourceIsHidden) await UpdateData();
+
+    window.setTimeout(poll, sourceIsHidden ? 1000 : 64);
+  };
+
+  poll();
 }
 
 // Set player score colors
@@ -311,14 +428,26 @@ function FitText(target) {
   });
 }
 
-// Load Kuroshiro, the Japanese transcription library
+// Load Kuroshiro only when transcription is needed. This avoids dictionary
+// initialization during layout boot when a tournament does not use it.
+let kuroshiroLoadPromise = null;
 async function LoadKuroshiro() {
-  window.kuroshiro = new Kuroshiro.default();
-  await window.kuroshiro.init(
-    new KuromojiAnalyzer({
-      dictPath: "../include/kuromoji",
-    })
-  );
+  if (window.kuroshiro) return;
+
+  if (!kuroshiroLoadPromise) {
+    kuroshiroLoadPromise = (async () => {
+      await LoadScript("../include/kuroshiro.min.js");
+      await LoadScript("../include/kuroshiro-analyzer-kuromoji.min.js");
+      window.kuroshiro = new Kuroshiro.default();
+      await window.kuroshiro.init(
+        new KuromojiAnalyzer({
+          dictPath: "../include/kuromoji",
+        })
+      );
+    })();
+  }
+
+  await kuroshiroLoadPromise;
 }
 
 // Transcribes Japanese text to Roman characters using Kuroshiro
@@ -333,6 +462,7 @@ async function Transcript(text) {
   if (text == null || text.length == 0 || !settings.enabled) return text;
 
   try {
+    await LoadKuroshiro();
     if (window.Kuroshiro.default.Util.hasJapanese(text)) {
       return window.kuroshiro
         .convert(text, {
@@ -406,13 +536,18 @@ async function SetInnerHtml(element, html, settings = {}) {
 
       if (firstRun) {
         gsap.set(element.find(".text"), anim_in);
+      } else if (!TSHShouldAnimate("update")) {
+        gsap.killTweensOf(element.find(".text"));
+        gsap.set(element.find(".text"), anim_in);
       } else {
         anim_out.onComplete = null;
         gsap.fromTo(element.find(".text"), anim_out, anim_in);
       }
     };
 
-    if (!firstRun) {
+    if (!firstRun && !TSHShouldAnimate("update")) {
+      updateElement(element, html, firstRun);
+    } else if (!firstRun) {
       anim_out.onComplete = ()=>updateElement(element, html, firstRun)
       await gsap.to(element.find(".text"), anim_out);
     } else {

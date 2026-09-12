@@ -44,6 +44,36 @@
     border-radius: var(--border-radius) 0 0 var(--border-radius);
 }
 
+/* JinTracker's sponsor mark is an 80px background with a negative stacking
+   order. HiveTracker keeps it as a smaller, contained watermark beneath the
+   player label, so arbitrary logo aspect ratios cannot bleed past the plate. */
+.p1.container .sponsor_icon,
+.p2.container .sponsor_icon {
+    z-index: 1;
+    top: 3px;
+    width: 54px;
+    height: 46px;
+    overflow: hidden;
+    opacity: .48;
+}
+.p1.container .sponsor_icon { right: 78px; }
+.p2.container .sponsor_icon { left: 78px; }
+.p1.container .sponsor_icon > div,
+.p2.container .sponsor_icon > div {
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+.p1.container .name,
+.p2.container .name,
+.p1.container .score_container,
+.p2.container .score_container {
+    position: relative;
+    z-index: 2;
+}
+
 /* Lower the scoreboard assembly together, leaving camera borders in place. */
 .logo { top: 31px; }
 .p1.chips, .p2.chips, .p1.under_chips, .p2.under_chips { top: 16px; }
@@ -123,7 +153,7 @@
     height: 100%;
     transform: scale(.84);
     transform-origin: center;
-    z-index: 1;
+    z-index: 2;
     background-color: #050505;
     background-image: linear-gradient(
         180deg,
@@ -133,6 +163,45 @@
     );
     -webkit-mask: url("./rounded-hex.svg") center / 100% 100% no-repeat;
     mask: url("./rounded-hex.svg") center / 100% 100% no-repeat;
+}
+.container .edge .fallback-portrait {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    overflow: hidden;
+    transform: scale(.84);
+    transform-origin: center;
+    background:
+        radial-gradient(circle at 50% 20%, rgba(255, 255, 255, .12), transparent 44%),
+        linear-gradient(145deg, rgba(255, 255, 255, .06), transparent 52%),
+        #050505;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, .07),
+        inset 0 -8px 14px rgba(0, 0, 0, .72),
+        inset 0 0 7px rgba(0, 0, 0, .9);
+    -webkit-mask: url("./rounded-hex.svg") center / 100% 100% no-repeat;
+    mask: url("./rounded-hex.svg") center / 100% 100% no-repeat;
+}
+.container .edge .fallback-portrait-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 12%;
+    box-sizing: border-box;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .75));
+}
+.container .edge.has-profile-portrait .fallback-portrait-image {
+    padding: 0;
+    object-fit: cover;
+    filter: none;
+}
+.container .edge.has-character .fallback-portrait {
+    visibility: hidden;
+}
+.container .edge:not(.has-character) .character_container {
+    background: transparent;
+    background-image: none;
 }
 .container .edge .tsh-center-image {
     transform: scale(.92);
@@ -153,12 +222,6 @@
     background-color: transparent;
 }
 .container .placeholder { background: transparent; }
-.container:has(.character_container:not(.unhidden)) .edge,
-.container:not(:has(.placeholder)) .edge { visibility: hidden; }
-.p1.container:has(.character_container:not(.unhidden)) + .hive-shadow-layer,
-.p2.container:has(.character_container:not(.unhidden)) + .hive-shadow-layer,
-.p1.container:not(:has(.placeholder)) + .hive-shadow-layer,
-.p2.container:not(:has(.placeholder)) + .hive-shadow-layer { visibility: hidden; }
 
 /* The colored hex surface itself forms the frame. The old SVG linework made
    it look unrelated to the original panels' surface treatment. */

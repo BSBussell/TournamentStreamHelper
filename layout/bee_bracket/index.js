@@ -20,8 +20,7 @@ LoadEverything().then(() => {
         );
 
     Start = async (event) => {
-        startingAnimation.timeScale(2);
-        startingAnimation.restart();
+        TSHPlayEntrance(startingAnimation, 2);
     };
 
     var entryAnim = gsap.timeline();
@@ -61,7 +60,7 @@ LoadEverything().then(() => {
         return anim;
     }
 
-    function AnimateElement(roundKey, setIndex, set, bracket, progressionsOut) {
+    function ResolveSetState(roundKey, set, bracket, progressionsOut) {
         let isGf = false;
         let isGfR = false;
         let GfResetRoundNum = 0;
@@ -76,60 +75,80 @@ LoadEverything().then(() => {
             isGfR = parseInt(roundKey) == GfResetRoundNum;
         }
 
-        if (animations[roundKey][setIndex]) {
-            if (window.ALWAYS_EXPAND) {
-                // Hide incomplete sets (-1), but not pending (-2)
-                if (
-                    (set.playerId[0] == -1 && set.playerId[1] != -1) ||
-                    (set.playerId[0] != -1 && set.playerId[1] == -1)
-                ) {
-                    return animations[roundKey][setIndex].tweenTo("hidden");
-                }
+        if (window.ALWAYS_EXPAND) {
+            // Hide incomplete sets (-1), but not pending (-2)
+            if (
+                (set.playerId[0] == -1 && set.playerId[1] != -1) ||
+                (set.playerId[0] != -1 && set.playerId[1] == -1)
+            ) {
+                return "hidden";
+            }
 
-                if (!isGf && !isGfR)
-                    return animations[roundKey][setIndex].tweenTo("done");
+            if (!isGf && !isGfR) return "done";
 
-                if (isGf) {
-                    if (set.score[0] >= set.score[1] || !set.completed) {
-                        return animations[roundKey][setIndex].tweenTo(
-                            "displayed",
-                        );
-                    } else {
-                        return animations[roundKey][setIndex].tweenTo("done");
-                    }
-                }
-
-                if (
-                    progressionsOut == 0 &&
+            if (isGf) {
+                return set.score[0] >= set.score[1] || !set.completed
+                    ? "displayed"
+                    : "done";
+            } else {
+                return progressionsOut == 0 &&
                     isGfR &&
                     bracket[GfResetRoundNum - 1].sets[0].score[0] <
                         bracket[GfResetRoundNum - 1].sets[0].score[1] &&
                     bracket[GfResetRoundNum - 1].sets[0].completed
-                ) {
-                    return animations[roundKey][setIndex].tweenTo("displayed");
-                } else {
-                    return animations[roundKey][setIndex].tweenTo("hidden");
-                }
-            } else {
-                if (
-                    (set.playerId[0] == -2 && set.playerId[1] == -2) ||
-                    (set.playerId[0] == -1 && set.playerId[1] != -1) ||
-                    (set.playerId[0] != -1 && set.playerId[1] == -1) ||
-                    (progressionsOut == 0 &&
-                        isGfR &&
-                        bracket[GfResetRoundNum - 1].sets[0].score[0] >
-                            bracket[GfResetRoundNum - 1].sets[0].score[1])
-                ) {
-                    return animations[roundKey][setIndex].tweenTo("hidden");
-                } else if (
-                    !set.completed ||
-                    (isGf && set.score[0] >= set.score[1])
-                ) {
-                    return animations[roundKey][setIndex].tweenTo("displayed");
-                } else {
-                    return animations[roundKey][setIndex].tweenTo("done");
-                }
+                    ? "displayed"
+                    : "hidden";
             }
+        }
+
+        if (
+            (set.playerId[0] == -2 && set.playerId[1] == -2) ||
+            (set.playerId[0] == -1 && set.playerId[1] != -1) ||
+            (set.playerId[0] != -1 && set.playerId[1] == -1) ||
+            (progressionsOut == 0 &&
+                isGfR &&
+                bracket[GfResetRoundNum - 1].sets[0].score[0] >
+                    bracket[GfResetRoundNum - 1].sets[0].score[1])
+        ) {
+            return "hidden";
+        }
+
+        return !set.completed || (isGf && set.score[0] >= set.score[1])
+            ? "displayed"
+            : "done";
+    }
+
+    function ApplySetState(roundKey, setIndex, state) {
+        const slot = $(`.round_${roundKey} .slot_${setIndex + 1}`);
+        const lineIn = $(`.line_in_r_${roundKey}.s_${setIndex + 1}`);
+        const line = $(`.line_r_${roundKey}.s_${setIndex + 1}`);
+        const lineOut = $(`.line_out_r_${roundKey}.s_${setIndex + 1}`);
+
+        const isHidden = state === "hidden";
+        gsap.set(slot, { autoAlpha: isHidden ? 0 : 1, x: isHidden ? -50 : 0 });
+        gsap.set(lineIn, { autoAlpha: isHidden ? 0 : 1, strokeDashoffset: 0 });
+        gsap.set(line, {
+            autoAlpha: state === "done" ? 1 : 0,
+            strokeDashoffset: 0,
+        });
+        gsap.set(lineOut, {
+            autoAlpha: state === "done" ? 1 : 0,
+            strokeDashoffset: 0,
+        });
+    }
+
+    function AnimateElement(roundKey, setIndex, set, bracket, progressionsOut) {
+        const state = ResolveSetState(roundKey, set, bracket, progressionsOut);
+        if (
+            TSHPerformance.skip_bracket_connector_animations ||
+            !TSHShouldAnimate("update")
+        ) {
+            ApplySetState(roundKey, setIndex, state);
+            return null;
+        }
+
+        if (animations[roundKey]?.[setIndex]) {
+            return animations[roundKey][setIndex].tweenTo(state);
         }
         return null;
     }
@@ -489,11 +508,34 @@ LoadEverything().then(() => {
                 $(".lines").html(slotLines);
 
                 // ANIMATIONS
-                animations = {};
+                const renderBracketStateDirectly =
+                    TSHPerformance.skip_bracket_connector_animations ||
+                    !TSHShouldAnimate("update");
 
-                entryAnim = gsap.timeline();
+                if (renderBracketStateDirectly) {
+                    // Avoid per-set timelines and SVG getTotalLength() work.
+                    // The bracket still uses the same state rules as normal mode.
+                    animations = {};
+                    entryAnim = null;
+                    Object.entries(bracket).forEach(([roundKey, round]) => {
+                        Object.values(round.sets).forEach((set, setIndex) => {
+                            ApplySetState(
+                                roundKey,
+                                setIndex,
+                                ResolveSetState(
+                                    roundKey,
+                                    set,
+                                    bracket,
+                                    progressionsOut,
+                                ),
+                            );
+                        });
+                    });
+                } else {
+                    animations = {};
+                    entryAnim = gsap.timeline();
 
-                let GfResetRoundNum = Math.max.apply(
+                    let GfResetRoundNum = Math.max.apply(
                     null,
                     Object.keys(bracket).map((r) => parseInt(r)),
                 );
@@ -564,8 +606,9 @@ LoadEverything().then(() => {
                     });
                 });
 
-                entryAnim.timeScale(1.25);
-                entryAnim.play(0);
+                    entryAnim.timeScale(1.25);
+                    entryAnim.play(0);
+                }
             }
 
             // TRIGGER ANIMATIONS

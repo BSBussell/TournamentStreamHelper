@@ -89,9 +89,9 @@ document.addEventListener("tsh_update", (event) => {
     let data = _.get(event.data, path + ".1.assets");
 
     if (!data) {
-      gsap.timeline().to($(e), { autoAlpha: 0 });
+      TSHAnimateTo($(e), { autoAlpha: 0 });
     } else {
-      gsap.timeline().to($(e), { autoAlpha: 1 });
+      TSHAnimateTo($(e), { autoAlpha: 1 });
     }
   });
 });
@@ -297,12 +297,21 @@ async function updateCharacterContainer(e, event) {
 
       if($(e) && $(e).children(".tsh_character").length > 0){
         anim_out.onComplete = null;
-        gsap.fromTo($(e).children(".tsh_character"), anim_out, anim_in);
+        const charactersToShow = $(e).children(".tsh_character");
+        if (!TSHShouldAnimate("update")) {
+          gsap.killTweensOf(charactersToShow);
+          gsap.set(charactersToShow, anim_in);
+        } else {
+          gsap.fromTo(charactersToShow, anim_out, anim_in);
+        }
       }
     };
 
     if (firstRun) {
       // No need to fade out
+      await callback();
+    } else if (!TSHShouldAnimate("update")) {
+      gsap.killTweensOf($(e).children(".tsh_character"));
       await callback();
     } else {
       // Fade out, then change data and fade in
@@ -322,9 +331,9 @@ document.addEventListener("tsh_update", (event) => {
     let data = _.get(event.data, path);
 
     if (!data) {
-      gsap.timeline().to($(e), { autoAlpha: 0 });
+      TSHAnimateTo($(e), { autoAlpha: 0 });
     } else {
-      gsap.timeline().to($(e), { autoAlpha: 1 });
+      TSHAnimateTo($(e), { autoAlpha: 1 });
       SetInnerHtml($(e), data);
     }
   });

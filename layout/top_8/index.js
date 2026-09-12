@@ -6,7 +6,7 @@ LoadEverything().then(() => {
     .from([".container"], { duration: 1, width: "0", ease: "power2.inOut" }, 0);
 
   Start = async (event) => {
-    startingAnimation.restart();
+    TSHPlayEntrance(startingAnimation);
   };
 
   Update = async (event) => {
@@ -75,24 +75,15 @@ LoadEverything().then(() => {
         htmls.push(html);
       });
 
-      $(".top1_container").html("");
-      $(".top4_container").html("");
-      $(".top8_container").html("");
-
-      for (let i = 0; i < htmls.length; i++) {
-        let html = htmls[i];
-
-        if (window.SAME_SIZE) {
-          $(".top8_container").html($(".top8_container").html() + html);
-        } else {
-          if (i == 0) {
-            $(".top1_container").html($(".top1_container").html() + html);
-          } else if (i < 4) {
-            $(".top4_container").html($(".top4_container").html() + html);
-          } else {
-            $(".top8_container").html($(".top8_container").html() + html);
-          }
-        }
+      // Insert each container once. Repeatedly reading and concatenating .html()
+      // forces unnecessary parse/layout work as the Top 8 list grows.
+      if (window.SAME_SIZE) {
+        $(".top1_container, .top4_container").empty();
+        $(".top8_container").html(htmls.join(""));
+      } else {
+        $(".top1_container").html(htmls.slice(0, 1).join(""));
+        $(".top4_container").html(htmls.slice(1, 4).join(""));
+        $(".top8_container").html(htmls.slice(4).join(""));
       }
 
       let isTeams = Object.keys(data.player_list.slot["1"].player).length > 1;
