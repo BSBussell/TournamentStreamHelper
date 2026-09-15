@@ -48,3 +48,10 @@
 ## Verification Reality
 
 - No browser/runtime preview was executed in this change; updates were verified by static inspection and grep for variable wiring.
+
+## Upstream Integration Notes
+
+- The upstream root repository still models `layout/` as the `TournamentStreamHelper-layouts` submodule, but this fork intentionally tracks a fully materialized and substantially customized `layout/` directory. Do not run `git submodule update --init layout` on this fork: it would replace the local layout tree with the upstream submodule checkout.
+- Integrate upstream root-code changes and upstream layout changes separately. Layout updates require a file-level comparison because shared files include `include/globals.js`, `include/assetUtils.js`, `main.css`, and numerous customized scoreboards. Preserve local-only layouts and resolve shared layout files according to their runtime state contract rather than bulk replacing them.
+- `safe-sync` is the isolated branch for the current upstream integration. Its Start.gg recent-set path retains the local 20-page, both-direction H2H history window on top of upstream's Worker API; it collects workers from both directions and waits for at most 30 seconds before deduplicating and sorting results.
+- Current integration verification is static only: Python source and the merged JSON assets parsed successfully. App launch, authenticated Start.gg queries, and OBS/browser overlay previews remain required before promotion.
