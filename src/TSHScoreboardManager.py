@@ -4,6 +4,7 @@ from qtpy.QtWidgets import *
 from loguru import logger
 
 from .TSHScoreboardWidget import TSHScoreboardWidget
+from .SettingsManager import SettingsManager
 from .StateManager import StateManager
 
 
@@ -38,17 +39,19 @@ class TSHScoreboardManager(QDockWidget):
         self.scoreboardholder = []
 
     def UpdateAmount(self, amount):
-        StateManager.BlockSaving()
-
+        # BlockSaving() lives inside the try so that the finally below always
+        # releases it, even if one of the calls in between raises.
         try:
+            StateManager.BlockSaving()
+
             if amount > len(self.scoreboardholder):
                 logger.info(
                     "Scoreboard Manager - Creating Scoreboard " + str(amount))
 
                 if int(amount)-1 == 1:
-                    self.GetScoreboard(1).btLoadPlayerSet.setHidden(True)
-                    self.GetScoreboard(
-                        1).btLoadPlayerSetOptions.setHidden(True)
+                    if not SettingsManager.Get("general.hide_track_player", False):
+                        self.GetScoreboard(1).btLoadPlayerSet.setHidden(True)
+                        self.GetScoreboard(1).btLoadPlayerSetOptions.setHidden(True)
 
                 scoreboard = QWidget()
                 scoreboard.setLayout(QVBoxLayout())
@@ -64,9 +67,9 @@ class TSHScoreboardManager(QDockWidget):
                 self.scoreboardholder[amount].deleteLater()
                 self.scoreboardholder.pop(amount)
                 if int(amount) == 1:
-                    self.GetScoreboard(1).btLoadPlayerSet.setHidden(False)
-                    self.GetScoreboard(
-                        1).btLoadPlayerSetOptions.setHidden(False)
+                    if not SettingsManager.Get("general.hide_track_player", False):
+                        self.GetScoreboard(1).btLoadPlayerSet.setHidden(False)
+                        self.GetScoreboard(1).btLoadPlayerSetOptions.setHidden(False)
                 StateManager.Unset(f"score.{amount+1}")
         finally:
             StateManager.ReleaseSaving()
@@ -74,10 +77,14 @@ class TSHScoreboardManager(QDockWidget):
     def GetScoreboard(self, number):
         if int(number)-1 < len(self.scoreboardholder):
             return self.scoreboardholder[int(number)-1]
-        else:
+        elif len(self.scoreboardholder) > 0:
             logger.error(
                 f"Scoreboard Manager - Unable to retrieve scoreboard {number}, defaulting to scoreboard 1")
             return self.scoreboardholder[0]
+        else:
+            logger.error(
+                f"Scoreboard Manager - Unable to retrieve scoreboard {number}, no scoreboards available")
+            return None
 
     def SetTabName(self, index, name):
         if int(index)-1 < self.tabs.count():

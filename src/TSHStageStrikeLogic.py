@@ -1,6 +1,13 @@
 from .StateManager import StateManager
 from copy import deepcopy
 from loguru import logger
+from qtpy.QtCore import QObject, Signal
+from .TSHScoreboardManager import TSHScoreboardManager
+
+
+class TSHStageStrikeStateSignals(QObject):
+    state_updated = Signal()
+
 
 class TSHStageStrikeState:
     def __init__(self) -> None:
@@ -20,7 +27,7 @@ class TSHStageStrikeState:
         self.timestamp = 0
         self.serverTimestamp = 0
         self.gentlemans = False
-    
+
     def Clone(self):
         clone = TSHStageStrikeState()
         clone.__dict__ = deepcopy(self.__dict__)
@@ -31,7 +38,8 @@ class TSHStageStrikeLogic():
         self.ruleset: "Ruleset" = None
         self.history: list(TSHStageStrikeState) = [TSHStageStrikeState()]
         self.historyIndex = 0
-    
+        self.signals = TSHStageStrikeStateSignals()
+
     def AddHistory(self, state, justOverwrite=False):
         self.history = self.history[:self.historyIndex+1]
 
@@ -60,6 +68,9 @@ class TSHStageStrikeLogic():
         self.ExportState()
     
     def ExportState(self):
+        codename = self.CurrentState().selectedStage
+        stage_data = StateManager.Get(f"game.stages.{codename}") if codename else None
+
         StateManager.Set("score.1.stage_strike", {
             "currGame": self.CurrentState().currGame,
             "currPlayer": self.CurrentState().currPlayer,
@@ -68,12 +79,27 @@ class TSHStageStrikeLogic():
             "strikedBy": self.CurrentState().strikedBy,
             "stagesWon": self.CurrentState().stagesWon,
             "stagesPicked": self.CurrentState().stagesPicked,
-            "selectedStage": self.CurrentState().selectedStage,
+            "selectedStage": codename,
+            "selectedStageData": stage_data,
             "lastWinner": self.CurrentState().lastWinner,
             "gentlemans": self.CurrentState().gentlemans,
             "canUndo": self.historyIndex > 0,
             "canRedo": self.historyIndex < len(self.history) - 1
         })
+        self.signals.state_updated.emit()
+
+        if len(self.history) > 1:
+            try:
+                last_known_state = self.history[-1]
+                sb_widget = TSHScoreboardManager.instance.GetScoreboard(1)
+                for i in range(1, len(last_known_state.stagesPicked)):
+                    sb_widget.individualGameTracker.SetStage(i-1, last_known_state.stagesPicked[i])
+                # Also update the current game's slot with the selected stage
+                if last_known_state.selectedStage:
+                    sb_widget.individualGameTracker.SetStage(
+                        last_known_state.currGame, last_known_state.selectedStage)
+            except IndexError as e:
+                logger.warning("Could not find scoreboard 1 when piloting the stage history!")
 
     def SetRuleset(self, ruleset):
         self.ruleset = ruleset
