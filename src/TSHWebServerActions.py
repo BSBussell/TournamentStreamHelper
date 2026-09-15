@@ -1,10 +1,13 @@
 import os
 import re
+from flask import abort
 from qtpy.QtGui import *
 from qtpy.QtWidgets import *
 from qtpy.QtCore import *
 import orjson
 
+from .Helpers.TSHCountryHelper import TSHCountryHelper
+from .Helpers.TSHQtHelper import gui_thread_async, gui_thread_sync
 from .StateManager import StateManager
 from .TSHStatsUtil import TSHStatsUtil
 from .SettingsManager import SettingsManager
@@ -12,16 +15,23 @@ from loguru import logger
 from .TSHGameAssetManager import TSHGameAssetManager
 from .TSHBracketView import TSHBracketView
 from .TSHBracketWidget import TSHBracketWidget
+from .TSHPlayerDB import TSHPlayerDB
 from .TSHScoreboardWidget import TSHScoreboardWidget
 from .TSHTournamentDataProvider import TSHTournamentDataProvider
 from .TSHCommentaryWidget import TSHCommentaryWidget
 from .Helpers.TSHControllerHelper import TSHControllerHelper
+from .Helpers.TSHLocaleHelper import TSHLocaleHelper
 from .Workers import Worker
 import os
 
 import logging
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
+
+
+class ScoreboardNotAvailable(Exception):
+    """Raised when a scoreboard is requested but not yet initialized."""
+    pass
 
 
 class WebServerActions(QThread):
@@ -32,9 +42,17 @@ class WebServerActions(QThread):
         self.commentaryWidget = commentaryWidget
         self.threadPool = QThreadPool()
 
-    def program_state(self):
-        return StateManager.state
+    def _get_scoreboard(self, number=1):
+        """Get a scoreboard by number, raising ScoreboardNotAvailable if it doesn't exist."""
+        sb = self.scoreboard.GetScoreboard(number)
+        if sb is None:
+            raise ScoreboardNotAvailable(f"Scoreboard {number} not available")
+        return sb
 
+    def program_state(self):
+        return {'state': StateManager.state, 'delta_index': StateManager.deltaIndex}
+
+    @gui_thread_sync
     def ruleset(self):
         data = {}
 
@@ -50,7 +68,7 @@ class WebServerActions(QThread):
 
         # Add player names
         teams = [1, 2]
-        if self.scoreboard.GetScoreboard(1).teamsSwapped:
+        if self._get_scoreboard(1).teamsSwapped:
             teams.reverse()
 
         for i, t in enumerate(teams):
@@ -66,6 +84,11 @@ class WebServerActions(QThread):
                     f"p{t}": " / ".join(names)
                 })
 
+            # Country code of the first player on this team (for per-player language)
+            player_1 = StateManager.Get(f"score.1.team.{i+1}.player.1", {}) or {}
+            country = player_1.get("country")
+            data[f"p{t}_country"] = country.get("code") if isinstance(country, dict) else None
+
         # Add set data
         data.update({
             "best_of": StateManager.Get(f"score.1.best_of"),
@@ -76,20 +99,24 @@ class WebServerActions(QThread):
 
         return data
 
+    @gui_thread_sync
     def stage_clicked(self, data):
         self.stageWidget.stageStrikeLogic.StageClicked(
             orjson.loads(data))
         return "OK"
 
+    @gui_thread_sync
     def confirm_clicked(self):
         self.stageWidget.stageStrikeLogic.ConfirmClicked()
         return "OK"
 
+    @gui_thread_sync
     def rps_win(self, winner):
         self.stageWidget.stageStrikeLogic.RpsResult(
             int(winner))
         return "OK"
 
+    @gui_thread_sync
     def match_win(self, winner):
         self.stageWidget.stageStrikeLogic.MatchWinner(
             int(winner))
@@ -97,26 +124,32 @@ class WebServerActions(QThread):
         self.UpdateScore()
         return "OK"
 
+    @gui_thread_sync
     def set_gentlemans(self, value):
         self.stageWidget.stageStrikeLogic.SetGentlemans(
             value)
         return "OK"
 
+    @gui_thread_sync
     def stage_strike_undo(self):
         self.stageWidget.stageStrikeLogic.Undo()
         self.UpdateScore()
         return "OK"
 
+    @gui_thread_sync
     def stage_strike_redo(self):
         self.stageWidget.stageStrikeLogic.Redo()
         self.UpdateScore()
         return "OK"
 
+    @gui_thread_sync
     def reset(self):
         self.stageWidget.stageStrikeLogic.Initialize()
         self.UpdateScore()
+        self._get_scoreboard(0).individualGameTracker.ResetAllStages()
         return "OK"
 
+    @gui_thread_sync
     def UpdateScore(self):
         if not SettingsManager.Get("general.control_score_from_stage_strike", True):
             return
@@ -130,44 +163,54 @@ class WebServerActions(QThread):
 
         logger.info(f"We're supposed to update the score {score}")
 
-        self.scoreboard.GetScoreboard(1).signals.ChangeSetData.emit({
+        self._get_scoreboard(1).signals.ChangeSetData.emit({
             "team1score": score[0],
             "team2score": score[1],
-            "reset_score": True
         })
 
+    @gui_thread_sync
     def post_score(self, data):
         score = orjson.loads(data)
-        score.update({"reset_score": True})
-        self.scoreboard.GetScoreboard(1).signals.ChangeSetData.emit(score)
+        scoreboard_number = 1
+
+        if "scoreboard" in score:
+            try:
+                scoreboard_number = int(score["scoreboard"])
+            except ValueError:
+                logger.warning(f"Couldn't parse scoreboard [${score['scoreboard']}] from /post_data as int, falling back to scoreboard 1")
+                scoreboard_number = 1
+
+        self._get_scoreboard(scoreboard_number).signals.ChangeSetData.emit(score)
         return "OK"
 
+    @gui_thread_sync
     def team_scoreup(self, scoreboard, team):
         if str(team) == "1":
-            self.scoreboard.GetScoreboard(scoreboard).signals.CommandScoreChange.emit(0, 1)
+            self._get_scoreboard(scoreboard).CommandScoreChange(0, 1)
         else:
-            self.scoreboard.GetScoreboard(scoreboard).signals.CommandScoreChange.emit(1, 1)
+            self._get_scoreboard(scoreboard).CommandScoreChange(1, 1)
         return "OK"
 
+    @gui_thread_sync
     def team_scoredown(self, scoreboard, team):
         if str(team) == "1":
-            self.scoreboard.GetScoreboard(scoreboard).signals.CommandScoreChange.emit(0, -1)
+            self._get_scoreboard(scoreboard).CommandScoreChange(0, -1)
         else:
-            self.scoreboard.GetScoreboard(scoreboard).signals.CommandScoreChange.emit(1, -1)
+            self._get_scoreboard(scoreboard).CommandScoreChange(1, -1)
         return "OK"
 
-    
     def team_color(self, scoreboard, team, color):
         if str(team) == "1":
-            self.scoreboard.GetScoreboard(scoreboard).signals.CommandTeamColor.emit(0, color)
+            self._get_scoreboard(scoreboard).signals.CommandTeamColor.emit(0, color)
         else:
-            self.scoreboard.GetScoreboard(scoreboard).signals.CommandTeamColor.emit(1, color)
+            self._get_scoreboard(scoreboard).signals.CommandTeamColor.emit(1, color)
         return "OK"
 
     def get_scoreboard(self, scoreboard):
-        sb_widget: TSHScoreboardWidget = self.scoreboard.GetScoreboard(scoreboard)
+        sb_widget: TSHScoreboardWidget = self._get_scoreboard(scoreboard)
         return StateManager.Get(f'score.{sb_widget.scoreboardNumber}')
 
+    @gui_thread_sync
     def set_route(self,
                   scoreboard,
                   bestOf=None,
@@ -180,7 +223,7 @@ class WebServerActions(QThread):
         # Best Of argument
         # best-of=<Best Of Amount>
         if bestOf is not None:
-            self.scoreboard.GetScoreboard(scoreboard).signals.ChangeSetData.emit(
+            self._get_scoreboard(scoreboard).signals.ChangeSetData.emit(
                 orjson.loads(
                     orjson.dumps({'bestOf': int(bestOf)})
                 )
@@ -189,7 +232,7 @@ class WebServerActions(QThread):
         # Phase argument
         # phase=<Phase Name>
         if phase is not None:
-            self.scoreboard.GetScoreboard(scoreboard).signals.ChangeSetData.emit(
+            self._get_scoreboard(scoreboard).signals.ChangeSetData.emit(
                 orjson.loads(
                     orjson.dumps({'tournament_phase': phase})
                 )
@@ -198,7 +241,7 @@ class WebServerActions(QThread):
         # Match argument
         # match=<Match Name>
         if match is not None:
-            self.scoreboard.GetScoreboard(scoreboard).signals.ChangeSetData.emit(
+            self._get_scoreboard(scoreboard).signals.ChangeSetData.emit(
                 orjson.loads(
                     orjson.dumps({'round_name': match})
                 )
@@ -207,25 +250,56 @@ class WebServerActions(QThread):
         # Players argument
         # players=<Amount of Players>
         if players is not None:
-            self.scoreboard.GetScoreboard(scoreboard).playerNumber.setValue(int(players))
+            self._get_scoreboard(scoreboard).playerNumber.setValue(int(players))
 
         # Characters argument
         # characters=<Amount of Characters>
         if characters is not None:
-            self.scoreboard.GetScoreboard(scoreboard).charNumber.setValue(int(characters))
+            self._get_scoreboard(scoreboard).charNumber.setValue(int(characters))
 
         # Losers argument
         # losers=<True/False>&team=<Team Number>
         if losers is not None:
-            self.scoreboard.GetScoreboard(scoreboard).signals.ChangeSetData.emit(
+            self._get_scoreboard(scoreboard).signals.ChangeSetData.emit(
                 orjson.loads(
                     orjson.dumps({'team' + str(team) + 'losers': False if losers.lower() == 'false' else True})
                 )
             )
         return "OK"
 
+    def _resolve_character_name(self, name: str) -> str:
+        """Resolve a character identifier to its en_name.
+        Checks codename first, then en_name. Returns the input unchanged if no match."""
+        characters = TSHGameAssetManager.instance.characters
+        for en_name, char_data in characters.items():
+            if char_data.get("codename") == name:
+                return en_name
+        return name
+
+    def _resolve_mains(self, mains):
+        """Resolve character codenames to en_names in a mains structure."""
+        if isinstance(mains, list):
+            return [
+                [self._resolve_character_name(entry[0])] + list(entry[1:])
+                if entry else entry
+                for entry in mains
+            ]
+        if isinstance(mains, dict):
+            return {
+                game: [
+                    [self._resolve_character_name(entry[0])] + list(entry[1:])
+                    if entry else entry
+                    for entry in entries
+                ]
+                for game, entries in mains.items()
+            }
+        return mains
+
     def set_team_data(self, scoreboard, team, player, data):
-        self.scoreboard.GetScoreboard(scoreboard).signals.ChangeSetData.emit({
+        if data and "mains" in data:
+            data = {**data, "mains": self._resolve_mains(data["mains"])}
+        sb = self._get_scoreboard(scoreboard)
+        sb.signals.ChangeSetData.emit({
             "team": team,
             "player": player,
             "data": data
@@ -241,6 +315,51 @@ class WebServerActions(QThread):
 
         return "OK"
 
+    @gui_thread_sync
+    def set_game(self, data):
+        # Not actually sure if this needs to be in the GUI thread but the asset manager is complex enough that it seems
+        # worthwhile to dispatch it like this.
+        set_codename = data.get("codename")
+        found_game = False
+        for i, codename in enumerate(TSHGameAssetManager.instance.games.keys()):
+            if codename == set_codename:
+                # TSHGameAssetManager.instance.selectedGame = TSHGameAssetManager.instance.games[codename]
+                # self.parent().SetGame()
+                TSHGameAssetManager.instance.LoadGameAssets(i+1, async_mode=False, mods_active=data.get("mods_active", False), mods_reload_mode=True)
+                found_game = True
+                break
+
+        if not found_game:
+            return f"Could not find game {set_codename}"
+
+        return "OK"
+
+    def get_games(self):
+        data = {}
+        for key in TSHGameAssetManager.instance.games.keys():
+            data[key] = {
+                "name": TSHGameAssetManager.instance.games[key].get("name"),
+                "locale": TSHGameAssetManager.instance.games[key].get("locale"),
+                "smashgg_game_id": TSHGameAssetManager.instance.games[key].get("smashgg_game_id"),
+                "igdb_game_id": TSHGameAssetManager.instance.games[key].get("igdb_game_id"),
+                "has_stages": bool(TSHGameAssetManager.instance.games[key].get("stage_to_codename")),
+                "has_variants": bool(TSHGameAssetManager.instance.games[key].get("variant_to_codename")),
+                "has_colors": bool(TSHGameAssetManager.instance.games[key].get("preset_colors"))
+            }
+
+        return data
+    
+    def get_current_game(self):
+        return StateManager.Get("game")
+    
+    def get_match_names(self):
+        response = {
+            "match": TSHLocaleHelper.matchNames,
+            "phase": TSHLocaleHelper.phaseNames
+        }
+        return response
+
+    @gui_thread_sync
     def get_characters(self):
         data = {}
         for row in range(TSHGameAssetManager.instance.characterModel.rowCount()):
@@ -249,9 +368,16 @@ class WebServerActions(QThread):
             item_data = item.data(Qt.ItemDataRole.UserRole)
 
             if item_data is not None:
+                skin_models = TSHGameAssetManager.instance.skinModels.get(item_data.get("en_name"))
+                item_data["skins"] = []
+                if skin_models is not None:
+                    for skindex in range(skin_models.rowCount()):
+                        item_data["skins"].append(skin_models.index(skindex, 0).data(Qt.ItemDataRole.UserRole))
                 data[item_data.get("name")] = item_data
+
         return data
-    
+
+    @gui_thread_sync
     def get_variants(self):
         data = {}
         for row in range(TSHGameAssetManager.instance.variantModel.rowCount()):
@@ -262,7 +388,7 @@ class WebServerActions(QThread):
             if item_data is not None:
                 data[item_data.get("name")] = item_data
         return data
-    
+
     def get_controllers(self):
         data = TSHControllerHelper.instance.controller_list
         for key in data.keys():
@@ -270,22 +396,24 @@ class WebServerActions(QThread):
         return data
 
     def swap_teams(self, scoreboard):
-        self.scoreboard.GetScoreboard(scoreboard).signals.SwapTeams.emit()
+        sb = self._get_scoreboard(scoreboard)
+        sb.signals.SwapTeams.emit()
         return "OK"
-    
+
     def get_swap(self, scoreboard):
-        return str(self.scoreboard.GetScoreboard(scoreboard).teamsSwapped)
+        sb = self._get_scoreboard(scoreboard)
+        return str(sb.teamsSwapped)
 
     def open_sets(self, scoreboard):
-        self.scoreboard.GetScoreboard(scoreboard).signals.SetSelection.emit()
+        self._get_scoreboard(scoreboard).signals.SetSelection.emit()
         return "OK"
 
     def pull_stream_set(self, scoreboard):
-        self.scoreboard.GetScoreboard(scoreboard).signals.StreamSetSelection.emit()
+        self._get_scoreboard(scoreboard).signals.StreamSetSelection.emit()
         return "OK"
 
     def pull_user_set(self):
-        self.scoreboard.GetScoreboard(1).signals.UserSetSelection.emit()
+        self._get_scoreboard(1).signals.UserSetSelection.emit()
         return "OK"
 
     def stats_recent_sets(self, scoreboard):
@@ -298,81 +426,89 @@ class WebServerActions(QThread):
 
     def stats_last_sets(self, scoreboard, player):
         if str(player) == "1":
-            self.scoreboard.GetScoreboard(
+            self._get_scoreboard(
                 scoreboard).stats.signals.LastSetsP1Signal.emit()
         elif str(player) == "2":
-            self.scoreboard.GetScoreboard(
+            self._get_scoreboard(
                 scoreboard).stats.signals.LastSetsP2Signal.emit()
         elif player == "both":
-            self.scoreboard.GetScoreboard(
+            self._get_scoreboard(
                 scoreboard).stats.signals.LastSetsP1Signal.emit()
-            self.scoreboard.GetScoreboard(
+            self._get_scoreboard(
                 scoreboard).stats.signals.LastSetsP2Signal.emit()
         else:
             logger.error(
                 "[Last Sets] Unable to find player defined. Allowed values are: 1, 2, or both")
         return "OK"
 
+    @gui_thread_sync
     def stats_history_sets(self, scoreboard, player):
         if str(player) == "1":
-            self.scoreboard.GetScoreboard(
+            self._get_scoreboard(
                 scoreboard).stats.signals.PlayerHistoryStandingsP1Signal.emit()
         elif str(player) == "2":
-            self.scoreboard.GetScoreboard(
+            self._get_scoreboard(
                 scoreboard).stats.signals.PlayerHistoryStandingsP2Signal.emit()
         elif player == "both":
-            self.scoreboard.GetScoreboard(
+            self._get_scoreboard(
                 scoreboard).stats.signals.PlayerHistoryStandingsP1Signal.emit()
-            self.scoreboard.GetScoreboard(
+            self._get_scoreboard(
                 scoreboard).stats.signals.PlayerHistoryStandingsP2Signal.emit()
         else:
             logger.error(
                 "[History Standings] Unable to find player defined. Allowed values are: 1, 2, or both")
         return "OK"
 
+    @gui_thread_sync
     def reset_scores(self, scoreboard):
-        self.scoreboard.GetScoreboard(scoreboard).ResetScore()
+        self._get_scoreboard(scoreboard).ResetScore()
         return "OK"
 
+    @gui_thread_sync
     def reset_match(self, scoreboard):
-        self.scoreboard.GetScoreboard(scoreboard).ClearScore()
-        self.scoreboard.GetScoreboard(scoreboard).scoreColumn.findChild(
+        self._get_scoreboard(scoreboard).ClearScore()
+        self._get_scoreboard(scoreboard).scoreColumn.findChild(
             QSpinBox, "best_of").setValue(0)
         return "OK"
 
+    @gui_thread_sync
     def reset_players(self, scoreboard):
-        self.scoreboard.GetScoreboard(scoreboard).CommandClearAll()
+        self._get_scoreboard(scoreboard).CommandClearAll()
         return "OK"
 
+    @gui_thread_sync
     def clear_all(self, scoreboard):
-        self.scoreboard.GetScoreboard(scoreboard).ClearScore()
-        self.scoreboard.GetScoreboard(scoreboard).scoreColumn.findChild(
+        self._get_scoreboard(scoreboard).ClearScore()
+        self._get_scoreboard(scoreboard).scoreColumn.findChild(
             QSpinBox, "best_of").setValue(0)
-        self.scoreboard.GetScoreboard(scoreboard).playerNumber.setValue(1)
-        self.scoreboard.GetScoreboard(scoreboard).charNumber.setValue(1)
-        self.scoreboard.GetScoreboard(scoreboard).CommandClearAll()
+        self._get_scoreboard(scoreboard).playerNumber.setValue(1)
+        self._get_scoreboard(scoreboard).charNumber.setValue(1)
+        self._get_scoreboard(scoreboard).CommandClearAll()
         return "OK"
-    
+
+    @gui_thread_sync
     def get_thumbnail(self, scoreboard, file_format):
-        thumbnailPath = self.scoreboard.GetScoreboard(scoreboard).GenerateThumbnail(quiet_mode=True, disable_msgbox=True)
+        thumbnailPath = self._get_scoreboard(scoreboard).GenerateThumbnail(quiet_mode=True, disable_msgbox=True)
         if thumbnailPath:
             if file_format == "jpg":
                 thumbnailPath = thumbnailPath.replace(".png", ".jpg")
             return os.path.abspath(thumbnailPath)
         else:
             return None
-    
+
+    @gui_thread_sync
     def update_bracket(self):
         id = TSHTournamentDataProvider.instance.provider.GetTournamentPhases()[0].get("groups")[0].get("id")
         data = TSHTournamentDataProvider.instance.provider.GetTournamentPhaseGroup(id)
         TSHTournamentDataProvider.instance.signals.tournament_phasegroup_updated.emit(data)
         return "OK"
 
+    @gui_thread_sync
     def load_set(self, scoreboard, set=None, no_mains=False):
         if set is not None:
             if not isinstance(set, str):
                 set = '0'
-            self.scoreboard.GetScoreboard(scoreboard).signals.NewSetSelected.emit(
+            self._get_scoreboard(scoreboard).signals.NewSetSelected.emit(
                 orjson.loads(
                     orjson.dumps({
                         'id': set,
@@ -382,44 +518,38 @@ class WebServerActions(QThread):
                 )
             )
         return "OK"
-    
+
     def get_comms(self):
         return StateManager.Get("commentary")
 
     def get_set(self, scoreboard):
-        if self.scoreboard.GetScoreboard(scoreboard).lastSetSelected is None:
+        if self._get_scoreboard(scoreboard).lastSetSelected is None:
             return "0"
         else:
-            return str(self.scoreboard.GetScoreboard(scoreboard).lastSetSelected)
+            return str(self._get_scoreboard(scoreboard).lastSetSelected)
 
     def get_sets(self, args):
+        provider = TSHTournamentDataProvider.instance.GetProvider()
+        if provider is None:
+            return []
+
         if args.get('getFinished') is not None:
-            provider = TSHTournamentDataProvider.instance.GetProvider()
             sets = provider.GetMatches(getFinished=True)
             return sets
         else:
-            provider = TSHTournamentDataProvider.instance.GetProvider()
             sets = provider.GetMatches(getFinished=False)
             return sets
-        
+
+    def get_playerdb(self):
+        return TSHPlayerDB.database
+
     def get_match(self, setId=None):
-        setId = int(setId)
         provider = TSHTournamentDataProvider.instance.GetProvider()
-        loop, result = QEventLoop(), None
+        return provider.GetMatch(setId=int(setId))
 
-        def handle_result(data):
-            nonlocal result
-            result = data
-            loop.quit()
-
-        worker = Worker(provider.GetMatch, setId=setId)
-        worker.signals.result.connect(handle_result)
-        self.threadPool.start(worker)
-        loop.exec_()
-        return result
-
+    @gui_thread_sync
     def load_player_from_tag(self, scoreboard, tag, team, player, no_mains=False):
-        result = self.scoreboard.GetScoreboard(scoreboard).LoadPlayerFromTag(str(tag), int(team), int(player), no_mains)
+        result = self._get_scoreboard(scoreboard).LoadPlayerFromTag(str(tag), int(team), int(player), no_mains)
         if result == True:
             return "OK"
         else:
@@ -433,13 +563,14 @@ class WebServerActions(QThread):
 
     def load_tournament(self, url=None):
         logger.error(f"URL PROVIDED: {url}")
-        if url is None or  url == "":
+        if url is None or url == "":
             TSHTournamentDataProvider.instance.signals.tournament_url_update.emit(None)
             return "OK"
         else:
             validators = [
                 QRegularExpression("start.gg/tournament/[^/]+/event[s]?/[^/]+"),
-                QRegularExpression("challonge.com/.+")
+                
+                QRegularExpression("parry.gg/[^/]+/[^/]+")
             ]
 
             for validator in validators:
@@ -455,13 +586,36 @@ class WebServerActions(QThread):
 
                     # Some URLs in startgg have eventS but the API doesn't work with that format
                     url = url.replace("/events/", "/event/")
-            if "challonge" in url:
+
+            elif "parry.gg" in url:
+                # Remove the "_manage" part of admin urls first
+                url = url.replace("/_manage", "")
+
                 matches = re.match(
-                    "(.*challonge.com/[^/]*/[^/]*)", url)
+                    "(.*parry.gg/[^/]*/[^/]*)", url)
+
                 if matches:
-                    url = matches.group(0)
+                    url = matches.group()
+
 
             SettingsManager.Set("TOURNAMENT_URL", url)
             TSHTournamentDataProvider.instance.signals.tournament_url_update.emit(url)
             
             return "OK"
+
+    @gui_thread_sync
+    def get_states(self, countryCode: str):
+        return TSHCountryHelper.GetStates(countryCode)
+
+    @gui_thread_sync
+    def set_current_stage(self, scoreboard, codename):
+        stage_data = StateManager.Get(f"game.stages.{codename}") if codename else None
+        with StateManager.SaveBlock():
+            StateManager.Set(f"score.{scoreboard}.stage_strike.selectedStage", codename)
+            StateManager.Set(f"score.{scoreboard}.stage_strike.selectedStageData", stage_data)
+        sb = self._get_scoreboard(scoreboard)
+        curr_game = sb.individualGameTracker._GetCurrentGameIdx()
+        if curr_game < 0:
+            curr_game = 0
+        sb.individualGameTracker.SetStage(curr_game, codename)
+        return "OK"

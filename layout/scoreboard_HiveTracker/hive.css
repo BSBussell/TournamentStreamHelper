@@ -74,6 +74,17 @@
     z-index: 2;
 }
 
+/* The inherited name lanes ran beneath the portrait extension. Reserve the
+   in-plate portion of each hex so FitText measures only visible text space. */
+.p1.container .name {
+    margin-left: 0;
+    padding: 0 12px 0 72px;
+}
+.p2.container .name {
+    margin-right: 0;
+    padding: 0 72px 0 12px;
+}
+
 /* Lower the scoreboard assembly together, leaving camera borders in place. */
 .logo { top: 31px; }
 .p1.chips, .p2.chips, .p1.under_chips, .p2.under_chips { top: 16px; }
@@ -84,8 +95,8 @@
 /* The hex breaks through the existing slanted outer edge, while the original
    placeholder continues reserving the same name/character space. */
 .p1.container .edge, .p2.container .edge {
-    width: 98px;
-    height: 84px;
+    width: 94px;
+    height: 81px;
     top: -20px;
     overflow: visible;
     background: transparent;
@@ -93,8 +104,8 @@
     isolation: isolate;
     z-index: 2;
 }
-.p1.container .edge { left: -30px; transform: skew(-20deg); }
-.p2.container .edge { right: -30px; transform: skew(20deg); }
+.p1.container .edge { left: -28px; transform: skew(-20deg); }
+.p2.container .edge { right: -28px; transform: skew(20deg); }
 .container .edge::before {
     content: "";
     position: absolute;
@@ -108,8 +119,8 @@
         rgba(255, 255, 255, 0.02) 38%,
         rgba(0, 0, 0, 0.08) 100%
     );
-    -webkit-mask: url("./rounded-hex.svg") center / 100% 100% no-repeat;
-    mask: url("./rounded-hex.svg") center / 100% 100% no-repeat;
+    -webkit-mask: url("./hive-hex.svg") center / 100% 100% no-repeat;
+    mask: url("./hive-hex.svg") center / 100% 100% no-repeat;
 }
 .hive-shadow-layer {
     position: absolute;
@@ -128,20 +139,23 @@
     right: 410px;
     transform: skew(-20deg);
 }
-.hive-shadow-layer .hive-shadow {
+.hive-shadow-layer::before {
+    content: "";
     position: absolute;
     top: -20px;
-    width: 98px;
-    height: 84px;
+    width: 94px;
+    height: 81px;
+    -webkit-mask: url("./hive-hex.svg") center / 100% 100% no-repeat;
+    mask: url("./hive-hex.svg") center / 100% 100% no-repeat;
 }
-.hive-shadow-p1 .hive-shadow {
-    left: -30px;
-    fill: var(--p1-score-bg-color-dark);
+.hive-shadow-p1::before {
+    left: -28px;
+    background: var(--p1-score-bg-color-dark);
     transform: skew(-20deg) translate(0px, 2.5px) scale(1.1);
 }
-.hive-shadow-p2 .hive-shadow {
-    right: -30px;
-    fill: var(--p2-score-bg-color-dark);
+.hive-shadow-p2::before {
+    right: -28px;
+    background: var(--p2-score-bg-color-dark);
     transform: skew(20deg) translate(0px, 2.5px) scale(1.1);
 }
 .container .edge .character_container {
@@ -161,8 +175,8 @@
         rgba(255, 255, 255, 0.03) 34%,
         rgba(0, 0, 0, 0.12) 100%
     );
-    -webkit-mask: url("./rounded-hex.svg") center / 100% 100% no-repeat;
-    mask: url("./rounded-hex.svg") center / 100% 100% no-repeat;
+    -webkit-mask: url("./hive-hex.svg") center / 100% 100% no-repeat;
+    mask: url("./hive-hex.svg") center / 100% 100% no-repeat;
 }
 .container .edge .fallback-portrait {
     position: absolute;
@@ -179,8 +193,8 @@
         inset 0 1px 0 rgba(255, 255, 255, .07),
         inset 0 -8px 14px rgba(0, 0, 0, .72),
         inset 0 0 7px rgba(0, 0, 0, .9);
-    -webkit-mask: url("./rounded-hex.svg") center / 100% 100% no-repeat;
-    mask: url("./rounded-hex.svg") center / 100% 100% no-repeat;
+    -webkit-mask: url("./hive-hex.svg") center / 100% 100% no-repeat;
+    mask: url("./hive-hex.svg") center / 100% 100% no-repeat;
 }
 .container .edge .fallback-portrait-image {
     display: block;
@@ -222,10 +236,6 @@
     background-color: transparent;
 }
 .container .placeholder { background: transparent; }
-
-/* The colored hex surface itself forms the frame. The old SVG linework made
-   it look unrelated to the original panels' surface treatment. */
-.hive-frame { display: none; }
 
 /* Local double strokes and small wax-cell details, not a background strip. */
 .hive-trim { position: absolute; top: -8px; left: 0; width: 488px; height: 70px; overflow: visible; pointer-events: none; z-index: 3; }

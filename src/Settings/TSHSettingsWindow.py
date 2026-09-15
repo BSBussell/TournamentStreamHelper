@@ -1,8 +1,8 @@
-import sys
 from qtpy.QtCore import *
 from qtpy.QtWidgets import *
 from .SettingsWidget import SettingsWidget
 from ..TSHHotkeys import TSHHotkeys
+from ..Helpers.TSHVersionHelper import add_beta_label, get_beta_status
 
 
 class TSHSettingsWindow(QDialog):
@@ -40,10 +40,26 @@ class TSHSettingsWindow(QDialog):
 
         generalSettings.append((
             QApplication.translate(
+                "settings.general", "Webserver Port"),
+            "webserver_port",
+            "spinbox",
+            5500
+        ))
+
+        generalSettings.append((
+            QApplication.translate(
                 "settings.general", "Enable profanity filter"),
             "profanity_filter",
             "checkbox",
             True
+        ))
+
+        generalSettings.append((
+            QApplication.translate(
+                "settings.general", "Enable StateManager Logging"),
+            "statemanager_logging",
+            "checkbox",
+            False
         ))
 
         generalSettings.append((
@@ -56,8 +72,24 @@ class TSHSettingsWindow(QDialog):
 
         generalSettings.append((
             QApplication.translate(
+                "settings.disable_thumbnail_widget", "Disables the Thumbnail Widget from starting (takes effect on next restart)"),
+            "disable_thumbnail_widget",
+            "checkbox",
+            False
+        ))
+
+        generalSettings.append((
+            QApplication.translate(
                 "settings.disable_autoupdate", "Disable automatic set updating for the scoreboard"),
             "disable_autoupdate",
+            "checkbox",
+            False
+        ))
+
+        generalSettings.append((
+            QApplication.translate(
+                "settings.disable_scoreupdate", "Disable automatic score updating for the scoreboard"),
+            "disable_scoreupdate",
             "checkbox",
             False
         ))
@@ -72,7 +104,7 @@ class TSHSettingsWindow(QDialog):
         
         generalSettings.append((
             QApplication.translate(
-                "settings.disable_overwrite", "Do not override existing values in local_players.csv (takes effect on next restart)"),
+                "settings.disable_overwrite", "Do not override existing values in the local player database (takes effect on next restart)"),
             "disable_overwrite",
             "checkbox",
             False
@@ -84,6 +116,47 @@ class TSHSettingsWindow(QDialog):
             "hide_track_player",
             "checkbox",
             False
+        ))
+
+        generalSettings.append((
+            QApplication.translate(
+                "settings.disable_country_file_downloading", "Disables attempting to download the country and states file (takes effect on next restart)"),
+            "disable_country_file_downloading",
+            "checkbox",
+            False
+        ))
+
+        generalSettings.append((
+            QApplication.translate(
+                "settings.disable_controller_file_downloading", "Disables attempting to download the controllers file (takes effect on next restart)"),
+            "disable_controller_file_downloading",
+            "checkbox",
+            False
+        ))
+
+
+        generalSettings.append((
+            add_beta_label(QApplication.translate(
+                "settings.disable_individual_game_tracker", "Disables the individual game tracker (takes effect on next restart)"), "game_tracker"),
+            "disable_individual_game_tracker",
+            "checkbox",
+            get_beta_status("game_tracker")
+        ))
+
+        generalSettings.append((
+            QApplication.translate(
+                "settings.team_1_default_color", "Default Color of Team 1"),
+            "team_1_default_color",
+            "color",
+            "#ff9500"
+        ))
+
+        generalSettings.append((
+            QApplication.translate(
+                "settings.team_2_default_color", "Default Color of Team 2"),
+            "team_2_default_color",
+            "color",
+            "#5d5d5d"
         ))
 
         self.add_setting_widget(QApplication.translate(
@@ -107,6 +180,8 @@ class TSHSettingsWindow(QDialog):
             "team2_score_down": QApplication.translate("settings.hotkeys", "Team 2 score down"),
             "reset_scores": QApplication.translate("settings.hotkeys", "Reset scores"),
             "swap_teams": QApplication.translate("settings.hotkeys", "Swap teams"),
+            "refresh_phase_group": QApplication.translate("settings.hotkeys", "Refresh bracket phase groups"),
+            "limit_export": QApplication.translate("settings.hotkeys", "Toggle bracket limit export"),
         }
 
         for i, (setting, value) in enumerate(TSHHotkeys.instance.keys.items()):
@@ -136,6 +211,22 @@ class TSHSettingsWindow(QDialog):
             QApplication.translate(
                 "settings.show_social", "Show Social Media"),
             "show_social",
+            "checkbox",
+            True
+        ))
+
+        displaySettings.append((
+            QApplication.translate(
+                "settings.show_seed", "Show Seed"),
+            "show_seed",
+            "checkbox",
+            True
+        ))
+
+        displaySettings.append((
+            QApplication.translate(
+                "settings.show_birthday", "Show Birthday"),
+            "show_birthday",
             "checkbox",
             True
         ))
@@ -187,6 +278,13 @@ class TSHSettingsWindow(QDialog):
         bskySettings = []
         bskySettings.append((
             QApplication.translate(
+                "settings.bsky", "Enable Bluesky Features"),
+            "enable_bluesky",
+            "checkbox",
+            True
+        ))
+        bskySettings.append((
+            QApplication.translate(
                 "settings.bsky", "Host server"),
             "host",
             "textbox",
@@ -216,6 +314,24 @@ class TSHSettingsWindow(QDialog):
         
         self.add_setting_widget(QApplication.translate(
             "settings", "Bluesky"), SettingsWidget("bsky_account", bskySettings))
+        
+        # Add API Key settings
+        APIKeySettings = []
+        APIKeySettings.append((
+            QApplication.translate(
+                "settings.api_keys", "ParryGG"),
+            "parrygg",
+            "password",
+            "",
+            None,
+            QApplication.translate(
+                "settings.api_keys", "You can get an API Key from parry.gg/api-keys") + "\n" +
+                QApplication.translate(
+                    "settings.api_keys", "Please note that the API Key will be stored in plain text on your computer")
+        ))
+        
+        self.add_setting_widget(QApplication.translate(
+            "settings", "API Keys"), SettingsWidget("api_keys", APIKeySettings))
 
         self.resize(1000, 500)
         QApplication.processEvents()
